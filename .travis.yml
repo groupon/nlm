@@ -6,4 +6,4 @@ env:
 before_script:
   - git config --global user.email "opensource@groupon.com"
   - git config --global user.name "CI"
-after_success: "./node_modules/.bin/nlm publish"
+after_success: "./bin/nlm.js publish"
