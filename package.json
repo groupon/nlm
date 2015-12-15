@@ -1,6 +1,6 @@
 {
   "name": "nlm",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Lifecycle manager for node projects",
   "main": "lib/nlm.js",
   "bin": "bin/nlm.js",
