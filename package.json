@@ -1,0 +1,60 @@
+{
+  "name": "nlm",
+  "version": "0.0.0",
+  "description": "Lifecycle manager for node projects",
+  "main": "lib/nlm.js",
+  "bin": "bin/nlm.js",
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "scripts": {
+    "postinstall": "./bin/post-install.js",
+    "test": "eslint lib test && mocha",
+    "posttest": "./bin/nlm.js release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groupon/nlm.git"
+  },
+  "keywords": [
+    "publish",
+    "release",
+    "semver"
+  ],
+  "author": "Jan Krems <jan.krems@groupon.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/groupon/nlm/issues"
+  },
+  "homepage": "https://github.com/groupon/nlm",
+  "devDependencies": {
+    "assertive": "^2.0.2",
+    "eslint": "^1.9.0",
+    "eslint-config-groupon": "^1.1.0",
+    "mocha": "^2.3.4"
+  },
+  "dependencies": {
+    "bluebird": "^3.0.5",
+    "conventional-commits-parser": "~0.1.2",
+    "debug": "^2.2.0",
+    "glob": "^6.0.1",
+    "gofer": "^2.4.5",
+    "inquirer": "~0.11.0",
+    "lodash": "^3.10.1",
+    "minimist": "^1.2.0",
+    "rc": "^1.1.5",
+    "semver": "^5.1.0"
+  },
+  "nlm": {
+    "license": {
+      "files": [
+        "lib",
+        "test"
+      ]
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

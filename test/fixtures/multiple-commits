@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+bash $(dirname $0)/fix-commit
+
+git checkout -b noise
+
+echo "console.log('more');" > second.js
+git add second.js
+git commit -m "fix: Adding second
+
+BREAKING CHANGE: Users expecting only one file might run into problems
+
+It should be as easy as migrating the \`1\` to a \`2\`.
+
+Closes #336"
+
+git checkout master
+git merge --no-edit --no-ff noise
+
+git checkout -b my-feature
+
+echo "console.log('other stuff');" > index.js
+git add index.js
+git commit -m 'feat: Changed more stuff'
+
+git checkout master
+git merge my-feature --no-ff -m 'Merge pull request #119 from theowner/some/branch'

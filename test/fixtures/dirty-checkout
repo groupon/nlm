@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+bash $(dirname $0)/fix-commit
+
+echo "console.log('other stuff');" > index.js
+echo "console.log('untracked file');" > untracked.js
+git add index.js

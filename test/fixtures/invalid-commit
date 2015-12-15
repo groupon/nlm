@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo "console.log('no type prefix');" > index.js
+git add index.js
+git commit -m "This ain't no valid commit message"
+
+echo "console.log('invalid type');" > index.js
+git add index.js
+git commit -m "bogus: Not an acceptable commit type"
