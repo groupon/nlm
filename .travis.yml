@@ -1,6 +1,8 @@
 language: node_js
 node_js:
   - "4.2"
+env:
+  - 'DEBUG=nlm*,gofer*'
 before_script:
   - git config --global user.email "opensource@groupon.com"
   - git config --global user.name "CI"
