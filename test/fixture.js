@@ -31,24 +31,26 @@
  */
 'use strict';
 
-const execFile = require('child_process').execFile;
-const path = require('path');
+var execFile = require('child_process').execFile;
+var path = require('path');
 
 function withFixture(name) {
-  const dirname = path.join(__dirname, '..', 'tmp', name);
-  const script = path.join(__dirname, 'fixtures', name);
+  var dirname = path.join(__dirname, '..', 'tmp', name);
+  var script = path.join(__dirname, 'fixtures', name);
 
-  before('remove fixture directory', done =>
-    execFile('rm', [ '-rf', dirname ], done));
+  before('remove fixture directory', function rmDir(done) {
+    execFile('rm', ['-rf', dirname], done);
+  });
 
-  before('create fixture directory', done =>
-    execFile('mkdir', [ '-p', dirname ], done));
+  before('create fixture directory', function createDir(done) {
+    execFile('mkdir', ['-p', dirname], done);
+  });
 
-  before('running fixture setup', done => {
-    execFile(script, [ script ], {
+  before('running fixture setup', function runFixture(done) {
+    execFile(script, [script], {
       cwd: dirname,
       env: { HOME: '/does/not/exist' },
-    }, (error, stdout, stderr) => {
+    }, function logErrorDetails(error, stdout, stderr) {
       if (error) {
         process.stdout.write(stdout + '\n');
         process.stderr.write(stderr + '\n');
@@ -57,8 +59,9 @@ function withFixture(name) {
     });
   });
 
-  after('remove fixture directory', done =>
-    execFile('rm', [ '-rf', dirname ], done));
+  after('remove fixture directory', function removeFixture(done) {
+    execFile('rm', ['-rf', dirname], done);
+  });
 
   return dirname;
 }

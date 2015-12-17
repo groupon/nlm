@@ -31,22 +31,24 @@
  */
 'use strict';
 
-const assert = require('assertive');
+var assert = require('assertive');
 
-const generateChangeLog = require('../../lib/steps/changelog');
+var generateChangeLog = require('../../lib/steps/changelog');
 
-describe('generateChangeLog', () => {
-  it('can create an empty changelog', () => {
-    const pkg = { repository: 'usr/proj' };
-    const commits = [];
-    const options = { commits };
+describe('generateChangeLog', function () {
+  it('can create an empty changelog', function () {
+    var pkg = { repository: 'usr/proj' };
+    var commits = [];
+    var options = { commits: commits };
     return generateChangeLog(null, pkg, options)
-      .then(changelog => assert.equal('', changelog));
+      .then(function (changelog) {
+        assert.equal('', changelog);
+      });
   });
 
-  it('can create a changelog for two commits', () => {
-    const pkg = { repository: 'usr/proj' };
-    const commits = [
+  it('can create a changelog for two commits', function () {
+    var pkg = { repository: 'usr/proj' };
+    var commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -58,19 +60,21 @@ describe('generateChangeLog', () => {
         subject: 'Do more things',
       },
     ];
-    const options = { commits };
-    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    var options = { commits: commits };
+    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
+    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
     return generateChangeLog(null, pkg, options)
-      .then(changelog => assert.equal(`
-* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing
-* [\`2234567\`](${href1}) **feat:** Do more things
-        `.trim(), changelog));
+      .then(function (changelog) {
+        assert.equal([
+          '* [\`1234567\`](' + href0 + ') **fix:** Stop doing the wrong thing',
+          '* [\`2234567\`](' + href1 + ') **feat:** Do more things',
+        ].join('\n'), changelog);
+      });
   });
 
-  it('puts breaking changes ahead of everything else', () => {
-    const pkg = { repository: 'usr/proj' };
-    const commits = [
+  it('puts breaking changes ahead of everything else', function () {
+    var pkg = { repository: 'usr/proj' };
+    var commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -88,21 +92,23 @@ describe('generateChangeLog', () => {
         ],
       },
     ];
-    const options = { commits };
-    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    var options = { commits: commits };
+    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
+    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
     return generateChangeLog(null, pkg, options)
-      .then(changelog => assert.equal(`
-#### Breaking Changes
-
-The interface of this library changed in some way.
-
-*See: [\`2234567\`](${href1})*
-
-#### Commits
-
-* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing
-* [\`2234567\`](${href1}) **feat:** Do more things
-        `.trim(), changelog));
+      .then(function (changelog) {
+        assert.equal([
+          '#### Breaking Changes',
+          '',
+          'The interface of this library changed in some way.',
+          '',
+          '*See: [\`2234567\`](' + href1 + ')*',
+          '',
+          '#### Commits',
+          '',
+          '* [\`1234567\`](' + href0 + ') **fix:** Stop doing the wrong thing',
+          '* [\`2234567\`](' + href1 + ') **feat:** Do more things',
+        ].join('\n'), changelog);
+      });
   });
 });
