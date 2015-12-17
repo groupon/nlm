@@ -45,7 +45,10 @@ function withFixture(name) {
     execFile('mkdir', [ '-p', dirname ], done));
 
   before('running fixture setup', done => {
-    execFile(script, [ script ], { cwd: dirname }, (error, stdout, stderr) => {
+    execFile(script, [ script ], {
+      cwd: dirname,
+      env: { HOME: '/does/not/exist' },
+    }, (error, stdout, stderr) => {
       if (error) {
         process.stdout.write(stdout + '\n');
         process.stderr.write(stderr + '\n');
