@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 git init
+git config user.name "nlm"
+git config user.email "nlm@example.com"
 
 bash $(dirname $0)/fix-commit
 
