@@ -11,7 +11,7 @@
   "scripts": {
     "postinstall": "./bin/post-install.js",
     "test": "eslint lib test && mocha",
-    "posttest": "./bin/nlm.js release"
+    "posttest": "./bin/nlm.js verify"
   },
   "repository": {
     "type": "git",

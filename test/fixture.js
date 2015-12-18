@@ -59,9 +59,9 @@ function withFixture(name) {
     });
   });
 
-  after('remove fixture directory', function removeFixture(done) {
-    execFile('rm', ['-rf', dirname], done);
-  });
+  // after('remove fixture directory', function removeFixture(done) {
+  //   execFile('rm', ['-rf', dirname], done);
+  // });
 
   return dirname;
 }

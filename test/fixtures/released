@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+bash $(dirname $0)"/multiple-commits"
+
+echo '{
+  "name": "nlm-test-pkg",
+  "version": "1.0.0",
+  "publishConfig": {
+    "registry": "http://127.0.0.1:3000"
+  }
+}' >package.json
+git add package.json
+git commit -m 'v1.0.0'
