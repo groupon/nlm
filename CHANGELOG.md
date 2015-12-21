@@ -1,3 +1,25 @@
+### 2.0.0
+
+#### Breaking Changes
+
+The `publish` command was removed and merged with
+the `release` command. To better support projects with multiple
+builds (e.g. against multiple versions of node) the release parts
+were split from the verification parts. `nlm verify` can be used
+as a `posttest` script in those cases. This ensures that multiple
+builds won't try to release the same version.
+
+*See: [`a8ce7e9`](https://github.com/groupon/nlm/commit/a8ce7e931fd50450cf258f48d5dbae7ea83e9ca2)*
+
+#### Commits
+
+* Support matrix builds - **[@jkrems](https://github.com/jkrems)** [#4](https://github.com/groupon/nlm/pull/4)
+  - [`05d9171`](https://github.com/groupon/nlm/commit/05d917102cfcfeff69a315247517e343e58b5f1b) **fix:** Read the commit sha from the right directory
+  - [`a8ce7e9`](https://github.com/groupon/nlm/commit/a8ce7e931fd50450cf258f48d5dbae7ea83e9ca2) **feat:** Officially support matrix builds
+* Pass arguments to verify command - **[@jkrems](https://github.com/jkrems)** [#6](https://github.com/groupon/nlm/pull/6)
+  - [`fd38f44`](https://github.com/groupon/nlm/commit/fd38f44cd3219a4bbf888daeac6086092c903f7f) **fix:** Pass arguments to verify command
+
+
 ### 1.1.0
 
 * Compatible with node v0.10 - **[@jkrems](https://github.com/jkrems)** [#3](https://github.com/groupon/nlm/pull/3)
