@@ -1,3 +1,11 @@
+### 1.1.0
+
+* Compatible with node v0.10 - **[@jkrems](https://github.com/jkrems)** [#3](https://github.com/groupon/nlm/pull/3)
+  - [`981c75c`](https://github.com/groupon/nlm/commit/981c75ca9b2f8b673c98e5e1361b1d6d38e41af3) **fix:** Support latest git's error message
+  - [`c843504`](https://github.com/groupon/nlm/commit/c843504beae229a2816de052ae98a77b4ce7a0cc) **feat:** Test suite passes on node 0.10
+  - [`321ce61`](https://github.com/groupon/nlm/commit/321ce61870b19821500a3bd53e6be57f1308debd) **test:** Set git user/email in fixtures
+
+
 ### 1.0.1
 
 * fix: Reference local bin script for publish - **[@jkrems](https://github.com/jkrems)** [#2](https://github.com/groupon/nlm/pull/2)
