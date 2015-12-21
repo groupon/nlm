@@ -1,6 +1,6 @@
 {
   "name": "nlm",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Lifecycle manager for node projects",
   "main": "lib/nlm.js",
   "bin": "bin/nlm.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "postinstall": "./bin/post-install.js",
     "test": "eslint lib test && mocha",
-    "posttest": "./bin/nlm.js release"
+    "posttest": "./bin/nlm.js verify"
   },
   "repository": {
     "type": "git",

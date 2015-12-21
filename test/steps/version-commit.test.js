@@ -31,15 +31,31 @@
  */
 'use strict';
 
-var _ = require('lodash');
+var fs = require('fs');
 
-var run = require('../run');
+var assert = require('assertive');
 
-function gitPush(directory, origin, refs) {
-  return run('git', [
-    'push', origin,
-  ].concat(refs), {
-    cwd: directory,
-  }).then(_.trim);
-}
-module.exports = gitPush;
+var createVersionCommit = require('../../lib/steps/version-commit');
+
+var withFixture = require('../fixture');
+
+describe('createVersionCommit', function () {
+  var dirname = withFixture('multiple-commits');
+  var pkg = {
+    name: 'some-package',
+    version: '0.0.0',
+  };
+  var options = {
+    nextVersion: '1.0.0',
+    changelog: '* New stuff\n* Interesting features',
+  };
+
+  before('create version commit', function () {
+    return createVersionCommit(dirname, pkg, options);
+  });
+
+  it('writes the correct HEAD sha', function () {
+    var HEAD = fs.readFileSync(dirname + '/.git/refs/heads/master', 'utf8');
+    assert.equal(HEAD.trim(), options.versionCommitSha);
+  });
+});

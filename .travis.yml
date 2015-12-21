@@ -1,9 +1,16 @@
 language: node_js
 node_js:
-  - "4.2"
-env:
-  - 'DEBUG=nlm*,gofer*'
-before_script:
+  - '0.10'
+  - '4.2'
+before_install:
+- npm install -g npm@latest-2
+before_deploy:
   - git config --global user.email "opensource@groupon.com"
   - git config --global user.name "CI"
-after_success: "./bin/nlm.js publish"
+deploy:
+  provider: script
+  script: './bin/nlm.js release'
+  skip_cleanup: true
+  on:
+    branch: master
+    node: '4.2'
