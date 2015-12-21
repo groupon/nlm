@@ -31,52 +31,56 @@
  */
 'use strict';
 
-const assert = require('assertive');
+var assert = require('assertive');
 
-const getCommits = require('../../lib/git/commits');
+var getCommits = require('../../lib/git/commits');
 
-const determineReleaseInfo = require('../../lib/steps/release-info');
+var determineReleaseInfo = require('../../lib/steps/release-info');
 
-const withFixture = require('../fixture');
+var withFixture = require('../fixture');
 
-describe('determineReleaseInfo', () => {
-  it('returns "none" for an empty list of commits', () => {
+describe('determineReleaseInfo', function () {
+  it('returns "none" for an empty list of commits', function () {
     assert.equal('none', determineReleaseInfo([]));
   });
 
-  describe('with invalid commit messages', () => {
-    const dirname = withFixture('invalid-commit');
+  describe('with invalid commit messages', function () {
+    var dirname = withFixture('invalid-commit');
 
-    let commits = [];
-    before('load commits', () =>
-      getCommits(dirname).then(results => commits = results));
+    var commits = [];
+    before('load commits', function () {
+      return getCommits(dirname).then(function (results) {
+        commits = results;
+      });
+    });
 
-    it('rejects them with a helpful message', () => {
-      const error = assert.throws(() =>
-        determineReleaseInfo(commits));
+    it('rejects them with a helpful message', function () {
+      var error = assert.throws(function () {
+        determineReleaseInfo(commits);
+      });
 
-      assert.equal(`
-This repository uses AngularJS Git Commit Message Convetions[1]
-to automatically determine the semver implications of changes
-and to generate changelogs for releases.
-
-The following commits could not be parsed:
-
-* [${commits[0].sha.slice(0, 7)}] This ain't no valid commit message
-* [${commits[1].sha.slice(0, 7)}] bogus: Not an acceptable commit type
-
-Most likely they are missing one of the valid type prefixes
-(feat, fix, docs, style, refactor, test, chore).
-
-You can reword commit messages using rebase[2]:
-
-~~~bash
-git rebase -i --root
-~~~
-
-[1] Docs on the conventions: http://gr.pn/1OWll98
-[2] https://git-scm.com/docs/git-rebase
-      `.trim(), error.message);
+      assert.equal([
+        'This repository uses AngularJS Git Commit Message Convetions[1]',
+        'to automatically determine the semver implications of changes',
+        'and to generate changelogs for releases.',
+        '',
+        'The following commits could not be parsed:',
+        '',
+        '* [' + commits[0].sha.slice(0, 7) + '] This ain\'t no valid commit message',
+        '* [' + commits[1].sha.slice(0, 7) + '] bogus: Not an acceptable commit type',
+        '',
+        'Most likely they are missing one of the valid type prefixes',
+        '(feat, fix, docs, style, refactor, test, chore).',
+        '',
+        'You can reword commit messages using rebase[2]:',
+        '',
+        '~~~bash',
+        'git rebase -i --root',
+        '~~~',
+        '',
+        '[1] Docs on the conventions: http://gr.pn/1OWll98',
+        '[2] https://git-scm.com/docs/git-rebase',
+      ].join('\n'), error.message);
     });
   });
 });

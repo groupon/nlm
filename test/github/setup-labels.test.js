@@ -31,24 +31,26 @@
  */
 'use strict';
 
-const assert = require('assertive');
+var assert = require('assertive');
 
-const Github = require('../../lib/github/client');
-const setupLabels = require('../../lib/github/setup-labels');
+var Github = require('../../lib/github/client');
+var setupLabels = require('../../lib/github/setup-labels');
 
-const packageJSON = require('../../package.json');
+var packageJSON = require('../../package.json');
 
-describe('setupLabels', () => {
-  describe('self-test', () => {
+describe('setupLabels', function () {
+  describe('self-test', function () {
     if (!process.env.GH_TOKEN) {
       return it('skipping, no GH_TOKEN');
     }
 
-    const github = Github.forRepository(packageJSON.repository);
+    var github = Github.forRepository(packageJSON.repository);
 
-    it('finds no missing labels for nlm', () => {
+    it('finds no missing labels for nlm', function () {
       return setupLabels(github)
-        .then(addedLabels => assert.deepEqual([], addedLabels));
+        .then(function (addedLabels) {
+          assert.deepEqual([], addedLabels);
+        });
     });
   });
 });

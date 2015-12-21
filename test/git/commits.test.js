@@ -31,87 +31,98 @@
  */
 'use strict';
 
-const assert = require('assertive');
+var assert = require('assertive');
 
-const getCommits = require('../../lib/git/commits');
+var getCommits = require('../../lib/git/commits');
 
-const withFixture = require('../fixture');
+var withFixture = require('../fixture');
 
-describe('getCommits', () => {
-  describe('with an empty project', () => {
-    const dirname = withFixture('empty-project');
+describe('getCommits', function () {
+  describe('with an empty project', function () {
+    var dirname = withFixture('empty-project');
 
-    it('returns an empty list', () =>
-      getCommits(dirname)
-        .then(commits => assert.deepEqual([], commits)));
+    it('returns an empty list', function () {
+      return getCommits(dirname)
+        .then(function (commits) {
+          assert.deepEqual([], commits);
+        });
+    });
   });
 
-  describe('with invalid commits', () => {
-    const dirname = withFixture('invalid-commit');
+  describe('with invalid commits', function () {
+    var dirname = withFixture('invalid-commit');
 
-    it('returns the commit with type=null', () =>
-      getCommits(dirname)
-        .then(commits => {
+    it('returns the commit with type=null', function () {
+      return getCommits(dirname)
+        .then(function (commits) {
           assert.equal(2, commits.length);
           assert.equal(null, commits[0].type);
           assert.equal('This ain\'t no valid commit message', commits[0].header);
           assert.equal('bogus', commits[1].type);
-        }));
+        });
+    });
   });
 
-  describe('with multiple commits', () => {
-    const dirname = withFixture('multiple-commits');
-    let allCommits = null;
+  describe('with multiple commits', function () {
+    var dirname = withFixture('multiple-commits');
+    var allCommits = null;
 
-    before('fetch al commits', () =>
-      getCommits(dirname).then(commits => allCommits = commits));
+    before('fetch al commits', function () {
+      return getCommits(dirname).then(function (commits) {
+        allCommits = commits;
+      });
+    });
 
-    it('returns all three commits, plus one merge commit', () => {
+    it('returns all three commits, plus one merge commit', function () {
       assert.equal(4, allCommits.length);
     });
 
-    it('returns commits in order', () => {
+    it('returns commits in order', function () {
       assert.equal('Do stuff', allCommits[0].subject);
       assert.equal('Adding second', allCommits[1].subject);
       assert.equal('Changed more stuff', allCommits[2].subject);
     });
 
-    it('includes parentSha', () => {
+    it('includes parentSha', function () {
       assert.equal('is null for first commit',
         null, allCommits[0].parentSha);
       assert.equal('points to the immediate parent for other commits',
         allCommits[0].sha, allCommits[1].parentSha);
     });
 
-    it('includes notes for breaking changes', () => {
-      const note = allCommits[1].notes[0];
+    it('includes notes for breaking changes', function () {
+      var note = allCommits[1].notes[0];
       assert.equal('BREAKING CHANGE', note.title);
-      assert.equal(`
-Users expecting only one file might run into problems
-
-It should be as easy as migrating the \`1\` to a \`2\`.
-      `.trim(), note.text);
+      assert.equal([
+        'Users expecting only one file might run into problems',
+        '',
+        'It should be as easy as migrating the \`1\` to a \`2\`.',
+      ].join('\n'), note.text);
     });
 
-    it('includes merge commit info', () => {
-      const merge = allCommits[3];
+    it('includes merge commit info', function () {
+      var merge = allCommits[3];
       assert.equal(merge.type, 'pr');
       assert.equal(merge.references[0].action, 'Merges');
       assert.equal(merge.references[0].issue, '119');
     });
 
-    describe('when starting from v0.0.0', () => {
-      it('returns everything from the beginning', () =>
-        getCommits(dirname, 'v0.0.0')
-          .then(commits => assert.equal(allCommits.length, commits.length)));
+    describe('when starting from v0.0.0', function () {
+      it('returns everything from the beginning', function () {
+        return getCommits(dirname, 'v0.0.0')
+          .then(function (commits) {
+            assert.equal(allCommits.length, commits.length);
+          });
+      });
     });
 
-    describe('when starting from the first commit', () => {
-      it('only returns the last two', () =>
-        getCommits(dirname, allCommits[0].sha)
-          .then(commits => {
+    describe('when starting from the first commit', function () {
+      it('only returns the last two', function () {
+        return getCommits(dirname, allCommits[0].sha)
+          .then(function (commits) {
             assert.deepEqual(allCommits.slice(1), commits);
-          }));
+          });
+      });
     });
   });
 });

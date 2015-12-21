@@ -31,41 +31,44 @@
  */
 'use strict';
 
-const assert = require('assertive');
+var assert = require('assertive');
 
-const verifyClean = require('../../lib/git/verify-clean');
+var verifyClean = require('../../lib/git/verify-clean');
 
-const withFixture = require('../fixture');
+var withFixture = require('../fixture');
 
 function unexpected() {
   throw new Error('Should have failed');
 }
 
-describe('verifyClean', () => {
-  describe('with an empty project', () => {
-    const dirname = withFixture('empty-project');
+describe('verifyClean', function () {
+  describe('with an empty project', function () {
+    var dirname = withFixture('empty-project');
 
-    it('returns true', () =>
-      verifyClean(dirname)
-        .then(isClean => assert.expect(isClean)));
+    it('returns true', function () {
+      return verifyClean(dirname)
+        .then(assert.expect);
+    });
   });
 
-  describe('with committed changes', () => {
-    const dirname = withFixture('fix-commit');
+  describe('with committed changes', function () {
+    var dirname = withFixture('fix-commit');
 
-    it('returns true', () =>
-      verifyClean(dirname)
-        .then(isClean => assert.expect(isClean)));
+    it('returns true', function () {
+      return verifyClean(dirname)
+        .then(assert.expect);
+    });
   });
 
-  describe('with uncommitted or unstaged changes', () => {
-    const dirname = withFixture('dirty-checkout');
+  describe('with uncommitted or unstaged changes', function () {
+    var dirname = withFixture('dirty-checkout');
 
-    it('reports the files in question', () =>
-      verifyClean(dirname)
-        .then(unexpected, error => {
+    it('reports the files in question', function () {
+      return verifyClean(dirname)
+        .then(unexpected, function (error) {
           assert.include('M  index.js', error.message);
           assert.include('?? untracked.js', error.message);
-        }));
+        });
+    });
   });
 });
