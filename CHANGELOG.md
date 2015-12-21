@@ -1,3 +1,9 @@
+### 2.0.1
+
+* fix: Call publishToNpm as a task/step - **[@jkrems](https://github.com/jkrems)** [#7](https://github.com/groupon/nlm/pull/7)
+  - [`b981991`](https://github.com/groupon/nlm/commit/b981991f3d3f56f79b68238d87c5eefada048ae1) **fix:** Call publishToNpm as a task/step
+
+
 ### 2.0.0
 
 #### Breaking Changes
