@@ -32,48 +32,30 @@
 'use strict';
 
 var fs = require('fs');
-var path = require('path');
 
-var _ = require('lodash');
+var assert = require('assertive');
 
-var run = require('../run');
+var createVersionCommit = require('../../lib/steps/version-commit');
 
-function addFiles(cwd) {
-  return run('git', ['add', 'CHANGELOG.md', 'package.json'], { cwd: cwd });
-}
+var withFixture = require('../fixture');
 
-function commit(cwd, message) {
-  return run('git', ['commit', '-m', message], { cwd: cwd });
-}
+describe('createVersionCommit', function () {
+  var dirname = withFixture('multiple-commits');
+  var pkg = {
+    name: 'some-package',
+    version: '0.0.0',
+  };
+  var options = {
+    nextVersion: '1.0.0',
+    changelog: '* New stuff\n* Interesting features',
+  };
 
-function getHEAD(cwd) {
-  return run('git', ['rev-parse', 'HEAD'], { cwd: cwd });
-}
+  before('create version commit', function () {
+    return createVersionCommit(dirname, pkg, options);
+  });
 
-function createVersionCommit(cwd, pkg, options) {
-  var changeLogFile = path.join(cwd, 'CHANGELOG.md');
-  var changeLogContent;
-  try {
-    changeLogContent = '\n\n\n' + fs.readFileSync(changeLogFile, 'utf8').trim();
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      throw err;
-    }
-    changeLogContent = '';
-  }
-  changeLogContent = '### ' + options.nextVersion + '\n\n' + options.changelog + changeLogContent;
-  fs.writeFileSync(changeLogFile, changeLogContent.trim() + '\n');
-
-  var packageJsonFile = path.join(cwd, 'package.json');
-  pkg.version = options.nextVersion;
-  fs.writeFileSync(packageJsonFile, JSON.stringify(pkg, null, 2) + '\n');
-
-  return addFiles(cwd)
-    .then(_.partial(commit, cwd, 'v' + pkg.version))
-    .then(_.partial(getHEAD, cwd))
-    .then(function setVersionCommitSha(output) {
-      options.versionCommitSha = output.trim();
-      return options.versionCommitSha;
-    });
-}
-module.exports = createVersionCommit;
+  it('writes the correct HEAD sha', function () {
+    var HEAD = fs.readFileSync(dirname + '/.git/refs/heads/master', 'utf8');
+    assert.equal(HEAD.trim(), options.versionCommitSha);
+  });
+});
