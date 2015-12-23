@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -e
+git init
+git config user.name "nlm"
+git config user.email "nlm@example.com"
+
+echo "console.log('Short stuff');" > index.js
+git add index.js
+git commit -m 'fix: Short
+
+Closes #42'
+
+echo "console.log('Repo stuff');" > index.js
+git add index.js
+git commit -m 'fix: Repo
+
+Closes riley/thing#13'
+
+echo "console.log('Full stuff');" > index.js
+git add index.js
+git commit -m 'fix: Full
+
+Fixes https://github.com/open/source/issues/13'
+
+echo "console.log('Truncate stuff');" > index.js
+git add index.js
+git commit -m 'fix: Truncate
+
+Fixes https://github.com/usr/proj/issues/44'
+
+echo "console.log('GHE stuff');" > index.js
+git add index.js
+git commit -m 'fix: GHE
+
+Closes https://github.example.com/some/thing/issues/72'
+
+echo "console.log('Jira stuff');" > index.js
+git add index.js
+git commit -m 'fix: Jira
+
+Resolves https://jira.atlassian.com/browse/REPO-2001'

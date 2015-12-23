@@ -32,6 +32,7 @@
 'use strict';
 
 var assert = require('assertive');
+var _ = require('lodash');
 
 var getCommits = require('../../lib/git/commits');
 
@@ -60,6 +61,69 @@ describe('getCommits', function () {
           assert.equal('This ain\'t no valid commit message', commits[0].header);
           assert.equal('bogus', commits[1].type);
         });
+    });
+  });
+
+  describe('issue and ticket links', function () {
+    var dirname = withFixture('ticket-commits');
+    var allCommits = null;
+
+    before('fetch al commits', function () {
+      return getCommits(dirname).then(function (commits) {
+        allCommits = commits;
+      });
+    });
+
+    it('includes links to github for #123 style', function () {
+      var commit = _.find(allCommits, { subject: 'Short' });
+      assert.equal(1, commit.references.length);
+      var ref = commit.references[0];
+      assert.equal(null, ref.owner);
+      assert.equal(null, ref.repository);
+      assert.equal('42', ref.issue);
+      assert.equal('#', ref.prefix);
+      assert.equal('#42', ref.raw);
+    });
+
+    it('includes links to github for x/y#123 style', function () {
+      var commit = _.find(allCommits, { subject: 'Repo' });
+      assert.equal(1, commit.references.length);
+      var ref = commit.references[0];
+      assert.equal('riley', ref.owner);
+      assert.equal('thing', ref.repository);
+      assert.equal('13', ref.issue);
+      assert.equal('#', ref.prefix);
+      assert.equal('riley/thing#13', ref.raw);
+    });
+
+    it('includes links to github for full public github urls', function () {
+      var commit = _.find(allCommits, { subject: 'Full' });
+      assert.equal(1, commit.references.length);
+      var ref = commit.references[0];
+      assert.equal(null, ref.owner);
+      assert.equal(null, ref.repository);
+      assert.equal('13', ref.issue);
+      assert.equal('https://github.com/open/source/issues/13', ref.raw);
+    });
+
+    it('includes links to github for full GHE urls', function () {
+      var commit = _.find(allCommits, { subject: 'GHE' });
+      assert.equal(1, commit.references.length);
+      var ref = commit.references[0];
+      assert.equal(null, ref.owner);
+      assert.equal(null, ref.repository);
+      assert.equal('72', ref.issue);
+      assert.equal('https://github.example.com/some/thing/issues/72', ref.raw);
+    });
+
+    it('includes links to jira', function () {
+      var commit = _.find(allCommits, { subject: 'Jira' });
+      assert.equal(1, commit.references.length);
+      var ref = commit.references[0];
+      assert.equal(null, ref.owner);
+      assert.equal(null, ref.repository);
+      assert.equal('2001', ref.issue);
+      assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.raw);
     });
   });
 

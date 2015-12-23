@@ -46,6 +46,37 @@ describe('generateChangeLog', function () {
       });
   });
 
+  xit('links to github issues and jira tickets', function () {
+    var pkg = { repository: 'usr/proj' };
+    var commits = [
+      {
+        sha: '1234567890123456789012345678901234567890',
+        type: 'fix',
+        subject: 'Stop doing the wrong thing',
+        references: [
+          {},
+        ],
+      },
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+        references: [
+        ],
+      },
+    ];
+    var options = { commits: commits };
+    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
+    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
+    return generateChangeLog(null, pkg, options)
+      .then(function (changelog) {
+        assert.equal([
+          '* [`1234567`](' + href0 + ') **fix:** Stop doing the wrong thing',
+          '* [`2234567`](' + href1 + ') **feat:** Do more things',
+        ].join('\n'), changelog);
+      });
+  });
+
   it('can create a changelog for two commits', function () {
     var pkg = { repository: 'usr/proj' };
     var commits = [
