@@ -46,7 +46,7 @@ describe('generateChangeLog', function () {
       });
   });
 
-  xit('links to github issues and jira tickets', function () {
+  it('links to github issues and jira tickets', function () {
     var pkg = { repository: 'usr/proj' };
     var commits = [
       {
@@ -54,7 +54,12 @@ describe('generateChangeLog', function () {
         type: 'fix',
         subject: 'Stop doing the wrong thing',
         references: [
-          {},
+          {
+            action: 'Closes',
+            issue: '7',
+            prefix: 'fo/ba#',
+            href: 'https://gitub.com/fo/ba/issues/7',
+          },
         ],
       },
       {
@@ -62,6 +67,18 @@ describe('generateChangeLog', function () {
         type: 'feat',
         subject: 'Do more things',
         references: [
+          {
+            action: 'Resolves',
+            issue: '2010',
+            prefix: 'THING-',
+            href: 'https://example.com/browse/THING-7',
+          },
+          {
+            action: 'Fixes',
+            issue: '44',
+            prefix: '#',
+            href: 'https://github.com/usr/proj/issues/44',
+          },
         ],
       },
     ];
@@ -70,10 +87,16 @@ describe('generateChangeLog', function () {
     var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
     return generateChangeLog(null, pkg, options)
       .then(function (changelog) {
-        assert.equal([
-          '* [`1234567`](' + href0 + ') **fix:** Stop doing the wrong thing',
-          '* [`2234567`](' + href1 + ') **feat:** Do more things',
-        ].join('\n'), changelog);
+        var lines = changelog.split('\n');
+        assert.equal(
+          '* [`1234567`](' + href0 + ') **fix:** Stop doing the wrong thing - see: ' +
+            '[fo/ba#7](https://gitub.com/fo/ba/issues/7)',
+          lines[0]);
+        assert.equal(
+          '* [`2234567`](' + href1 + ') **feat:** Do more things - see: ' +
+            '[THING-2010](https://example.com/browse/THING-7), ' +
+            '[#44](https://github.com/usr/proj/issues/44)',
+          lines[1]);
       });
   });
 
