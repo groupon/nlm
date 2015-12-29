@@ -32,6 +32,7 @@
 'use strict';
 
 var assert = require('assertive');
+var _ = require('lodash');
 
 var publishToNpm = require('../../lib/steps/publish-to-npm');
 
@@ -66,20 +67,6 @@ function withFakeRegistry() {
 }
 
 describe('publishToNpm', function () {
-  describe('without --commmit', function () {
-    var dirname = withFixture('released');
-    var httpCalls = withFakeRegistry();
-
-    it('makes no http calls', function () {
-      return publishToNpm(dirname, require(dirname + '/package.json'), {
-        currentBranch: 'master',
-        distTag: 'latest',
-      }).then(function () {
-        assert.deepEqual([], httpCalls);
-      });
-    });
-  });
-
   describe('with NPM_USERNAME etc.', function () {
     var dirname = withFixture('released');
     var httpCalls = withFakeRegistry();
@@ -104,27 +91,61 @@ describe('publishToNpm', function () {
     });
   });
 
+  function getTokenOptions(overrides) {
+    return _.extend({
+      currentBranch: 'master',
+      distTag: 'latest',
+      commit: true,
+      npmUsername: '',
+      npmPasswordBase64: '',
+      npmEmail: '',
+      npmToken: 'some-access-token',
+    }, overrides);
+  }
+
   describe('with NPM_TOKEN etc.', function () {
     var dirname = withFixture('released');
     var httpCalls = withFakeRegistry();
 
     it('uses a bearer token', function () {
       this.timeout(4000);
-      return publishToNpm(dirname, require(dirname + '/package.json'), {
-        currentBranch: 'master',
-        distTag: 'latest',
-        commit: true,
-        npmUsername: '',
-        npmPasswordBase64: '',
-        npmEmail: '',
-        npmToken: 'some-access-token',
-      }).then(function () {
-        assert.deepEqual({
-          method: 'PUT',
-          url: '/nlm-test-pkg',
-          auth: 'Bearer some-access-token',
-        }, httpCalls.pop());
-      });
+      var pkg = require(dirname + '/package.json');
+      return publishToNpm(dirname, pkg, getTokenOptions())
+        .then(function () {
+          assert.deepEqual({
+            method: 'PUT',
+            url: '/nlm-test-pkg',
+            auth: 'Bearer some-access-token',
+          }, httpCalls.pop());
+        });
+    });
+  });
+
+  describe('without --commmit', function () {
+    var dirname = withFixture('released');
+    var httpCalls = withFakeRegistry();
+
+    it('makes no http calls', function () {
+      var opts = getTokenOptions({ commit: false });
+      return publishToNpm(dirname, require(dirname + '/package.json'), opts)
+        .then(function () {
+          assert.deepEqual([], httpCalls);
+        });
+    });
+  });
+
+  describe('if the package is set to private', function () {
+    var dirname = withFixture('released');
+    var httpCalls = withFakeRegistry();
+
+    it('makes no http calls', function () {
+      var pkg = _.defaults({
+        private: true,
+      }, require(dirname + '/package.json'));
+      return publishToNpm(dirname, pkg, getTokenOptions())
+        .then(function () {
+          assert.deepEqual([], httpCalls);
+        });
     });
   });
 });
