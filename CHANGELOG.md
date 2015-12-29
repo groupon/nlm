@@ -1,3 +1,9 @@
+### 2.0.2
+
+* Never publish private packages - **[@jkrems](https://github.com/jkrems)** [#11](https://github.com/groupon/nlm/pull/11)
+  - [`d727cb6`](https://github.com/groupon/nlm/commit/d727cb66be940fb225d0b24baf7c1b82179f6f68) **fix:** Never publish private packages
+
+
 ### 2.0.1
 
 * fix: Call publishToNpm as a task/step - **[@jkrems](https://github.com/jkrems)** [#7](https://github.com/groupon/nlm/pull/7)
