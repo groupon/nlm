@@ -91,6 +91,9 @@ For more customization, you can use `.nlmrc` or an `nlm` section in `package.jso
 * `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what will be published and how it's tagged. By default there's one entry in this map: `{ master: 'latest' }`. Which means that a publish from `master` updates the `latest` tag and publish from any other branch does nothing.
 * `license.files`: List of files and/or directories to add license headers to.
 * `license.exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude anything in `node_modules`.
+* `acceptInvalidCommits`: Accept commit messages even if they can't be parsed.
+  It's highly discouraged to use this option.
+  In this mode any commit with an invalid commit message will be treated as "semver-major".
 
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
 
