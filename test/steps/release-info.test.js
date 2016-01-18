@@ -82,5 +82,11 @@ describe('determineReleaseInfo', function () {
         '[2] https://git-scm.com/docs/git-rebase',
       ].join('\n'), error.message);
     });
+
+    describe('with --acceptInvalidCommits', function () {
+      it('is cautious and considers it "major"', function () {
+        assert.equal('major', determineReleaseInfo(commits, true));
+      });
+    });
   });
 });
