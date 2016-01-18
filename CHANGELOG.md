@@ -1,3 +1,9 @@
+### 2.1.0
+
+* Opt-in `acceptInvalidCommits` option - **[@jkrems](https://github.com/jkrems)** [#12](https://github.com/groupon/nlm/pull/12)
+  - [`e16eb35`](https://github.com/groupon/nlm/commit/e16eb35fedc528a3ff2f0421fb5477ffba64e34a) **feat:** Opt-in `acceptInvalidCommits` option
+
+
 ### 2.0.2
 
 * Never publish private packages - **[@jkrems](https://github.com/jkrems)** [#11](https://github.com/groupon/nlm/pull/11)
