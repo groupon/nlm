@@ -1,3 +1,9 @@
+### 2.1.1
+
+* Handle missing and foreign PRs in changelog - **[@jkrems](https://github.com/jkrems)** [#15](https://github.com/groupon/nlm/pull/15)
+  - [`b8ca6e0`](https://github.com/groupon/nlm/commit/b8ca6e093426d035e6eb9a10c574d28e0332628b) **fix:** Handle missing and foreign PRs in changelog
+
+
 ### 2.1.0
 
 * Opt-in `acceptInvalidCommits` option - **[@jkrems](https://github.com/jkrems)** [#12](https://github.com/groupon/nlm/pull/12)
