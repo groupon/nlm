@@ -35,6 +35,67 @@ var assert = require('assertive');
 
 var generateChangeLog = require('../../lib/steps/changelog');
 
+function withFakeGithub() {
+  var httpCalls = [];
+  var server;
+
+  before(function (done) {
+    server = require('http').createServer(function (req, res) {
+      httpCalls.push({
+        method: req.method,
+        url: req.url,
+        auth: req.headers.authorization,
+      });
+      res.setHeader('Content-Type', 'application/json');
+      switch (req.url) {
+        case '/api/v3/repos/usr/proj/pulls/1':
+          res.end(JSON.stringify({
+            user: { login: 'pr-1-user', html_url: 'http://pr-1-user' },
+            html_url: 'http://pr-1',
+            title: 'PR #1 Title',
+          }));
+          break;
+
+        case '/api/v3/repos/usr/proj/pulls/1/commits':
+          res.end(JSON.stringify([
+            { sha: '1234567890123456789012345678901234567890' },
+            { sha: '2234567890123456789012345678901234567890' },
+          ]));
+          break;
+
+        case '/api/v3/repos/usr/proj/pulls/2':
+          res.end(JSON.stringify({
+            user: { login: 'pr-2-user', html_url: 'http://pr-2-user' },
+            html_url: 'http://pr-2',
+            title: 'PR #2 Title',
+          }));
+          break;
+
+        case '/api/v3/repos/usr/proj/pulls/2/commits':
+          res.end(JSON.stringify([
+            // These commits are *not* part of the release.
+            // This could happen, for example, when a foreign PR happens to
+            // have an id that also exists in the current repo.
+            { sha: 'e234567890123456789012345678901234567890' },
+            { sha: 'f234567890123456789012345678901234567890' },
+          ]));
+          break;
+
+        default:
+          res.statusCode = 404;
+          res.end('{"error":"Not found"}');
+      }
+    });
+    server.listen(3000, done);
+  });
+
+  after(function (done) {
+    server.close(done);
+  });
+
+  return httpCalls;
+}
+
 describe('generateChangeLog', function () {
   it('can create an empty changelog', function () {
     var pkg = { repository: 'usr/proj' };
@@ -110,5 +171,127 @@ describe('generateChangeLog', function () {
           '* [\`2234567\`](' + href1 + ') **feat:** Do more things',
         ].join('\n'), changelog);
       });
+  });
+
+  describe('pull request commits', function () {
+    var httpCalls = withFakeGithub();
+    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    var commits = [
+      {
+        sha: '1234567890123456789012345678901234567890',
+        type: 'fix',
+        subject: 'Stop doing the wrong thing',
+      },
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+      },
+      {
+        sha: '3234567890123456789012345678901234567890',
+        type: 'pr',
+        subject: 'Merge PR #1',
+        pullId: '1',
+      },
+    ];
+    var options = { commits: commits };
+    var changelog = null;
+
+    before('generateChangeLog', function () {
+      return generateChangeLog(null, pkg, options)
+        .then(function (_changelog) {
+          changelog = _changelog;
+        });
+    });
+
+    it('calls out to github to get PR info', function () {
+      assert.equal(2, httpCalls.length);
+    });
+
+    it('groups commits by pull request', function () {
+      assert.include('* PR #1 Title', changelog);
+      assert.include('  - [`1234567`]', changelog);
+    });
+  });
+
+  describe('with an invalid PR', function () {
+    var httpCalls = withFakeGithub();
+    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    var commits = [
+      {
+        sha: '1234567890123456789012345678901234567890',
+        type: 'fix',
+        subject: 'Stop doing the wrong thing',
+      },
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+      },
+      {
+        sha: '3234567890123456789012345678901234567890',
+        type: 'pr',
+        subject: 'Merge PR #2',
+        pullId: '2',
+      },
+    ];
+    var options = { commits: commits };
+    var changelog = null;
+
+    before('generateChangeLog', function () {
+      return generateChangeLog(null, pkg, options)
+        .then(function (_changelog) {
+          changelog = _changelog;
+        });
+    });
+
+    it('calls out to github to get PR info', function () {
+      assert.equal(2, httpCalls.length);
+    });
+
+    it('ignores the PR', function () {
+      assert.notInclude('* PR #2 Title', changelog);
+      assert.include('* [`1234567`]', changelog);
+    });
+  });
+
+  describe('with a missing PR', function () {
+    var httpCalls = withFakeGithub();
+    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    var commits = [
+      {
+        sha: '1234567890123456789012345678901234567890',
+        type: 'fix',
+        subject: 'Stop doing the wrong thing',
+      },
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+      },
+      {
+        sha: '3234567890123456789012345678901234567890',
+        type: 'pr',
+        subject: 'Merge PR #3',
+        pullId: '3',
+      },
+    ];
+    var options = { commits: commits };
+    var changelog = null;
+
+    before('generateChangeLog', function () {
+      return generateChangeLog(null, pkg, options)
+        .then(function (_changelog) {
+          changelog = _changelog;
+        });
+    });
+
+    it('calls out to github to get PR info', function () {
+      assert.equal(2, httpCalls.length);
+    });
+
+    it('ignores the PR', function () {
+      assert.include('* [`1234567`]', changelog);
+    });
   });
 });
