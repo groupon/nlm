@@ -1,3 +1,10 @@
+### 2.2.0
+
+* Link to issues and tickets in changelog - **[@jkrems](https://github.com/jkrems)** [#9](https://github.com/groupon/nlm/pull/9)
+  - [`2a834ba`](https://github.com/groupon/nlm/commit/2a834baf6cb04b80b4e4ce28df1f16a6a37c686e) **feat:** Support parsing full issue urls
+  - [`73da2d3`](https://github.com/groupon/nlm/commit/73da2d39e92de70d238f60ffd34dbd071564bc48) **feat:** Link to issues and tickets in changelog - see: [#8](https://github.com/groupon/nlm/issues/8)
+
+
 ### 2.1.1
 
 * Handle missing and foreign PRs in changelog - **[@jkrems](https://github.com/jkrems)** [#15](https://github.com/groupon/nlm/pull/15)
