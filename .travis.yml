@@ -9,7 +9,7 @@ before_deploy:
   - 'git config --global user.name "Groupon"'
 deploy:
   provider: script
-  script: ./bin/nlm release
+  script: ./bin/nlm.js release
   skip_cleanup: true
   'on':
     branch: master
