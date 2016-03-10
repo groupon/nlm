@@ -1,3 +1,13 @@
+### 2.2.1
+
+* Apply latest nlm generator - **[@i-tier-bot](https://github.com/i-tier-bot)** [#20](https://github.com/groupon/nlm/pull/20)
+  - [`05a2980`](https://github.com/groupon/nlm/commit/05a298095657805b8174632fca4b1f7c03301aab) **chore:** Apply latest nlm generator
+  - [`6f07328`](https://github.com/groupon/nlm/commit/6f073286a02387b2e7111cfae7981a8eb6341b62) **chore:** nlm should not require nlm
+  - [`0201798`](https://github.com/groupon/nlm/commit/0201798949a951cbb6c010f0e1009564db18afb7) **fix:** Lodash 4 merged pluck into map
+* Fix typo in travis config - **[@jkrems](https://github.com/jkrems)** [#21](https://github.com/groupon/nlm/pull/21)
+  - [`42c5b71`](https://github.com/groupon/nlm/commit/42c5b71fcbbdc473e030d8c00323925b56dc78aa) **chore:** Fix typo in travis config
+
+
 ### 2.2.0
 
 * Link to issues and tickets in changelog - **[@jkrems](https://github.com/jkrems)** [#9](https://github.com/groupon/nlm/pull/9)
