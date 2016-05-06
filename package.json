@@ -14,7 +14,6 @@
     "url": "https://github.com/groupon/nlm/issues"
   },
   "scripts": {
-    "postinstall": "./bin/post-install.js",
     "pretest": "eslint lib test",
     "test": "mocha",
     "posttest": "./bin/nlm.js verify"
@@ -33,7 +32,6 @@
     "debug": "^2.2.0",
     "glob": "^6.0.1",
     "gofer": "^3.2.0",
-    "inquirer": "~0.11.0",
     "lodash": "^4.6.1",
     "minimist": "^1.2.0",
     "rc": "^1.1.5",
