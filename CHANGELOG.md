@@ -1,3 +1,9 @@
+### 2.2.2
+
+* Switch to gofer 3 - **[@jkrems](https://github.com/jkrems)** [#22](https://github.com/groupon/nlm/pull/22)
+  - [`488057e`](https://github.com/groupon/nlm/commit/488057e5b851c45c67b7d67ebcc3b38dc2e46f37) **chore:** Switch to gofer 3
+
+
 ### 2.2.1
 
 * Apply latest nlm generator - **[@i-tier-bot](https://github.com/i-tier-bot)** [#20](https://github.com/groupon/nlm/pull/20)
