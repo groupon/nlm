@@ -60,7 +60,7 @@ describe('determineReleaseInfo', function () {
       });
 
       assert.equal([
-        'This repository uses AngularJS Git Commit Message Convetions[1]',
+        'This repository uses AngularJS Git Commit Message Conventions[1]',
         'to automatically determine the semver implications of changes',
         'and to generate changelogs for releases.',
         '',
