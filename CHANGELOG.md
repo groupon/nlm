@@ -1,3 +1,9 @@
+### 2.2.3
+
+* fix: correct spelling - **[@dbushong](https://github.com/dbushong)** [#26](https://github.com/groupon/nlm/pull/26)
+  - [`3027f2f`](https://github.com/groupon/nlm/commit/3027f2fe8600a7782037ff3bf988ae4e624cf8c1) **fix:** correct spelling
+
+
 ### 2.2.2
 
 * Switch to gofer 3 - **[@jkrems](https://github.com/jkrems)** [#22](https://github.com/groupon/nlm/pull/22)
