@@ -1,6 +1,6 @@
 {
   "name": "nlm",
-  "version": "2.2.3",
+  "version": "3.0.0",
   "description": "Lifecycle manager for node projects",
   "license": "BSD-3-Clause",
   "main": "lib/nlm.js",

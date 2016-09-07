@@ -1,3 +1,18 @@
+### 3.0.0
+
+#### Breaking Changes
+
+Since nobody uses it in practice and yeoman is a
+better fit anyhow, we're removing the init command from nlm.
+
+*See: [`f09b2eb`](https://github.com/groupon/nlm/commit/f09b2eb996f0e159371763dba1df79af818e48d0)*
+
+#### Commits
+
+* Remove `nlm init` - **[@jkrems](https://github.com/jkrems)** [#23](https://github.com/groupon/nlm/pull/23)
+  - [`f09b2eb`](https://github.com/groupon/nlm/commit/f09b2eb996f0e159371763dba1df79af818e48d0) **refactor:** Remove init command
+
+
 ### 2.2.3
 
 * fix: correct spelling - **[@dbushong](https://github.com/dbushong)** [#26](https://github.com/groupon/nlm/pull/26)
