@@ -20,10 +20,8 @@ A tool for automating the release of libraries in the spirit of [semantic-releas
 ### Install `nlm`
 
 1. Run `npm install --save-dev nlm`.
-1. Enter the Github token when prompted. This will be used to create the required labels on the repository.
-1. `nlm` will offer to write the proper `posttest` script if your repository doesn't contain one yet. It will also write a `publishConfig.registry` field, defaulting to your current npm registry setting.
-
-After this you should have `nlm release` in your `posttest` script and 4 `semver-*` labels in your Github project.
+1. Set `publishConfig.registry` in your `package.json` if you haven't already.
+1. Set your `posttest` script in `package.json` to `nlm verify`.
 
 ### Setting up CI
 
@@ -98,18 +96,6 @@ For more customization, you can use `.nlmrc` or an `nlm` section in `package.jso
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
 
 ## Commands
-
-### `nlm init`
-
-*Intended use: Run once in a project.*
-
-Parses an existing `package.json` and makes changes to support `nlm`.
-
-1. Ask for a Github API token.
-1. Add the `semver-patch`, `semver-minor`, and `semver-major` labels.
-1. Add `nlm release` as a `posttest` script.
-1. Set `publishConfig.registry` (default: read from npm config).
-
 
 ### `nlm verify`
 
