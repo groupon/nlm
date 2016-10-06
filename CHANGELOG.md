@@ -1,3 +1,9 @@
+### 3.1.0
+
+* feat: re-check publish status for releaseType none - **[@dbushong](https://github.com/dbushong)** [#27](https://github.com/groupon/nlm/pull/27)
+  - [`724d23e`](https://github.com/groupon/nlm/commit/724d23e6445a6e78f91a90bc13b3a507b1c6ac39) **feat:** re-check publish status for releaseType none
+
+
 ### 3.0.0
 
 #### Breaking Changes
