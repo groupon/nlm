@@ -1,3 +1,9 @@
+### 3.1.1
+
+* Only scan for files if LICENSE is present - **[@jkrems](https://github.com/jkrems)** [#29](https://github.com/groupon/nlm/pull/29)
+  - [`f78b9dc`](https://github.com/groupon/nlm/commit/f78b9dcd9a9510650459410700fdd53fb14ddd96) **fix:** Only scan for files if LICENSE is present
+
+
 ### 3.1.0
 
 * feat: re-check publish status for releaseType none - **[@dbushong](https://github.com/dbushong)** [#27](https://github.com/groupon/nlm/pull/27)
