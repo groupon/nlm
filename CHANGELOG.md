@@ -1,3 +1,9 @@
+### 3.1.2
+
+* Mention forced 1.0.0 bump - **[@jkrems](https://github.com/jkrems)** [#30](https://github.com/groupon/nlm/pull/30)
+  - [`db6e715`](https://github.com/groupon/nlm/commit/db6e7150f2eb28fe80b0eccab3f40d79eb5175aa) **docs:** Mention forced 1.0.0 bump
+
+
 ### 3.1.1
 
 * Only scan for files if LICENSE is present - **[@jkrems](https://github.com/jkrems)** [#29](https://github.com/groupon/nlm/pull/29)
