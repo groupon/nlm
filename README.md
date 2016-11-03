@@ -127,6 +127,10 @@ Will also add license headers where they are missing.
 By default `nlm release` will not do anything unless it's running on CI.
 You can force a release by running `nlm release --commit`.
 
+**Note:** If your current version is below 1.0.0, nlm will always release 1.0.0.
+The semantics of versions below 1.0.0 can be tricky
+and nlm tries to not make any assumptions about how people might interpret those version ranges.
+
 
 ### `nlm changelog`
 
