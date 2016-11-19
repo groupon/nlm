@@ -1,3 +1,9 @@
+### 3.1.3
+
+* fix: properly accept `perf` commit prefix as patch - **[@dbushong](https://github.com/dbushong)** [#32](https://github.com/groupon/nlm/pull/32)
+  - [`ab3dd21`](https://github.com/groupon/nlm/commit/ab3dd21ce7b2dcc2e7a4861d4554e63bd1d64494) **fix:** properly accept `perf` commit prefix as patch
+
+
 ### 3.1.2
 
 * Mention forced 1.0.0 bump - **[@jkrems](https://github.com/jkrems)** [#30](https://github.com/groupon/nlm/pull/30)
