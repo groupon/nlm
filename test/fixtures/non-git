@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 set -e
-bash $(dirname $0)"/multiple-commits"
-
 echo '{
   "name": "nlm-test-pkg",
-  "version": "1.0.0",
+  "version": "99.6.2",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.example.com/some-org/nlm-test-pkg"
@@ -13,6 +11,3 @@ echo '{
     "registry": "http://127.0.0.1:3000"
   }
 }' >package.json
-git add package.json
-git commit -m 'v1.0.0'
-git tag 'v1.0.0'
