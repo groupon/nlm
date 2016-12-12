@@ -1,3 +1,9 @@
+### 3.1.4
+
+* Skip verify in non-git directories - **[@jkrems](https://github.com/jkrems)** [#33](https://github.com/groupon/nlm/pull/33)
+  - [`e8bdf99`](https://github.com/groupon/nlm/commit/e8bdf9925fda31ec01fe4943d49908b00363d8fd) **fix:** Skip verify in non-git directories
+
+
 ### 3.1.3
 
 * fix: properly accept `perf` commit prefix as patch - **[@dbushong](https://github.com/dbushong)** [#32](https://github.com/groupon/nlm/pull/32)
