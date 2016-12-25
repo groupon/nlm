@@ -289,8 +289,13 @@ describe('generateChangeLog', function () {
         pullId: '2',
       },
     ];
+    var sloppyCommits = commits.map(function (commit) {
+      if (commit.type === 'pr') return commit;
+      return { sha: commit.sha, header: commit.subject };
+    });
     var options = { commits: commits };
     var changelog = null;
+    var sloppyChangelog = null;
 
     before('generateChangeLog', function () {
       return generateChangeLog(null, pkg, options)
@@ -299,13 +304,25 @@ describe('generateChangeLog', function () {
         });
     });
 
+    before('generateSloppyChangeLog', function () {
+      return generateChangeLog(null, pkg, { commits: sloppyCommits })
+        .then(function (_changelog) {
+          sloppyChangelog = _changelog;
+        });
+    });
+
     it('calls out to github to get PR info', function () {
-      assert.equal(2, httpCalls.length);
+      assert.equal(4, httpCalls.length);
     });
 
     it('ignores the PR', function () {
       assert.notInclude('* PR #2 Title', changelog);
       assert.include('* [`1234567`]', changelog);
+    });
+
+    it('handles poorly formatted commit messages too', function () {
+      assert.include(') Stop doing the wrong thing\n', sloppyChangelog);
+      assert.include(') Do more things', sloppyChangelog);
     });
   });
 
