@@ -1,3 +1,9 @@
+### 3.1.5
+
+* fix: properly parse repositories with dot in name - **[@dbushong](https://github.com/dbushong)** [#34](https://github.com/groupon/nlm/pull/34)
+  - [`4672e13`](https://github.com/groupon/nlm/commit/4672e131764ba5a77a9ed0a21f8fe9581c253cfd) **fix:** properly parse repositories with dot in name
+
+
 ### 3.1.4
 
 * Skip verify in non-git directories - **[@jkrems](https://github.com/jkrems)** [#33](https://github.com/groupon/nlm/pull/33)
