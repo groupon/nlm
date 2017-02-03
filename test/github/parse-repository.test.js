@@ -78,6 +78,14 @@ describe('parseRepository', function () {
         'myname/myproject',
       ].forEach(_.partial(checkParsed, expected));
     });
+
+    it('accepts dotted repositories', function () {
+      [
+        'myname/myproject.js.git',
+        'myname/myproject.js',
+      ].forEach(_.partial(checkParsed,
+        _.assign({}, expected, { repository: 'myproject.js' })));
+    });
   });
 
   describe('Github Enterprise', function () {
