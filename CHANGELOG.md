@@ -1,3 +1,9 @@
+### 3.2.0
+
+* Add predictable git author - **[@jkrems](https://github.com/jkrems)** [#36](https://github.com/groupon/nlm/pull/36)
+  - [`e941fda`](https://github.com/groupon/nlm/commit/e941fda04eee9743d48059ff913060c38d39bad4) **feat:** Add predictable git author
+
+
 ### 3.1.5
 
 * fix: properly parse repositories with dot in name - **[@dbushong](https://github.com/dbushong)** [#34](https://github.com/groupon/nlm/pull/34)
