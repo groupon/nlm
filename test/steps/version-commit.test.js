@@ -31,6 +31,7 @@
  */
 'use strict';
 
+var execFile = require('child_process').execFile;
 var fs = require('fs');
 
 var assert = require('assertive');
@@ -50,6 +51,14 @@ describe('createVersionCommit', function () {
     changelog: '* New stuff\n* Interesting features',
   };
 
+  before('commits with the original author', function (done) {
+    execFile('git', ['show'], { cwd: dirname }, function (err, stdout) {
+      if (err) return done(err);
+      assert.include('Author: Robin Developer <rdev@example.com>', stdout);
+      done();
+    });
+  });
+
   before('create version commit', function () {
     return createVersionCommit(dirname, pkg, options);
   });
@@ -57,5 +66,13 @@ describe('createVersionCommit', function () {
   it('writes the correct HEAD sha', function () {
     var HEAD = fs.readFileSync(dirname + '/.git/refs/heads/master', 'utf8');
     assert.equal(HEAD.trim(), options.versionCommitSha);
+  });
+
+  it('commits with the proper user', function (done) {
+    execFile('git', ['show'], { cwd: dirname }, function (err, stdout) {
+      if (err) return done(err);
+      assert.include('Author: nlm <opensource@groupon.com>', stdout);
+      done();
+    });
   });
 });

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 git init
-git config user.name "nlm"
-git config user.email "nlm@example.com"
 
 echo "console.log('do stuff');" > index.js
 git add index.js

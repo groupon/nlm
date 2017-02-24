@@ -49,7 +49,13 @@ function withFixture(name) {
   before('running fixture setup', function runFixture(done) {
     execFile(script, [script], {
       cwd: dirname,
-      env: { HOME: '/does/not/exist' },
+      env: {
+        HOME: '/does/not/exist',
+        GIT_AUTHOR_NAME: 'Robin Developer',
+        GIT_AUTHOR_EMAIL: 'rdev@example.com',
+        GIT_COMMITTER_NAME: 'Robin Developer',
+        GIT_COMMITTER_EMAIL: 'rdev@example.com',
+      },
     }, function logErrorDetails(error, stdout, stderr) {
       if (error) {
         process.stdout.write(stdout + '\n');
@@ -59,9 +65,9 @@ function withFixture(name) {
     });
   });
 
-  // after('remove fixture directory', function removeFixture(done) {
-  //   execFile('rm', ['-rf', dirname], done);
-  // });
+  after('remove fixture directory', function removeFixture(done) {
+    execFile('rm', ['-rf', dirname], done);
+  });
 
   return dirname;
 }
