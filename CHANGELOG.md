@@ -1,3 +1,10 @@
+### 3.3.0
+
+* acceptInvalidCommits formatter - **[@johan](https://github.com/johan)** [#38](https://github.com/groupon/nlm/pull/38)
+  - [`0ec2a0e`](https://github.com/groupon/nlm/commit/0ec2a0ebdbd1cc13beffb569490f0aaabc2ef439) **test:** check formatting of off-format commit messages
+  - [`5e39a6a`](https://github.com/groupon/nlm/commit/5e39a6a4f3cf68740d848024763bfe4745817f15) **feat:** properly link even off-format commit messages - see: [#16](https://github.com/groupon/nlm/issues/16)
+
+
 ### 3.2.0
 
 * Add predictable git author - **[@jkrems](https://github.com/jkrems)** [#36](https://github.com/groupon/nlm/pull/36)
