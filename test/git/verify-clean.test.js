@@ -29,46 +29,44 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var assert = require('assertive');
+const assert = require('assertive');
 
-var verifyClean = require('../../lib/git/verify-clean');
+const verifyClean = require('../../lib/git/verify-clean');
 
-var withFixture = require('../fixture');
+const withFixture = require('../fixture');
 
 function unexpected() {
   throw new Error('Should have failed');
 }
 
-describe('verifyClean', function () {
-  describe('with an empty project', function () {
-    var dirname = withFixture('empty-project');
+describe('verifyClean', function() {
+  describe('with an empty project', function() {
+    const dirname = withFixture('empty-project');
 
-    it('returns true', function () {
-      return verifyClean(dirname)
-        .then(assert.expect);
+    it('returns true', function() {
+      return verifyClean(dirname).then(assert.expect);
     });
   });
 
-  describe('with committed changes', function () {
-    var dirname = withFixture('fix-commit');
+  describe('with committed changes', function() {
+    const dirname = withFixture('fix-commit');
 
-    it('returns true', function () {
-      return verifyClean(dirname)
-        .then(assert.expect);
+    it('returns true', function() {
+      return verifyClean(dirname).then(assert.expect);
     });
   });
 
-  describe('with uncommitted or unstaged changes', function () {
-    var dirname = withFixture('dirty-checkout');
+  describe('with uncommitted or unstaged changes', function() {
+    const dirname = withFixture('dirty-checkout');
 
-    it('reports the files in question', function () {
-      return verifyClean(dirname)
-        .then(unexpected, function (error) {
-          assert.include('M  index.js', error.message);
-          assert.include('?? untracked.js', error.message);
-        });
+    it('reports the files in question', function() {
+      return verifyClean(dirname).then(unexpected, function(error) {
+        assert.include('M  index.js', error.message);
+        assert.include('?? untracked.js', error.message);
+      });
     });
   });
 });

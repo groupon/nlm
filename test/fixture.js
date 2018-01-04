@@ -29,14 +29,15 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var execFile = require('child_process').execFile;
-var path = require('path');
+const execFile = require('child_process').execFile;
+const path = require('path');
 
 function withFixture(name) {
-  var dirname = path.join(__dirname, '..', 'tmp', name);
-  var script = path.join(__dirname, 'fixtures', name);
+  const dirname = path.join(__dirname, '..', 'tmp', name);
+  const script = path.join(__dirname, 'fixtures', name);
 
   before('remove fixture directory', function rmDir(done) {
     execFile('rm', ['-rf', dirname], done);
@@ -47,22 +48,27 @@ function withFixture(name) {
   });
 
   before('running fixture setup', function runFixture(done) {
-    execFile(script, [script], {
-      cwd: dirname,
-      env: {
-        HOME: '/does/not/exist',
-        GIT_AUTHOR_NAME: 'Robin Developer',
-        GIT_AUTHOR_EMAIL: 'rdev@example.com',
-        GIT_COMMITTER_NAME: 'Robin Developer',
-        GIT_COMMITTER_EMAIL: 'rdev@example.com',
+    execFile(
+      script,
+      [script],
+      {
+        cwd: dirname,
+        env: {
+          HOME: '/does/not/exist',
+          GIT_AUTHOR_NAME: 'Robin Developer',
+          GIT_AUTHOR_EMAIL: 'rdev@example.com',
+          GIT_COMMITTER_NAME: 'Robin Developer',
+          GIT_COMMITTER_EMAIL: 'rdev@example.com',
+        },
       },
-    }, function logErrorDetails(error, stdout, stderr) {
-      if (error) {
-        process.stdout.write(stdout + '\n');
-        process.stderr.write(stderr + '\n');
+      function logErrorDetails(error, stdout, stderr) {
+        if (error) {
+          process.stdout.write(`${stdout}\n`);
+          process.stderr.write(`${stderr}\n`);
+        }
+        done(error);
       }
-      done(error);
-    });
+    );
   });
 
   after('remove fixture directory', function removeFixture(done) {

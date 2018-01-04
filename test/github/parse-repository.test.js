@@ -29,28 +29,29 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var assert = require('assertive');
-var _ = require('lodash');
+const assert = require('assertive');
+const _ = require('lodash');
 
-var parseRepository = require('../../lib/github/parse-repository');
+const parseRepository = require('../../lib/github/parse-repository');
 
 function checkParsed(expected, name) {
-  var result = parseRepository(name);
+  const result = parseRepository(name);
   assert.deepEqual(expected, result);
 }
 
-describe('parseRepository', function () {
-  describe('github.com', function () {
-    var expected = {
+describe('parseRepository', function() {
+  describe('github.com', function() {
+    const expected = {
       baseUrl: 'https://api.github.com',
       htmlBase: 'https://github.com',
       username: 'myname',
       repository: 'myproject',
     };
 
-    it('understands ssh urls', function () {
+    it('understands ssh urls', function() {
       [
         'git+ssh://git@github.com/myname/myproject',
         'git+ssh://git@github.com/myname/myproject.git',
@@ -59,44 +60,43 @@ describe('parseRepository', function () {
       ].forEach(_.partial(checkParsed, expected));
     });
 
-    it('understands https urls', function () {
+    it('understands https urls', function() {
       [
         'https://github.com/myname/myproject',
         'https://github.com/myname/myproject.git',
       ].forEach(_.partial(checkParsed, expected));
     });
 
-    it('understands git urls', function () {
+    it('understands git urls', function() {
       [
         'git://github.com/myname/myproject',
         'git://github.com/myname/myproject.git',
       ].forEach(_.partial(checkParsed, expected));
     });
 
-    it('understands npm-style shorthands', function () {
-      [
-        'myname/myproject',
-      ].forEach(_.partial(checkParsed, expected));
+    it('understands npm-style shorthands', function() {
+      ['myname/myproject'].forEach(_.partial(checkParsed, expected));
     });
 
-    it('accepts dotted repositories', function () {
-      [
-        'myname/myproject.js.git',
-        'myname/myproject.js',
-      ].forEach(_.partial(checkParsed,
-        _.assign({}, expected, { repository: 'myproject.js' })));
+    it('accepts dotted repositories', function() {
+      ['myname/myproject.js.git', 'myname/myproject.js'].forEach(
+        _.partial(
+          checkParsed,
+          _.assign({}, expected, { repository: 'myproject.js' })
+        )
+      );
     });
   });
 
-  describe('Github Enterprise', function () {
-    var expected = {
+  describe('Github Enterprise', function() {
+    const expected = {
       baseUrl: 'https://ghe.mycorp.com/api/v3',
       htmlBase: 'https://ghe.mycorp.com',
       username: 'myname',
       repository: 'myproject',
     };
 
-    it('understands ssh urls', function () {
+    it('understands ssh urls', function() {
       [
         'git@ghe.mycorp.com:myname/myproject',
         'git@ghe.mycorp.com:myname/myproject.git',
@@ -105,14 +105,14 @@ describe('parseRepository', function () {
       ].forEach(_.partial(checkParsed, expected));
     });
 
-    it('understands https urls', function () {
+    it('understands https urls', function() {
       [
         'https://ghe.mycorp.com/myname/myproject',
         'https://ghe.mycorp.com/myname/myproject.git',
       ].forEach(_.partial(checkParsed, expected));
     });
 
-    it('understands git urls', function () {
+    it('understands git urls', function() {
       [
         'git://ghe.mycorp.com/myname/myproject',
         'git://ghe.mycorp.com/myname/myproject.git',

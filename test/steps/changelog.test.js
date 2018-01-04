@@ -29,18 +29,19 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var assert = require('assertive');
+const assert = require('assertive');
 
-var generateChangeLog = require('../../lib/steps/changelog');
+const generateChangeLog = require('../../lib/steps/changelog');
 
 function withFakeGithub() {
-  var httpCalls = [];
-  var server;
+  const httpCalls = [];
+  let server;
 
-  before(function (done) {
-    server = require('http').createServer(function (req, res) {
+  before(function(done) {
+    server = require('http').createServer(function(req, res) {
       httpCalls.push({
         method: req.method,
         url: req.url,
@@ -49,36 +50,44 @@ function withFakeGithub() {
       res.setHeader('Content-Type', 'application/json');
       switch (req.url) {
         case '/api/v3/repos/usr/proj/pulls/1':
-          res.end(JSON.stringify({
-            user: { login: 'pr-1-user', html_url: 'http://pr-1-user' },
-            html_url: 'http://pr-1',
-            title: 'PR #1 Title',
-          }));
+          res.end(
+            JSON.stringify({
+              user: { login: 'pr-1-user', html_url: 'http://pr-1-user' },
+              html_url: 'http://pr-1',
+              title: 'PR #1 Title',
+            })
+          );
           break;
 
         case '/api/v3/repos/usr/proj/pulls/1/commits':
-          res.end(JSON.stringify([
-            { sha: '1234567890123456789012345678901234567890' },
-            { sha: '2234567890123456789012345678901234567890' },
-          ]));
+          res.end(
+            JSON.stringify([
+              { sha: '1234567890123456789012345678901234567890' },
+              { sha: '2234567890123456789012345678901234567890' },
+            ])
+          );
           break;
 
         case '/api/v3/repos/usr/proj/pulls/2':
-          res.end(JSON.stringify({
-            user: { login: 'pr-2-user', html_url: 'http://pr-2-user' },
-            html_url: 'http://pr-2',
-            title: 'PR #2 Title',
-          }));
+          res.end(
+            JSON.stringify({
+              user: { login: 'pr-2-user', html_url: 'http://pr-2-user' },
+              html_url: 'http://pr-2',
+              title: 'PR #2 Title',
+            })
+          );
           break;
 
         case '/api/v3/repos/usr/proj/pulls/2/commits':
-          res.end(JSON.stringify([
-            // These commits are *not* part of the release.
-            // This could happen, for example, when a foreign PR happens to
-            // have an id that also exists in the current repo.
-            { sha: 'e234567890123456789012345678901234567890' },
-            { sha: 'f234567890123456789012345678901234567890' },
-          ]));
+          res.end(
+            JSON.stringify([
+              // These commits are *not* part of the release.
+              // This could happen, for example, when a foreign PR happens to
+              // have an id that also exists in the current repo.
+              { sha: 'e234567890123456789012345678901234567890' },
+              { sha: 'f234567890123456789012345678901234567890' },
+            ])
+          );
           break;
 
         default:
@@ -89,27 +98,26 @@ function withFakeGithub() {
     server.listen(3000, done);
   });
 
-  after(function (done) {
+  after(function(done) {
     server.close(done);
   });
 
   return httpCalls;
 }
 
-describe('generateChangeLog', function () {
-  it('can create an empty changelog', function () {
-    var pkg = { repository: 'usr/proj' };
-    var commits = [];
-    var options = { commits: commits };
-    return generateChangeLog(null, pkg, options)
-      .then(function (changelog) {
-        assert.equal('', changelog);
-      });
+describe('generateChangeLog', function() {
+  it('can create an empty changelog', function() {
+    const pkg = { repository: 'usr/proj' };
+    const commits = [];
+    const options = { commits: commits };
+    return generateChangeLog(null, pkg, options).then(function(changelog) {
+      assert.equal('', changelog);
+    });
   });
 
-  it('links to github issues and jira tickets', function () {
-    var pkg = { repository: 'usr/proj' };
-    var commits = [
+  it('links to github issues and jira tickets', function() {
+    const pkg = { repository: 'usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -143,27 +151,28 @@ describe('generateChangeLog', function () {
         ],
       },
     ];
-    var options = { commits: commits };
-    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
-    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
-    return generateChangeLog(null, pkg, options)
-      .then(function (changelog) {
-        var lines = changelog.split('\n');
-        assert.equal(
-          '* [`1234567`](' + href0 + ') **fix:** Stop doing the wrong thing - see: ' +
-            '[fo/ba#7](https://gitub.com/fo/ba/issues/7)',
-          lines[0]);
-        assert.equal(
-          '* [`2234567`](' + href1 + ') **feat:** Do more things - see: ' +
-            '[THING-2010](https://example.com/browse/THING-7), ' +
-            '[#44](https://github.com/usr/proj/issues/44)',
-          lines[1]);
-      });
+    const options = { commits: commits };
+    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
+    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    return generateChangeLog(null, pkg, options).then(function(changelog) {
+      const lines = changelog.split('\n');
+      assert.equal(
+        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing - see: ` +
+          `[fo/ba#7](https://gitub.com/fo/ba/issues/7)`,
+        lines[0]
+      );
+      assert.equal(
+        `* [\`2234567\`](${href1}) **feat:** Do more things - see: ` +
+          `[THING-2010](https://example.com/browse/THING-7), ` +
+          `[#44](https://github.com/usr/proj/issues/44)`,
+        lines[1]
+      );
+    });
   });
 
-  it('can create a changelog for two commits', function () {
-    var pkg = { repository: 'usr/proj' };
-    var commits = [
+  it('can create a changelog for two commits', function() {
+    const pkg = { repository: 'usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -175,21 +184,23 @@ describe('generateChangeLog', function () {
         subject: 'Do more things',
       },
     ];
-    var options = { commits: commits };
-    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
-    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
-    return generateChangeLog(null, pkg, options)
-      .then(function (changelog) {
-        assert.equal([
-          '* [\`1234567\`](' + href0 + ') **fix:** Stop doing the wrong thing',
-          '* [\`2234567\`](' + href1 + ') **feat:** Do more things',
-        ].join('\n'), changelog);
-      });
+    const options = { commits: commits };
+    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
+    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    return generateChangeLog(null, pkg, options).then(function(changelog) {
+      assert.equal(
+        [
+          `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
+          `* [\`2234567\`](${href1}) **feat:** Do more things`,
+        ].join('\n'),
+        changelog
+      );
+    });
   });
 
-  it('puts breaking changes ahead of everything else', function () {
-    var pkg = { repository: 'usr/proj' };
-    var commits = [
+  it('puts breaking changes ahead of everything else', function() {
+    const pkg = { repository: 'usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -207,30 +218,32 @@ describe('generateChangeLog', function () {
         ],
       },
     ];
-    var options = { commits: commits };
-    var href0 = 'https://github.com/usr/proj/commit/' + commits[0].sha;
-    var href1 = 'https://github.com/usr/proj/commit/' + commits[1].sha;
-    return generateChangeLog(null, pkg, options)
-      .then(function (changelog) {
-        assert.equal([
+    const options = { commits: commits };
+    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
+    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    return generateChangeLog(null, pkg, options).then(function(changelog) {
+      assert.equal(
+        [
           '#### Breaking Changes',
           '',
           'The interface of this library changed in some way.',
           '',
-          '*See: [\`2234567\`](' + href1 + ')*',
+          `*See: [\`2234567\`](${href1})*`,
           '',
           '#### Commits',
           '',
-          '* [\`1234567\`](' + href0 + ') **fix:** Stop doing the wrong thing',
-          '* [\`2234567\`](' + href1 + ') **feat:** Do more things',
-        ].join('\n'), changelog);
-      });
+          `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
+          `* [\`2234567\`](${href1}) **feat:** Do more things`,
+        ].join('\n'),
+        changelog
+      );
+    });
   });
 
-  describe('pull request commits', function () {
-    var httpCalls = withFakeGithub();
-    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
-    var commits = [
+  describe('pull request commits', function() {
+    const httpCalls = withFakeGithub();
+    const pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -248,30 +261,29 @@ describe('generateChangeLog', function () {
         pullId: '1',
       },
     ];
-    var options = { commits: commits };
-    var changelog = null;
+    const options = { commits: commits };
+    let changelog = null;
 
-    before('generateChangeLog', function () {
-      return generateChangeLog(null, pkg, options)
-        .then(function (_changelog) {
-          changelog = _changelog;
-        });
+    before('generateChangeLog', function() {
+      return generateChangeLog(null, pkg, options).then(function(_changelog) {
+        changelog = _changelog;
+      });
     });
 
-    it('calls out to github to get PR info', function () {
+    it('calls out to github to get PR info', function() {
       assert.equal(2, httpCalls.length);
     });
 
-    it('groups commits by pull request', function () {
+    it('groups commits by pull request', function() {
       assert.include('* PR #1 Title', changelog);
       assert.include('  - [`1234567`]', changelog);
     });
   });
 
-  describe('with an invalid PR', function () {
-    var httpCalls = withFakeGithub();
-    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
-    var commits = [
+  describe('with an invalid PR', function() {
+    const httpCalls = withFakeGithub();
+    const pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -289,47 +301,47 @@ describe('generateChangeLog', function () {
         pullId: '2',
       },
     ];
-    var sloppyCommits = commits.map(function (commit) {
+    const sloppyCommits = commits.map(function(commit) {
       if (commit.type === 'pr') return commit;
       return { sha: commit.sha, header: commit.subject };
     });
-    var options = { commits: commits };
-    var changelog = null;
-    var sloppyChangelog = null;
+    const options = { commits: commits };
+    let changelog = null;
+    let sloppyChangelog = null;
 
-    before('generateChangeLog', function () {
-      return generateChangeLog(null, pkg, options)
-        .then(function (_changelog) {
-          changelog = _changelog;
-        });
+    before('generateChangeLog', function() {
+      return generateChangeLog(null, pkg, options).then(function(_changelog) {
+        changelog = _changelog;
+      });
     });
 
-    before('generateSloppyChangeLog', function () {
-      return generateChangeLog(null, pkg, { commits: sloppyCommits })
-        .then(function (_changelog) {
+    before('generateSloppyChangeLog', function() {
+      return generateChangeLog(null, pkg, { commits: sloppyCommits }).then(
+        function(_changelog) {
           sloppyChangelog = _changelog;
-        });
+        }
+      );
     });
 
-    it('calls out to github to get PR info', function () {
+    it('calls out to github to get PR info', function() {
       assert.equal(4, httpCalls.length);
     });
 
-    it('ignores the PR', function () {
+    it('ignores the PR', function() {
       assert.notInclude('* PR #2 Title', changelog);
       assert.include('* [`1234567`]', changelog);
     });
 
-    it('handles poorly formatted commit messages too', function () {
+    it('handles poorly formatted commit messages too', function() {
       assert.include(') Stop doing the wrong thing\n', sloppyChangelog);
       assert.include(') Do more things', sloppyChangelog);
     });
   });
 
-  describe('with a missing PR', function () {
-    var httpCalls = withFakeGithub();
-    var pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
-    var commits = [
+  describe('with a missing PR', function() {
+    const httpCalls = withFakeGithub();
+    const pkg = { repository: 'http://127.0.0.1:3000/usr/proj' };
+    const commits = [
       {
         sha: '1234567890123456789012345678901234567890',
         type: 'fix',
@@ -347,21 +359,20 @@ describe('generateChangeLog', function () {
         pullId: '3',
       },
     ];
-    var options = { commits: commits };
-    var changelog = null;
+    const options = { commits: commits };
+    let changelog = null;
 
-    before('generateChangeLog', function () {
-      return generateChangeLog(null, pkg, options)
-        .then(function (_changelog) {
-          changelog = _changelog;
-        });
+    before('generateChangeLog', function() {
+      return generateChangeLog(null, pkg, options).then(function(_changelog) {
+        changelog = _changelog;
+      });
     });
 
-    it('calls out to github to get PR info', function () {
+    it('calls out to github to get PR info', function() {
       assert.equal(2, httpCalls.length);
     });
 
-    it('ignores the PR', function () {
+    it('ignores the PR', function() {
       assert.include('* [`1234567`]', changelog);
     });
   });

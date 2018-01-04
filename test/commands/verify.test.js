@@ -29,53 +29,55 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
-var assert = require('assertive');
-var _ = require('lodash');
 
-var run = require('../../lib/run');
+const assert = require('assertive');
+const _ = require('lodash');
 
-var withFixture = require('../fixture');
+const run = require('../../lib/run');
 
-var CLI_PATH = require.resolve('../../lib/cli');
+const withFixture = require('../fixture');
 
-describe('nlm verify', function () {
-  describe('in non-git directory', function () {
-    var dirname = withFixture('non-git');
-    var output = {};
+const CLI_PATH = require.resolve('../../lib/cli');
 
-    before(function () {
+describe('nlm verify', function() {
+  describe('in non-git directory', function() {
+    const dirname = withFixture('non-git');
+    const output = {};
+
+    before(function() {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: _.assign({}, process.env, {
           GH_TOKEN: '',
         }),
-      }).then(function (stdout) {
+      }).then(function(stdout) {
         output.stdout = stdout;
       });
     });
 
-    it('ignores directories that are not git repos', function () {
+    it('ignores directories that are not git repos', function() {
       assert.equal('', output.stdout);
     });
   });
 
-  describe('in git directory', function () {
-    var dirname = withFixture('released');
-    var output = {};
+  describe('in git directory', function() {
+    const dirname = withFixture('released');
+    const output = {};
 
-    before(function () {
+    before(function() {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: _.assign({}, process.env, {
           GH_TOKEN: '',
         }),
-      }).then(function (stdout) {
+      }).then(function(stdout) {
         output.stdout = stdout;
       });
     });
 
-    it('reports the change type', function () {
+    it('reports the change type', function() {
       assert.include('Changes are "none"', output.stdout);
     });
   });

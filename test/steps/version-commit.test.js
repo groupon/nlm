@@ -29,47 +29,48 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var execFile = require('child_process').execFile;
-var fs = require('fs');
+const execFile = require('child_process').execFile;
+const fs = require('fs');
 
-var assert = require('assertive');
+const assert = require('assertive');
 
-var createVersionCommit = require('../../lib/steps/version-commit');
+const createVersionCommit = require('../../lib/steps/version-commit');
 
-var withFixture = require('../fixture');
+const withFixture = require('../fixture');
 
-describe('createVersionCommit', function () {
-  var dirname = withFixture('multiple-commits');
-  var pkg = {
+describe('createVersionCommit', function() {
+  const dirname = withFixture('multiple-commits');
+  const pkg = {
     name: 'some-package',
     version: '0.0.0',
   };
-  var options = {
+  const options = {
     nextVersion: '1.0.0',
     changelog: '* New stuff\n* Interesting features',
   };
 
-  before('commits with the original author', function (done) {
-    execFile('git', ['show'], { cwd: dirname }, function (err, stdout) {
+  before('commits with the original author', function(done) {
+    execFile('git', ['show'], { cwd: dirname }, function(err, stdout) {
       if (err) return done(err);
       assert.include('Author: Robin Developer <rdev@example.com>', stdout);
       done();
     });
   });
 
-  before('create version commit', function () {
+  before('create version commit', function() {
     return createVersionCommit(dirname, pkg, options);
   });
 
-  it('writes the correct HEAD sha', function () {
-    var HEAD = fs.readFileSync(dirname + '/.git/refs/heads/master', 'utf8');
+  it('writes the correct HEAD sha', function() {
+    const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
     assert.equal(HEAD.trim(), options.versionCommitSha);
   });
 
-  it('commits with the proper user', function (done) {
-    execFile('git', ['show'], { cwd: dirname }, function (err, stdout) {
+  it('commits with the proper user', function(done) {
+    execFile('git', ['show'], { cwd: dirname }, function(err, stdout) {
       if (err) return done(err);
       assert.include('Author: nlm <opensource@groupon.com>', stdout);
       done();
