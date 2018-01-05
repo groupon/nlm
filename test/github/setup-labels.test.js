@@ -29,28 +29,28 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var assert = require('assertive');
+const assert = require('assertive');
 
-var Github = require('../../lib/github/client');
-var setupLabels = require('../../lib/github/setup-labels');
+const Github = require('../../lib/github/client');
+const setupLabels = require('../../lib/github/setup-labels');
 
-var packageJSON = require('../../package.json');
+const packageJSON = require('../../package.json');
 
-describe('setupLabels', function () {
-  describe('self-test', function () {
+describe('setupLabels', function() {
+  describe('self-test', function() {
     if (!process.env.GH_TOKEN) {
       return it('skipping, no GH_TOKEN');
     }
 
-    var github = Github.forRepository(packageJSON.repository);
+    const github = Github.forRepository(packageJSON.repository);
 
-    it('finds no missing labels for nlm', function () {
-      return setupLabels(github)
-        .then(function (addedLabels) {
-          assert.deepEqual([], addedLabels);
-        });
+    it('finds no missing labels for nlm', function() {
+      return setupLabels(github).then(function(addedLabels) {
+        assert.deepEqual([], addedLabels);
+      });
     });
   });
 });

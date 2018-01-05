@@ -29,67 +29,68 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var assert = require('assertive');
-var _ = require('lodash');
+const assert = require('assertive');
+const _ = require('lodash');
 
-var getPendingChanges = require('../../lib/steps/pending-changes');
+const getPendingChanges = require('../../lib/steps/pending-changes');
 
-var withFixture = require('../fixture');
+const withFixture = require('../fixture');
 
-describe('getPendingChanges', function () {
-  var dirname = withFixture('ticket-commits');
-  var pkg = {
+describe('getPendingChanges', function() {
+  const dirname = withFixture('ticket-commits');
+  const pkg = {
     version: '0.0.0',
     repository: 'usr/proj',
   };
-  var options = {};
+  const options = {};
 
-  before('create version commit', function () {
+  before('create version commit', function() {
     return getPendingChanges(dirname, pkg, options);
   });
 
-  it('adds the commits to the options', function () {
+  it('adds the commits to the options', function() {
     assert.hasType(Array, options.commits);
   });
 
-  it('resolves commit references', function () {
-    var commit = _.find(options.commits, { subject: 'Jira' });
+  it('resolves commit references', function() {
+    const commit = _.find(options.commits, { subject: 'Jira' });
     assert.equal(1, commit.references.length);
-    var ref = commit.references[0];
+    const ref = commit.references[0];
     assert.equal('REPO-', ref.prefix);
     assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.href);
   });
 
-  it('truncates full urls to same repo', function () {
-    var commit = _.find(options.commits, { subject: 'Truncate' });
+  it('truncates full urls to same repo', function() {
+    const commit = _.find(options.commits, { subject: 'Truncate' });
     assert.equal(1, commit.references.length);
-    var ref = commit.references[0];
+    const ref = commit.references[0];
     assert.equal('#', ref.prefix);
     assert.equal('https://github.com/usr/proj/issues/44', ref.href);
   });
 
-  it('builds nice references to sibling repos', function () {
-    var commit = _.find(options.commits, { subject: 'Full' });
+  it('builds nice references to sibling repos', function() {
+    const commit = _.find(options.commits, { subject: 'Full' });
     assert.equal(1, commit.references.length);
-    var ref = commit.references[0];
+    const ref = commit.references[0];
     assert.equal('open/source#', ref.prefix);
     assert.equal('https://github.com/open/source/issues/13', ref.href);
   });
 
-  it('expands short-style refs', function () {
-    var commit = _.find(options.commits, { subject: 'Short' });
+  it('expands short-style refs', function() {
+    const commit = _.find(options.commits, { subject: 'Short' });
     assert.equal(1, commit.references.length);
-    var ref = commit.references[0];
+    const ref = commit.references[0];
     assert.equal('#', ref.prefix);
     assert.equal('https://github.com/usr/proj/issues/42', ref.href);
   });
 
-  it('supports refs to other Github instances', function () {
-    var commit = _.find(options.commits, { subject: 'GHE' });
+  it('supports refs to other Github instances', function() {
+    const commit = _.find(options.commits, { subject: 'GHE' });
     assert.equal(1, commit.references.length);
-    var ref = commit.references[0];
+    const ref = commit.references[0];
     assert.equal('github.example.com/some/thing#', ref.prefix);
     assert.equal('https://github.example.com/some/thing/issues/72', ref.href);
   });

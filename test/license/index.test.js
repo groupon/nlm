@@ -29,57 +29,61 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 'use strict';
 
-var fs = require('fs');
+const fs = require('fs');
 
-var assert = require('assertive');
+const assert = require('assertive');
 
-var addLicenseHeaders = require('../../lib/license');
+const addLicenseHeaders = require('../../lib/license');
 
-var withFixture = require('../fixture');
+const withFixture = require('../fixture');
 
-describe('addLicenseHeaders', function () {
-  it('does not try to add additional headers to nlm', function () {
-    return addLicenseHeaders(process.cwd(), ['lib', 'test'])
-      .then(function (changedFiles) {
+describe('addLicenseHeaders', function() {
+  it('does not try to add additional headers to nlm', function() {
+    return addLicenseHeaders(process.cwd(), ['lib', 'test']).then(function(
+      changedFiles
+    ) {
+      assert.deepEqual([], changedFiles);
+    });
+  });
+
+  describe('without a LICENSE file', function() {
+    const dirname = withFixture('fix-commit');
+
+    it('does nothing', function() {
+      return addLicenseHeaders(dirname).then(function(changedFiles) {
         assert.deepEqual([], changedFiles);
       });
-  });
-
-  describe('without a LICENSE file', function () {
-    var dirname = withFixture('fix-commit');
-
-    it('does nothing', function () {
-      return addLicenseHeaders(dirname)
-        .then(function (changedFiles) {
-          assert.deepEqual([], changedFiles);
-        });
     });
   });
 
-  describe('with a file w/o license header', function () {
-    var dirname = withFixture('fix-commit');
-    var filename = dirname + '/index.js';
+  describe('with a file w/o license header', function() {
+    const dirname = withFixture('fix-commit');
+    const filename = `${dirname}/index.js`;
 
-    var licenseText = '\n\nIMPORTANT\n\nLEGAL\nSTUFF HERE!\n\t \n';
-    var licenseHeader = '/*\n * IMPORTANT\n *\n * LEGAL\n * STUFF HERE!\n */\n';
+    const licenseText = '\n\nIMPORTANT\n\nLEGAL\nSTUFF HERE!\n\t \n';
+    const licenseHeader =
+      '/*\n * IMPORTANT\n *\n * LEGAL\n * STUFF HERE!\n */\n';
 
-    before('write license file', function () {
-      fs.writeFileSync(dirname + '/LICENSE', licenseText);
+    before('write license file', function() {
+      fs.writeFileSync(`${dirname}/LICENSE`, licenseText);
     });
 
-    before('returns the absolute filename', function () {
-      return addLicenseHeaders(dirname)
-        .then(function (changedFiles) {
-          assert.deepEqual([filename], changedFiles);
-        });
+    before('returns the absolute filename', function() {
+      return addLicenseHeaders(dirname).then(function(changedFiles) {
+        assert.deepEqual([filename], changedFiles);
+      });
     });
 
-    it('writes out a file with a license header', function () {
-      var content = fs.readFileSync(filename, 'utf8');
+    it('writes out a file with a license header', function() {
+      const content = fs.readFileSync(filename, 'utf8');
       assert.include(licenseHeader, content);
-      assert.expect('Starts with the header', content.indexOf(licenseHeader) === 0);
+      assert.expect(
+        'Starts with the header',
+        content.indexOf(licenseHeader) === 0
+      );
     });
   });
 });
