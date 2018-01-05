@@ -1,3 +1,11 @@
+### 3.3.1
+
+* Apply latest nlm generator - **[@markowsiak](https://github.com/markowsiak)** [#40](https://github.com/groupon/nlm/pull/40)
+  - [`45d4c15`](https://github.com/groupon/nlm/commit/45d4c15b796d9a8171b5a84aa112b76ab76cd6a6) **chore:** Apply latest nlm generator
+* fix: failed nlm deploy - **[@markowsiak](https://github.com/markowsiak)** [#41](https://github.com/groupon/nlm/pull/41)
+  - [`bb9caa2`](https://github.com/groupon/nlm/commit/bb9caa294eb156e5946361e139c37deb31a54df5) **fix:** failed nlm deploy
+
+
 ### 3.3.0
 
 * acceptInvalidCommits formatter - **[@johan](https://github.com/johan)** [#38](https://github.com/groupon/nlm/pull/38)
