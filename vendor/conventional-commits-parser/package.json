@@ -1,0 +1,79 @@
+{
+  "_from": "conventional-commits-parser@~0.1.2",
+  "_id": "conventional-commits-parser@0.1.2",
+  "_inBundle": false,
+  "_integrity": "sha1-SmJAEGNPAhIlIOy68ZyguiMSBDc=",
+  "_location": "/conventional-commits-parser",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "conventional-commits-parser@~0.1.2",
+    "name": "conventional-commits-parser",
+    "escapedName": "conventional-commits-parser",
+    "rawSpec": "~0.1.2",
+    "saveSpec": null,
+    "fetchSpec": "~0.1.2"
+  },
+  "_requiredBy": [
+    "/",
+    "/nlm"
+  ],
+  "_resolved": "https://registry.npmjs.org/conventional-commits-parser/-/conventional-commits-parser-0.1.2.tgz",
+  "_shasum": "4a624010634f02122520ecbaf19ca0ba23120437",
+  "_spec": "conventional-commits-parser@~0.1.2",
+  "_where": "/Users/mowsiak/Documents/dev-git/groupon/nlm",
+  "author": {
+    "name": "Steve Mao",
+    "email": "maochenyan@gmail.com",
+    "url": "https://github.com/stevemao"
+  },
+  "bin": {
+    "conventional-commits-parser": "cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/stevemao/conventional-commits-parser/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "JSONStream": "^1.0.4",
+    "is-text-path": "^1.0.0",
+    "lodash": "^4.17.11",
+    "meow": "^3.3.0",
+    "split": "^1.0.0",
+    "through2": "^2.0.0",
+    "trim-off-newlines": "^1.0.0"
+  },
+  "deprecated": false,
+  "description": "Parse raw conventional commits",
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "concat-stream": "^1.4.7",
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.6",
+    "jscs": "^2.0.0",
+    "jshint": "^2.7.0",
+    "mocha": "*"
+  },
+  "homepage": "https://github.com/stevemao/conventional-commits-parser",
+  "keywords": [
+    "conventional-commits-parser",
+    "changelog",
+    "conventional",
+    "parser",
+    "parsing",
+    "logs"
+  ],
+  "license": "MIT",
+  "name": "conventional-commits-parser",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevemao/conventional-commits-parser.git"
+  },
+  "scripts": {
+    "coverage": "istanbul cover _mocha -- -R spec && rm -rf ./coverage",
+    "lint": "jshint *.js lib test && jscs *.js lib test",
+    "test": "npm run lint && mocha"
+  },
+  "version": "0.1.2"
+}

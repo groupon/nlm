@@ -74,6 +74,7 @@ describe('publishToNpm', function() {
 
     it('sends basic auth headers', function() {
       this.timeout(4000);
+      // eslint-disable-next-line import/no-dynamic-require
       return publishToNpm(dirname, require(`${dirname}/package.json`), {
         currentBranch: 'master',
         distTag: 'latest',
@@ -116,6 +117,7 @@ describe('publishToNpm', function() {
 
     it('uses a bearer token', function() {
       this.timeout(4000);
+      // eslint-disable-next-line import/no-dynamic-require
       const pkg = require(`${dirname}/package.json`);
       return publishToNpm(dirname, pkg, getTokenOptions()).then(function() {
         assert.deepEqual(
@@ -138,6 +140,7 @@ describe('publishToNpm', function() {
       const opts = getTokenOptions({ commit: false });
       return publishToNpm(
         dirname,
+        // eslint-disable-next-line import/no-dynamic-require
         require(`${dirname}/package.json`),
         opts
       ).then(function() {
@@ -155,6 +158,7 @@ describe('publishToNpm', function() {
         {
           private: true,
         },
+        // eslint-disable-next-line import/no-dynamic-require
         require(`${dirname}/package.json`)
       );
       return publishToNpm(dirname, pkg, getTokenOptions()).then(function() {
