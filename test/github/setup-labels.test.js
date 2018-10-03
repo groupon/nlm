@@ -53,5 +53,7 @@ describe('setupLabels', () => {
         assert.deepEqual([], addedLabels);
       });
     });
+
+    return null;
   });
 });
