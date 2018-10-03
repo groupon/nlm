@@ -40,23 +40,23 @@ const determineReleaseInfo = require('../../lib/steps/release-info');
 
 const withFixture = require('../fixture');
 
-describe('determineReleaseInfo', function() {
-  it('returns "none" for an empty list of commits', function() {
+describe('determineReleaseInfo', () => {
+  it('returns "none" for an empty list of commits', () => {
     assert.equal('none', determineReleaseInfo([]));
   });
 
-  describe('with invalid commit messages', function() {
+  describe('with invalid commit messages', () => {
     const dirname = withFixture('invalid-commit');
 
     let commits = [];
-    before('load commits', function() {
-      return getCommits(dirname).then(function(results) {
+    before('load commits', () => {
+      return getCommits(dirname).then(results => {
         commits = results;
       });
     });
 
-    it('rejects them with a helpful message', function() {
-      const error = assert.throws(function() {
+    it('rejects them with a helpful message', () => {
+      const error = assert.throws(() => {
         determineReleaseInfo(commits);
       });
 
@@ -93,8 +93,8 @@ describe('determineReleaseInfo', function() {
       );
     });
 
-    describe('with --acceptInvalidCommits', function() {
-      it('is cautious and considers it "major"', function() {
+    describe('with --acceptInvalidCommits', () => {
+      it('is cautious and considers it "major"', () => {
         assert.equal('major', determineReleaseInfo(commits, true));
       });
     });

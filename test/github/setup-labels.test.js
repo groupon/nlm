@@ -39,16 +39,16 @@ const setupLabels = require('../../lib/github/setup-labels');
 
 const packageJSON = require('../../package.json');
 
-describe('setupLabels', function() {
-  describe('self-test', function() {
+describe('setupLabels', () => {
+  describe('self-test', () => {
     if (!process.env.GH_TOKEN) {
       return it('skipping, no GH_TOKEN');
     }
 
     const github = Github.forRepository(packageJSON.repository);
 
-    it('finds no missing labels for nlm', function() {
-      return setupLabels(github).then(function(addedLabels) {
+    it('finds no missing labels for nlm', () => {
+      return setupLabels(github).then(addedLabels => {
         assert.deepEqual([], addedLabels);
       });
     });

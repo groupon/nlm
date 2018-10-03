@@ -41,43 +41,43 @@ const withFixture = require('../fixture');
 
 const CLI_PATH = require.resolve('../../lib/cli');
 
-describe('nlm verify', function() {
-  describe('in non-git directory', function() {
+describe('nlm verify', () => {
+  describe('in non-git directory', () => {
     const dirname = withFixture('non-git');
     const output = {};
 
-    before(function() {
+    before(() => {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: _.assign({}, process.env, {
           GH_TOKEN: '',
         }),
-      }).then(function(stdout) {
+      }).then(stdout => {
         output.stdout = stdout;
       });
     });
 
-    it('ignores directories that are not git repos', function() {
+    it('ignores directories that are not git repos', () => {
       assert.equal('', output.stdout);
     });
   });
 
-  describe('in git directory', function() {
+  describe('in git directory', () => {
     const dirname = withFixture('released');
     const output = {};
 
-    before(function() {
+    before(() => {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: _.assign({}, process.env, {
           GH_TOKEN: '',
         }),
-      }).then(function(stdout) {
+      }).then(stdout => {
         output.stdout = stdout;
       });
     });
 
-    it('reports the change type', function() {
+    it('reports the change type', () => {
       assert.include('Changes are "none"', output.stdout);
     });
   });

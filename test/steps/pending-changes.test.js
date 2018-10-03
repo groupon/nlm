@@ -39,7 +39,7 @@ const getPendingChanges = require('../../lib/steps/pending-changes');
 
 const withFixture = require('../fixture');
 
-describe('getPendingChanges', function() {
+describe('getPendingChanges', () => {
   const dirname = withFixture('ticket-commits');
   const pkg = {
     version: '0.0.0',
@@ -47,15 +47,15 @@ describe('getPendingChanges', function() {
   };
   const options = {};
 
-  before('create version commit', function() {
+  before('create version commit', () => {
     return getPendingChanges(dirname, pkg, options);
   });
 
-  it('adds the commits to the options', function() {
+  it('adds the commits to the options', () => {
     assert.hasType(Array, options.commits);
   });
 
-  it('resolves commit references', function() {
+  it('resolves commit references', () => {
     const commit = _.find(options.commits, { subject: 'Jira' });
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
@@ -63,7 +63,7 @@ describe('getPendingChanges', function() {
     assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.href);
   });
 
-  it('truncates full urls to same repo', function() {
+  it('truncates full urls to same repo', () => {
     const commit = _.find(options.commits, { subject: 'Truncate' });
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
@@ -71,7 +71,7 @@ describe('getPendingChanges', function() {
     assert.equal('https://github.com/usr/proj/issues/44', ref.href);
   });
 
-  it('builds nice references to sibling repos', function() {
+  it('builds nice references to sibling repos', () => {
     const commit = _.find(options.commits, { subject: 'Full' });
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
@@ -79,7 +79,7 @@ describe('getPendingChanges', function() {
     assert.equal('https://github.com/open/source/issues/13', ref.href);
   });
 
-  it('expands short-style refs', function() {
+  it('expands short-style refs', () => {
     const commit = _.find(options.commits, { subject: 'Short' });
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
@@ -87,7 +87,7 @@ describe('getPendingChanges', function() {
     assert.equal('https://github.com/usr/proj/issues/42', ref.href);
   });
 
-  it('supports refs to other Github instances', function() {
+  it('supports refs to other Github instances', () => {
     const commit = _.find(options.commits, { subject: 'GHE' });
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];

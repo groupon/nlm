@@ -30,6 +30,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable import/no-dynamic-require */
+
 'use strict';
 
 const assert = require('assertive');
@@ -43,8 +45,8 @@ function withFakeRegistry() {
   const httpCalls = [];
   let server;
 
-  before(function(done) {
-    server = require('http').createServer(function(req, res) {
+  before(done => {
+    server = require('http').createServer((req, res) => {
       httpCalls.push({
         method: req.method,
         url: req.url,
@@ -60,21 +62,20 @@ function withFakeRegistry() {
     server.listen(3000, done);
   });
 
-  after(function(done) {
+  after(done => {
     server.close(done);
   });
 
   return httpCalls;
 }
 
-describe('publishToNpm', function() {
-  describe('with NPM_USERNAME etc.', function() {
+describe('publishToNpm', () => {
+  describe('with NPM_USERNAME etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
 
     it('sends basic auth headers', function() {
       this.timeout(4000);
-      // eslint-disable-next-line import/no-dynamic-require
       return publishToNpm(dirname, require(`${dirname}/package.json`), {
         currentBranch: 'master',
         distTag: 'latest',
@@ -83,7 +84,7 @@ describe('publishToNpm', function() {
         npmPasswordBase64: new Buffer('passw0rd').toString('base64'),
         npmEmail: 'robin@example.com',
         npmToken: '',
-      }).then(function() {
+      }).then(() => {
         assert.deepEqual(
           {
             method: 'PUT',
@@ -111,15 +112,14 @@ describe('publishToNpm', function() {
     );
   }
 
-  describe('with NPM_TOKEN etc.', function() {
+  describe('with NPM_TOKEN etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
 
     it('uses a bearer token', function() {
       this.timeout(4000);
-      // eslint-disable-next-line import/no-dynamic-require
       const pkg = require(`${dirname}/package.json`);
-      return publishToNpm(dirname, pkg, getTokenOptions()).then(function() {
+      return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
         assert.deepEqual(
           {
             method: 'PUT',
@@ -132,36 +132,34 @@ describe('publishToNpm', function() {
     });
   });
 
-  describe('without --commmit', function() {
+  describe('without --commmit', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
 
-    it('makes no http calls', function() {
+    it('makes no http calls', () => {
       const opts = getTokenOptions({ commit: false });
       return publishToNpm(
         dirname,
-        // eslint-disable-next-line import/no-dynamic-require
         require(`${dirname}/package.json`),
         opts
-      ).then(function() {
+      ).then(() => {
         assert.deepEqual([], httpCalls);
       });
     });
   });
 
-  describe('if the package is set to private', function() {
+  describe('if the package is set to private', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
 
-    it('makes no http calls', function() {
+    it('makes no http calls', () => {
       const pkg = _.defaults(
         {
           private: true,
         },
-        // eslint-disable-next-line import/no-dynamic-require
         require(`${dirname}/package.json`)
       );
-      return publishToNpm(dirname, pkg, getTokenOptions()).then(function() {
+      return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
         assert.deepEqual([], httpCalls);
       });
     });
