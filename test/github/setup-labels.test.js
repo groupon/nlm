@@ -42,7 +42,8 @@ const packageJSON = require('../../package.json');
 describe('setupLabels', () => {
   describe('self-test', () => {
     if (!process.env.GH_TOKEN) {
-      return it('skipping, no GH_TOKEN');
+      it('skipping, no GH_TOKEN');
+      return null;
     }
 
     const github = Github.forRepository(packageJSON.repository);

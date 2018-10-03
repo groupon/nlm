@@ -16,7 +16,11 @@
   "scripts": {
     "pretest": "eslint lib test",
     "test": "mocha",
-    "posttest": "./bin/nlm.js verify"
+    "posttest": "nlm verify"
+  },
+  "engines": {
+    "yarn": "0.0.0",
+    "npm": "^6.0.0"
   },
   "nlm": {
     "license": {
@@ -40,11 +44,13 @@
   "devDependencies": {
     "assertive": "^2.1.0",
     "eslint": "^4.7.1",
-    "eslint-config-groupon": "^5.0.0",
+    "eslint-config-groupon": "^6.0.0",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-mocha": "^4.12.1",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-prettier": "^2.2.0",
     "mocha": "^5.2.0",
+    "nlm": "^3.0.0",
     "prettier": "^1.6.1"
   },
   "author": {

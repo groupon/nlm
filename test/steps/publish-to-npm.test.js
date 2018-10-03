@@ -57,7 +57,7 @@ function withFakeRegistry() {
         return res.end('{}');
       }
       res.statusCode = 200;
-      res.end('{"ok":true}');
+      return res.end('{"ok":true}');
     });
     server.listen(3000, done);
   });

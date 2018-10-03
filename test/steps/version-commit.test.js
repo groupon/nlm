@@ -56,7 +56,7 @@ describe('createVersionCommit', () => {
     execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
       if (err) return done(err);
       assert.include('Author: Robin Developer <rdev@example.com>', stdout);
-      done();
+      return done();
     });
   });
 
@@ -73,7 +73,7 @@ describe('createVersionCommit', () => {
     execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
       if (err) return done(err);
       assert.include('Author: nlm <opensource@groupon.com>', stdout);
-      done();
+      return done();
     });
   });
 });
