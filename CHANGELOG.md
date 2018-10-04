@@ -1,3 +1,9 @@
+### 3.3.3
+
+* Protect merge commit fix by ref id - **[@jkrems](https://github.com/jkrems)** [#43](https://github.com/groupon/nlm/pull/43)
+  - [`0b5d1a6`](https://github.com/groupon/nlm/commit/0b5d1a63c6ff1d0fd6356f3a6c0f586bc44ad00f) **fix:** Protect merge commit fix by ref id
+
+
 ### 3.3.2
 
 * fix: address npm audit security report - **[@markowsiak](https://github.com/markowsiak)** [#42](https://github.com/groupon/nlm/pull/42)
