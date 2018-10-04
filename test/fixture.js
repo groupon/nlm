@@ -39,15 +39,15 @@ function withFixture(name) {
   const dirname = path.join(__dirname, '..', 'tmp', name);
   const script = path.join(__dirname, 'fixtures', name);
 
-  before('remove fixture directory', function rmDir(done) {
+  before('remove fixture directory', done => {
     execFile('rm', ['-rf', dirname], done);
   });
 
-  before('create fixture directory', function createDir(done) {
+  before('create fixture directory', done => {
     execFile('mkdir', ['-p', dirname], done);
   });
 
-  before('running fixture setup', function runFixture(done) {
+  before('running fixture setup', done => {
     execFile(
       script,
       [script],
@@ -61,7 +61,7 @@ function withFixture(name) {
           GIT_COMMITTER_EMAIL: 'rdev@example.com',
         },
       },
-      function logErrorDetails(error, stdout, stderr) {
+      (error, stdout, stderr) => {
         if (error) {
           process.stdout.write(`${stdout}\n`);
           process.stderr.write(`${stderr}\n`);
@@ -71,7 +71,7 @@ function withFixture(name) {
     );
   });
 
-  after('remove fixture directory', function removeFixture(done) {
+  after('remove fixture directory', done => {
     execFile('rm', ['-rf', dirname], done);
   });
 

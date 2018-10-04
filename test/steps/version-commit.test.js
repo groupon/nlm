@@ -41,7 +41,7 @@ const createVersionCommit = require('../../lib/steps/version-commit');
 
 const withFixture = require('../fixture');
 
-describe('createVersionCommit', function() {
+describe('createVersionCommit', () => {
   const dirname = withFixture('multiple-commits');
   const pkg = {
     name: 'some-package',
@@ -52,28 +52,28 @@ describe('createVersionCommit', function() {
     changelog: '* New stuff\n* Interesting features',
   };
 
-  before('commits with the original author', function(done) {
-    execFile('git', ['show'], { cwd: dirname }, function(err, stdout) {
+  before('commits with the original author', done => {
+    execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
       if (err) return done(err);
       assert.include('Author: Robin Developer <rdev@example.com>', stdout);
-      done();
+      return done();
     });
   });
 
-  before('create version commit', function() {
+  before('create version commit', () => {
     return createVersionCommit(dirname, pkg, options);
   });
 
-  it('writes the correct HEAD sha', function() {
+  it('writes the correct HEAD sha', () => {
     const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
     assert.equal(HEAD.trim(), options.versionCommitSha);
   });
 
-  it('commits with the proper user', function(done) {
-    execFile('git', ['show'], { cwd: dirname }, function(err, stdout) {
+  it('commits with the proper user', done => {
+    execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
       if (err) return done(err);
       assert.include('Author: nlm <opensource@groupon.com>', stdout);
-      done();
+      return done();
     });
   });
 });
