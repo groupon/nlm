@@ -1,3 +1,15 @@
+### 3.3.2
+
+* fix: address npm audit security report - **[@markowsiak](https://github.com/markowsiak)** [#42](https://github.com/groupon/nlm/pull/42)
+  - [`4fdd017`](https://github.com/groupon/nlm/commit/4fdd0175b10d78cc8fafa5d6a38988f8a1411e03) **fix:** address npm audit security report
+  - [`5bb4c5b`](https://github.com/groupon/nlm/commit/5bb4c5b5b746fdf6e441336898b741614a1c92b6) **refactor:** update conventional-commits-parser and accomodate for change in behavior
+  - [`16b3816`](https://github.com/groupon/nlm/commit/16b381641ad99920d2ccc1dfa926fa417d3826c9) **chore:** apply latest generator updates
+  - [`f6aa03f`](https://github.com/groupon/nlm/commit/f6aa03fed0d55510d26c8e7cef528fe1279cb038) **fix:** remove nlm recurssive dep, and fix references
+  - [`655b379`](https://github.com/groupon/nlm/commit/655b3797557cde63c7376e2c2ba1107ebfd52c67) **fix:** generator added npm6 install for travis
+  - [`983e7f5`](https://github.com/groupon/nlm/commit/983e7f5b1baa607c837d31dcdb44ccbfbfdaa320) **refactor:** improve regex finding issuePrefixes by URL
+  - [`85bd9d1`](https://github.com/groupon/nlm/commit/85bd9d14d510b835c302f4cf2951cd7e094a5fc2) **fix:** make regex more inclusive and future proof
+
+
 ### 3.3.1
 
 * Apply latest nlm generator - **[@markowsiak](https://github.com/markowsiak)** [#40](https://github.com/groupon/nlm/pull/40)
