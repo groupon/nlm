@@ -1,3 +1,9 @@
+### 3.3.4
+
+* Keep package-lock in sync - **[@jkrems](https://github.com/jkrems)** [#44](https://github.com/groupon/nlm/pull/44)
+  - [`f40a4f7`](https://github.com/groupon/nlm/commit/f40a4f78882f7f60426b08385dc980a82c2bf132) **chore:** Keep package-lock in sync
+
+
 ### 3.3.3
 
 * Protect merge commit fix by ref id - **[@jkrems](https://github.com/jkrems)** [#43](https://github.com/groupon/nlm/pull/43)
