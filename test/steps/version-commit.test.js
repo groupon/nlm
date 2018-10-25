@@ -36,44 +36,101 @@ const execFile = require('child_process').execFile;
 const fs = require('fs');
 
 const assert = require('assertive');
+const cloneDeep = require('lodash/cloneDeep');
 
 const createVersionCommit = require('../../lib/steps/version-commit');
 
 const withFixture = require('../fixture');
 
-describe('createVersionCommit', () => {
-  const dirname = withFixture('multiple-commits');
-  const pkg = {
-    name: 'some-package',
-    version: '0.0.0',
-  };
-  const options = {
-    nextVersion: '1.0.0',
-    changelog: '* New stuff\n* Interesting features',
-  };
+const DEF_PKG = {
+  name: 'some-package',
+  version: '0.0.0',
+};
+const DEF_OPTS = {
+  nextVersion: '1.0.0',
+  changelog: '* New stuff\n* Interesting features',
+};
 
-  before('commits with the original author', done => {
-    execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
-      if (err) return done(err);
-      assert.include('Author: Robin Developer <rdev@example.com>', stdout);
-      return done();
+describe('createVersionCommit', () => {
+  let pkg;
+  let options;
+  function resetVars() {
+    pkg = cloneDeep(DEF_PKG);
+    options = cloneDeep(DEF_OPTS);
+  }
+
+  before(resetVars);
+  afterEach(resetVars);
+
+  describe('with no package-lock.json', () => {
+    const dirname = withFixture('multiple-commits');
+
+    before('commits with the original author', done => {
+      execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
+        if (err) return done(err);
+        assert.include('Author: Robin Developer <rdev@example.com>', stdout);
+        return done();
+      });
+    });
+
+    before('create version commit', () => {
+      return createVersionCommit(dirname, pkg, options);
+    });
+
+    it('writes the correct HEAD sha', () => {
+      const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
+      assert.equal(HEAD.trim(), options.versionCommitSha);
+    });
+
+    it('commits with the proper user', done => {
+      execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
+        if (err) return done(err);
+        assert.include('Author: nlm <opensource@groupon.com>', stdout);
+        return done();
+      });
     });
   });
 
-  before('create version commit', () => {
-    return createVersionCommit(dirname, pkg, options);
+  describe('using package-lock.json', () => {
+    const dirname = withFixture('with-plock');
+
+    before('create version commit', () =>
+      createVersionCommit(dirname, pkg, options)
+    );
+
+    it('bumps the package-lock version number', done => {
+      execFile(
+        'git',
+        ['show', 'HEAD:package-lock.json'],
+        { cwd: dirname },
+        (err, json) => {
+          if (err) return void done(err);
+          assert.equal('1.0.0', JSON.parse(json).version);
+          done();
+        }
+      );
+    });
   });
 
-  it('writes the correct HEAD sha', () => {
-    const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
-    assert.equal(HEAD.trim(), options.versionCommitSha);
-  });
+  describe('with unused package-lock.json', () => {
+    const dirname = withFixture('with-bogus-plock');
 
-  it('commits with the proper user', done => {
-    execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
-      if (err) return done(err);
-      assert.include('Author: nlm <opensource@groupon.com>', stdout);
-      return done();
+    before('create version commit', () =>
+      createVersionCommit(dirname, pkg, options)
+    );
+
+    it("doesn't touch change it", done => {
+      execFile(
+        'git',
+        ['show', 'HEAD:package-lock.json'],
+        { cwd: dirname },
+        err => {
+          assert.truthy(err);
+          const json = fs.readFileSync(`${dirname}/package-lock.json`, 'utf8');
+          assert.notEqual('1.0.0', JSON.parse(json).version);
+          done();
+        }
+      );
     });
   });
 });
