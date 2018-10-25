@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+bash $(dirname $0)"/multiple-commits"
+
+echo package-lock.json > .gitignore
+git add .gitignore
+git commit --amend --no-edit
+
+echo '{
+  "name": "nlm-test-pkg",
+  "version": "0.0.1",
+  "lockfileVersion": 1
+}' >package-lock.json
