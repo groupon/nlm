@@ -1,3 +1,9 @@
+### 3.4.0
+
+* update version field in package-lock.json - **[@dbushong](https://github.com/dbushong)** [#45](https://github.com/groupon/nlm/pull/45)
+  - [`4633bcc`](https://github.com/groupon/nlm/commit/4633bcc43df3f60b5ea45813af6a33c58db69b4b) **feat:** update version field in package-lock.json
+
+
 ### 3.3.4
 
 * Keep package-lock in sync - **[@jkrems](https://github.com/jkrems)** [#44](https://github.com/groupon/nlm/pull/44)
