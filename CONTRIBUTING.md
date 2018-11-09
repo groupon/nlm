@@ -75,7 +75,7 @@ a few general rules of thumb:
 
 #### Commits & Commit Messages
 
-Please follow the [angular commit message conventions](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines).
+Please follow the [angular commit message conventions]https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format).
 We use an automated tool for generating releases
 that depends on the conventions to determine the next version and the content of the changelog.
 Commit messages that don't follow the conventions will cause `npm test` (and thus CI) to fail.
