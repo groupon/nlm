@@ -1,3 +1,9 @@
+### 3.4.1
+
+* docs: Update angular link to point directly to commit guidelines - **[@daniel-beard](https://github.com/daniel-beard)** [#46](https://github.com/groupon/nlm/pull/46)
+  - [`d4dee45`](https://github.com/groupon/nlm/commit/d4dee450cb51df99a11ce5649f03e37891370b0e) **docs:** Update angular link to point directly to commit guidelines
+
+
 ### 3.4.0
 
 * update version field in package-lock.json - **[@dbushong](https://github.com/dbushong)** [#45](https://github.com/groupon/nlm/pull/45)
