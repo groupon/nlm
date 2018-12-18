@@ -75,7 +75,7 @@ a few general rules of thumb:
 
 #### Commits & Commit Messages
 
-Please follow the [angular commit message conventions]https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format).
+Please follow the [angular commit message conventions][angular-commits].
 We use an automated tool for generating releases
 that depends on the conventions to determine the next version and the content of the changelog.
 Commit messages that don't follow the conventions will cause `npm test` (and thus CI) to fail.
@@ -123,6 +123,8 @@ The empty lines between the different parts are required.
 * `<footer>`: This part only applies if your commit introduces a breaking change.
   It's important this is present, otherwise the major version will not increase.
   See below for an example.
+  
+[angular-commits]: https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format
 
 ##### Examples
 
