@@ -1,3 +1,9 @@
+### 3.4.2
+
+* docs: fix broken link in CONTRIBUTING - **[@dbushong](https://github.com/dbushong)** [#47](https://github.com/groupon/nlm/pull/47)
+  - [`b1eebdc`](https://github.com/groupon/nlm/commit/b1eebdcc7523db39bae36bfb8dd88129df949bc2) **docs:** fix broken link in CONTRIBUTING
+
+
 ### 3.4.1
 
 * docs: Update angular link to point directly to commit guidelines - **[@daniel-beard](https://github.com/daniel-beard)** [#46](https://github.com/groupon/nlm/pull/46)
