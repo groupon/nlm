@@ -35,7 +35,6 @@
 'use strict';
 
 const assert = require('assertive');
-const _ = require('lodash');
 
 const publishToNpm = require('../../lib/steps/publish-to-npm');
 
@@ -98,7 +97,7 @@ describe('publishToNpm', () => {
   });
 
   function getTokenOptions(overrides) {
-    return _.extend(
+    return Object.assign(
       {
         currentBranch: 'master',
         distTag: 'latest',
@@ -153,7 +152,7 @@ describe('publishToNpm', () => {
     const httpCalls = withFakeRegistry();
 
     it('makes no http calls', () => {
-      const pkg = _.defaults(
+      const pkg = Object.assign(
         {
           private: true,
         },

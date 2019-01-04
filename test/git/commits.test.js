@@ -33,7 +33,6 @@
 'use strict';
 
 const assert = require('assertive');
-const _ = require('lodash');
 
 const getCommits = require('../../lib/git/commits');
 
@@ -74,7 +73,7 @@ describe('getCommits', () => {
     });
 
     it('includes links to github for #123 style', () => {
-      const commit = _.find(allCommits, { subject: 'Short' });
+      const commit = allCommits.find(c => c.subject === 'Short');
       assert.equal(1, commit.references.length);
       const ref = commit.references[0];
       assert.equal(null, ref.owner);
@@ -85,7 +84,7 @@ describe('getCommits', () => {
     });
 
     it('includes links to github for x/y#123 style', () => {
-      const commit = _.find(allCommits, { subject: 'Repo' });
+      const commit = allCommits.find(c => c.subject === 'Repo');
       assert.equal(1, commit.references.length);
       const ref = commit.references[0];
       assert.equal('riley', ref.owner);
@@ -96,7 +95,7 @@ describe('getCommits', () => {
     });
 
     it('includes links to github for full public github urls', () => {
-      const commit = _.find(allCommits, { subject: 'Full' });
+      const commit = allCommits.find(c => c.subject === 'Full');
       assert.equal(1, commit.references.length);
       const ref = commit.references[0];
       assert.equal(null, ref.owner);
@@ -106,7 +105,7 @@ describe('getCommits', () => {
     });
 
     it('includes links to github for full GHE urls', () => {
-      const commit = _.find(allCommits, { subject: 'GHE' });
+      const commit = allCommits.find(c => c.subject === 'GHE');
       assert.equal(1, commit.references.length);
       const ref = commit.references[0];
       assert.equal(null, ref.owner);
@@ -116,7 +115,7 @@ describe('getCommits', () => {
     });
 
     it('includes links to jira', () => {
-      const commit = _.find(allCommits, { subject: 'Jira' });
+      const commit = allCommits.find(c => c.subject === 'Jira');
       assert.equal(1, commit.references.length);
       const ref = commit.references[0];
       assert.equal(null, ref.owner);
