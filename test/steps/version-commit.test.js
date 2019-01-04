@@ -36,7 +36,6 @@ const execFile = require('child_process').execFile;
 const fs = require('fs');
 
 const assert = require('assertive');
-const cloneDeep = require('lodash/cloneDeep');
 
 const createVersionCommit = require('../../lib/steps/version-commit');
 
@@ -50,6 +49,10 @@ const DEF_OPTS = {
   nextVersion: '1.0.0',
   changelog: '* New stuff\n* Interesting features',
 };
+
+function cloneDeep(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 describe('createVersionCommit', () => {
   let pkg;

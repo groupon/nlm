@@ -33,7 +33,6 @@
 'use strict';
 
 const assert = require('assertive');
-const _ = require('lodash');
 
 const run = require('../../lib/run');
 
@@ -49,7 +48,7 @@ describe('nlm verify', () => {
     before(() => {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
-        env: _.assign({}, process.env, {
+        env: Object.assign({}, process.env, {
           GH_TOKEN: '',
         }),
       }).then(stdout => {
@@ -69,7 +68,7 @@ describe('nlm verify', () => {
     before(() => {
       return run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
-        env: _.assign({}, process.env, {
+        env: Object.assign({}, process.env, {
           GH_TOKEN: '',
         }),
       }).then(stdout => {

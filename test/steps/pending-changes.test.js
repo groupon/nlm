@@ -33,7 +33,6 @@
 'use strict';
 
 const assert = require('assertive');
-const _ = require('lodash');
 
 const getPendingChanges = require('../../lib/steps/pending-changes');
 
@@ -56,7 +55,7 @@ describe('getPendingChanges', () => {
   });
 
   it('resolves commit references', () => {
-    const commit = _.find(options.commits, { subject: 'Jira' });
+    const commit = options.commits.find(c => c.subject === 'Jira');
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
     assert.equal('REPO-', ref.prefix);
@@ -64,7 +63,7 @@ describe('getPendingChanges', () => {
   });
 
   it('truncates full urls to same repo', () => {
-    const commit = _.find(options.commits, { subject: 'Truncate' });
+    const commit = options.commits.find(c => c.subject === 'Truncate');
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
     assert.equal('#', ref.prefix);
@@ -72,7 +71,7 @@ describe('getPendingChanges', () => {
   });
 
   it('builds nice references to sibling repos', () => {
-    const commit = _.find(options.commits, { subject: 'Full' });
+    const commit = options.commits.find(c => c.subject === 'Full');
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
     assert.equal('open/source#', ref.prefix);
@@ -80,7 +79,7 @@ describe('getPendingChanges', () => {
   });
 
   it('expands short-style refs', () => {
-    const commit = _.find(options.commits, { subject: 'Short' });
+    const commit = options.commits.find(c => c.subject === 'Short');
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
     assert.equal('#', ref.prefix);
@@ -88,7 +87,7 @@ describe('getPendingChanges', () => {
   });
 
   it('supports refs to other Github instances', () => {
-    const commit = _.find(options.commits, { subject: 'GHE' });
+    const commit = options.commits.find(c => c.subject === 'GHE');
     assert.equal(1, commit.references.length);
     const ref = commit.references[0];
     assert.equal('github.example.com/some/thing#', ref.prefix);
