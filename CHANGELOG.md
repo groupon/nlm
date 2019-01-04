@@ -1,3 +1,13 @@
+### 3.4.3
+
+* misc. cleanup - **[@dbushong](https://github.com/dbushong)** [#48](https://github.com/groupon/nlm/pull/48)
+  - [`f271f11`](https://github.com/groupon/nlm/commit/f271f1145b394c68d7a959fc8c53c49475f3175e) **chore:** remove unused post-install script
+  - [`b67f755`](https://github.com/groupon/nlm/commit/b67f7550910803b787106dd396aecc2c8cef1d4a) **refactor:** stop using bluebird for promises
+  - [`94bf4fd`](https://github.com/groupon/nlm/commit/94bf4fde47378bbd9d842b61a24bce080cd657a1) **refactor:** stop using lodash
+* wrap risky co.wrap yields - **[@dbushong](https://github.com/dbushong)** [#49](https://github.com/groupon/nlm/pull/49)
+  - [`006d4a6`](https://github.com/groupon/nlm/commit/006d4a6e78030332c453308909d877e7c22b3c7f) **fix:** wrap risky co.wrap yields
+
+
 ### 3.4.2
 
 * docs: fix broken link in CONTRIBUTING - **[@dbushong](https://github.com/dbushong)** [#47](https://github.com/groupon/nlm/pull/47)
