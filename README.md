@@ -92,6 +92,10 @@ For more customization, you can use `.nlmrc` or an `nlm` section in `package.jso
 * `acceptInvalidCommits`: Accept commit messages even if they can't be parsed.
   It's highly discouraged to use this option.
   In this mode any commit with an invalid commit message will be treated as "semver-major".
+* `deprecated`: String (may be empty) describing reason this package has been
+    deprecated.  To deprecate a package, set it to a descriptive reason.
+    To "un-deprecate" a package, set it to an empty string (can then be
+    later deleted).
 
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
 
