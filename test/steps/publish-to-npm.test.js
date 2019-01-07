@@ -53,10 +53,19 @@ function withFakeRegistry() {
       });
       if (req.method === 'GET' && req.url === '/nlm-test-pkg') {
         res.statusCode = 404;
-        return res.end('{}');
+        return void res.end('{}');
       }
       res.statusCode = 200;
-      return res.end('{"ok":true}');
+      if (req.url === '/nlm-test-pkg?write=true') {
+        res.end(
+          JSON.stringify({
+            ok: true,
+            versions: { '1.0.0': {} },
+          })
+        );
+      } else {
+        res.end('{"ok":true}');
+      }
     });
     server.listen(3000, done);
   });
@@ -85,12 +94,14 @@ describe('publishToNpm', () => {
         npmToken: '',
       }).then(() => {
         assert.deepEqual(
-          {
-            method: 'PUT',
-            url: '/nlm-test-pkg',
-            auth: `Basic ${new Buffer('robin:passw0rd').toString('base64')}`,
-          },
-          httpCalls.pop()
+          [
+            {
+              method: 'PUT',
+              url: '/nlm-test-pkg',
+              auth: `Basic ${new Buffer('robin:passw0rd').toString('base64')}`,
+            },
+          ],
+          httpCalls.filter(c => c.method !== 'GET')
         );
       });
     });
@@ -120,12 +131,36 @@ describe('publishToNpm', () => {
       const pkg = require(`${dirname}/package.json`);
       return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
         assert.deepEqual(
-          {
-            method: 'PUT',
-            url: '/nlm-test-pkg',
-            auth: 'Bearer some-access-token',
-          },
-          httpCalls.pop()
+          [
+            {
+              method: 'PUT',
+              url: '/nlm-test-pkg',
+              auth: 'Bearer some-access-token',
+            },
+          ],
+          httpCalls.filter(c => c.method !== 'GET')
+        );
+      });
+    });
+  });
+
+  describe('with nlm.deprecated set', () => {
+    const dirname = withFixture('released');
+    const httpCalls = withFakeRegistry();
+
+    it('tries to deprecate', function() {
+      this.timeout(4000);
+      const pkg = require(`${dirname}/package.json`);
+      const opts = getTokenOptions({ deprecated: 'reason' });
+      return publishToNpm(dirname, pkg, opts).then(() => {
+        const putReq = {
+          method: 'PUT',
+          url: '/nlm-test-pkg',
+          auth: 'Bearer some-access-token',
+        };
+        assert.deepEqual(
+          [putReq, putReq],
+          httpCalls.filter(c => c.method !== 'GET')
         );
       });
     });
@@ -136,7 +171,7 @@ describe('publishToNpm', () => {
     const httpCalls = withFakeRegistry();
 
     it('makes no http calls', () => {
-      const opts = getTokenOptions({ commit: false });
+      const opts = getTokenOptions({ commit: false, deprecated: 'foo' });
       return publishToNpm(
         dirname,
         require(`${dirname}/package.json`),
@@ -153,9 +188,7 @@ describe('publishToNpm', () => {
 
     it('makes no http calls', () => {
       const pkg = Object.assign(
-        {
-          private: true,
-        },
+        { private: true },
         require(`${dirname}/package.json`)
       );
       return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
