@@ -1,3 +1,9 @@
+### 3.5.0
+
+* add support for deprecating a package - **[@dbushong](https://github.com/dbushong)** [#50](https://github.com/groupon/nlm/pull/50)
+  - [`806eb7d`](https://github.com/groupon/nlm/commit/806eb7d10eed2727fffa2dbf6d7f41501c848fb2) **feat:** add support for deprecating a package
+
+
 ### 3.4.3
 
 * misc. cleanup - **[@dbushong](https://github.com/dbushong)** [#48](https://github.com/groupon/nlm/pull/48)
