@@ -87,6 +87,12 @@ In most cases these settings are enough to make `nlm` do the right thing.
 For more customization, you can use `.nlmrc` or an `nlm` section in `package.json`:
 
 * `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what will be published and how it's tagged. By default there's one entry in this map: `{ master: 'latest' }`. Which means that a publish from `master` updates the `latest` tag and publish from any other branch does nothing.
+* `hooks`: A map of hook names to shell commands. When executing any of the [commands](#commands) listed below some of these hooks will get triggered. The available hooks are:
+
+Hook      | Description 
+--------- | -----------
+`prepare` | Called when the release is about to be prepared. This is before updating files such as package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number via the environment variable **NLM_NEXT_VERSION**.       
+
 * `license.files`: List of files and/or directories to add license headers to.
 * `license.exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude anything in `node_modules`.
 * `acceptInvalidCommits`: Accept commit messages even if they can't be parsed.
@@ -121,6 +127,7 @@ Verify that the current state is valid and could be released.
 Will also add license headers where they are missing.
 
 1. Everything `nlm verify` does.
+1. If `hooks#prepare` is present in the `nlm` section of the `package.json`, the shell command defined by the hook will be executed.
 1. If there are unreleased changes:
   1. Create a new CHANGELOG entry and update `package.json#version`.
   1. Commit and tag the release.
