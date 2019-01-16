@@ -76,7 +76,7 @@ describe('executePrepareHookCommand', () => {
         hooks: { prepare: `printf $NLM_NEXT_VERSION >> ${tmpFilename}` },
       });
       const version = fs.readFileSync(`${dirname}/${tmpFilename}`, 'utf8');
-      assert.equal(version, expectedVersion);
+      assert.equal(expectedVersion, version);
     });
   });
 });
