@@ -1,3 +1,10 @@
+### 3.6.0
+
+* feat: add support for hooks in release command - **[@saguinav](https://github.com/saguinav)** [#51](https://github.com/groupon/nlm/pull/51)
+  - [`1feb523`](https://github.com/groupon/nlm/commit/1feb5232f4400b74bdd126b401d4da522abd8117) **feat:** add support for hooks in release command
+  - [`c0a2b69`](https://github.com/groupon/nlm/commit/c0a2b69e8a2687a73906b94cbd2caafc3dfec0f7) **chore:** address comments from David
+
+
 ### 3.5.0
 
 * add support for deprecating a package - **[@dbushong](https://github.com/dbushong)** [#50](https://github.com/groupon/nlm/pull/50)
