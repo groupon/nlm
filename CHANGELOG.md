@@ -1,3 +1,9 @@
+### 3.6.1
+
+* channels: configs have priority over defaults - **[@dbushong](https://github.com/dbushong)** [#52](https://github.com/groupon/nlm/pull/52)
+  - [`084d446`](https://github.com/groupon/nlm/commit/084d446eb149b34115c35ffaf5c1724a50b6df78) **fix:** channels: configs have priority over defaults
+
+
 ### 3.6.0
 
 * feat: add support for hooks in release command - **[@saguinav](https://github.com/saguinav)** [#51](https://github.com/groupon/nlm/pull/51)
