@@ -1,3 +1,9 @@
+### 3.6.2
+
+* npm audit fix - **[@dbushong](https://github.com/dbushong)** [#55](https://github.com/groupon/nlm/pull/55)
+  - [`3a44e11`](https://github.com/groupon/nlm/commit/3a44e118b897d397dbc8da627f35e044e652683d) **chore:** npm audit fix
+
+
 ### 3.6.1
 
 * channels: configs have priority over defaults - **[@dbushong](https://github.com/dbushong)** [#52](https://github.com/groupon/nlm/pull/52)
