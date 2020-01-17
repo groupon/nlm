@@ -25,8 +25,10 @@ A tool for automating the release of libraries in the spirit of [semantic-releas
 
 ### Setting up CI
 
-`nlm` will automatically look for well-known environment variables during CI builds like `CI=true`, `BRANCH=branch-name`, etc..
-It should work out-of-the-box for both [Travis](travis-ci.org) and [DotCI](groupon.github.io/DotCi/).
+`nlm` will automatically look for well-known environment variables during CI
+builds like `CI=true`, `BRANCH=branch-name`, etc..
+It should work out-of-the-box for both [Travis](https://travis-ci.org/) and
+[DotCI](https://groupon.github.io/DotCi/).
 
 For Github and npm interactions to work,
 it requires the following additional environment variables:
@@ -89,9 +91,9 @@ For more customization, you can use `.nlmrc` or an `nlm` section in `package.jso
 * `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what will be published and how it's tagged. By default there's one entry in this map: `{ master: 'latest' }`. Which means that a publish from `master` updates the `latest` tag and publish from any other branch does nothing.
 * `hooks`: A map of hook names to shell commands. When executing any of the [commands](#commands) listed below some of these hooks will get triggered. The available hooks are:
 
-Hook      | Description 
+Hook      | Description
 --------- | -----------
-`prepare` | Called when the release is about to be prepared. This is before updating files such as package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number via the environment variable **NLM_NEXT_VERSION**.       
+`prepare` | Called when the release is about to be prepared. This is before updating files such as package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number via the environment variable **NLM_NEXT_VERSION**.
 
 * `license.files`: List of files and/or directories to add license headers to.
 * `license.exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude anything in `node_modules`.
