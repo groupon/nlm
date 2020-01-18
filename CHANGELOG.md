@@ -1,3 +1,9 @@
+### 3.6.3
+
+* clean up broken links in README - **[@dbushong](https://github.com/dbushong)** [#56](https://github.com/groupon/nlm/pull/56)
+  - [`850b672`](https://github.com/groupon/nlm/commit/850b67270148e5356482c369fe1066967a911d1f) **docs:** clean up broken links in README
+
+
 ### 3.6.2
 
 * npm audit fix - **[@dbushong](https://github.com/dbushong)** [#55](https://github.com/groupon/nlm/pull/55)
