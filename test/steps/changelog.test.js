@@ -109,7 +109,7 @@ describe('generateChangeLog', () => {
   it('can create an empty changelog', () => {
     const pkg = { repository: 'usr/proj' };
     const commits = [];
-    const options = { commits: commits };
+    const options = { commits };
     return generateChangeLog(null, pkg, options).then(changelog => {
       assert.equal('', changelog);
     });
@@ -151,7 +151,7 @@ describe('generateChangeLog', () => {
         ],
       },
     ];
-    const options = { commits: commits };
+    const options = { commits };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
     return generateChangeLog(null, pkg, options).then(changelog => {
@@ -184,7 +184,7 @@ describe('generateChangeLog', () => {
         subject: 'Do more things',
       },
     ];
-    const options = { commits: commits };
+    const options = { commits };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
     return generateChangeLog(null, pkg, options).then(changelog => {
@@ -218,7 +218,7 @@ describe('generateChangeLog', () => {
         ],
       },
     ];
-    const options = { commits: commits };
+    const options = { commits };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
     return generateChangeLog(null, pkg, options).then(changelog => {
@@ -261,7 +261,7 @@ describe('generateChangeLog', () => {
         pullId: '1',
       },
     ];
-    const options = { commits: commits };
+    const options = { commits };
     let changelog = null;
 
     before('generateChangeLog', () => {
@@ -305,7 +305,7 @@ describe('generateChangeLog', () => {
       if (commit.type === 'pr') return commit;
       return { sha: commit.sha, header: commit.subject };
     });
-    const options = { commits: commits };
+    const options = { commits };
     let changelog = null;
     let sloppyChangelog = null;
 
@@ -359,7 +359,7 @@ describe('generateChangeLog', () => {
         pullId: '3',
       },
     ];
-    const options = { commits: commits };
+    const options = { commits };
     let changelog = null;
 
     before('generateChangeLog', () => {
