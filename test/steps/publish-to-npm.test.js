@@ -89,7 +89,7 @@ describe('publishToNpm', () => {
         distTag: 'latest',
         commit: true,
         npmUsername: 'robin',
-        npmPasswordBase64: new Buffer('passw0rd').toString('base64'),
+        npmPasswordBase64: Buffer.from('passw0rd').toString('base64'),
         npmEmail: 'robin@example.com',
         npmToken: '',
       }).then(() => {
@@ -98,7 +98,7 @@ describe('publishToNpm', () => {
             {
               method: 'PUT',
               url: '/nlm-test-pkg',
-              auth: `Basic ${new Buffer('robin:passw0rd').toString('base64')}`,
+              auth: `Basic ${Buffer.from('robin:passw0rd').toString('base64')}`,
             },
           ],
           httpCalls.filter(c => c.method !== 'GET')
