@@ -19,8 +19,9 @@
     "posttest": "./bin/nlm.js verify"
   },
   "engines": {
-    "yarn": "0.0.0",
-    "npm": "^6.0.0"
+    "npm": "^6.0.0",
+    "node": ">=8.5.0",
+    "yarn": "0.0.0"
   },
   "nlm": {
     "license": {
@@ -34,8 +35,8 @@
     "co": "^4.6.0",
     "conventional-commits-parser": "^3.0.8",
     "debug": "^4.1.1",
-    "glob": "^6.0.1",
-    "gofer": "^3.8.1",
+    "glob": "^7.1.6",
+    "gofer": "^4.1.0",
     "minimist": "^1.2.0",
     "rc": "^1.2.8",
     "semver": "^7.1.2",
@@ -49,7 +50,7 @@
     "eslint-plugin-mocha": "^6.2.2",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "mocha": "^6.2.2",
+    "mocha": "^7.0.1",
     "prettier": "^1.19.1"
   },
   "author": {
