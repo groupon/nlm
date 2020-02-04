@@ -49,7 +49,6 @@ describe('parseRepository', () => {
       username: 'myname',
       repository: 'myproject',
     };
-
     it('understands ssh urls', () => {
       [
         'git+ssh://git@github.com/myname/myproject',
@@ -58,35 +57,27 @@ describe('parseRepository', () => {
         'git@github.com:myname/myproject.git',
       ].forEach(checkParsed.bind(null, expected));
     });
-
     it('understands https urls', () => {
       [
         'https://github.com/myname/myproject',
         'https://github.com/myname/myproject.git',
       ].forEach(checkParsed.bind(null, expected));
     });
-
     it('understands git urls', () => {
       [
         'git://github.com/myname/myproject',
         'git://github.com/myname/myproject.git',
       ].forEach(checkParsed.bind(null, expected));
     });
-
     it('understands npm-style shorthands', () => {
       ['myname/myproject'].forEach(checkParsed.bind(null, expected));
     });
-
     it('accepts dotted repositories', () => {
       ['myname/myproject.js.git', 'myname/myproject.js'].forEach(
-        checkParsed.bind(
-          null,
-          Object.assign({}, expected, { repository: 'myproject.js' })
-        )
+        checkParsed.bind(null, { ...expected, repository: 'myproject.js' })
       );
     });
   });
-
   describe('Github Enterprise', () => {
     const expected = {
       baseUrl: 'https://ghe.mycorp.com/api/v3',
@@ -94,7 +85,6 @@ describe('parseRepository', () => {
       username: 'myname',
       repository: 'myproject',
     };
-
     it('understands ssh urls', () => {
       [
         'git@ghe.mycorp.com:myname/myproject',
@@ -103,14 +93,12 @@ describe('parseRepository', () => {
         'git+ssh://git@ghe.mycorp.com/myname/myproject.git',
       ].forEach(checkParsed.bind(null, expected));
     });
-
     it('understands https urls', () => {
       [
         'https://ghe.mycorp.com/myname/myproject',
         'https://ghe.mycorp.com/myname/myproject.git',
       ].forEach(checkParsed.bind(null, expected));
     });
-
     it('understands git urls', () => {
       [
         'git://ghe.mycorp.com/myname/myproject',

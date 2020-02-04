@@ -32,7 +32,6 @@
     }
   },
   "dependencies": {
-    "co": "^4.6.0",
     "conventional-commits-parser": "^3.0.8",
     "debug": "^4.1.1",
     "glob": "^7.1.6",

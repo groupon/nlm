@@ -41,17 +41,14 @@ const withFixture = require('../fixture');
 describe('getCommits', () => {
   describe('with an empty project', () => {
     const dirname = withFixture('empty-project');
-
     it('returns an empty list', () => {
       return getCommits(dirname).then(commits => {
         assert.deepEqual([], commits);
       });
     });
   });
-
   describe('with invalid commits', () => {
     const dirname = withFixture('invalid-commit');
-
     it('returns the commit with type=null', () => {
       return getCommits(dirname).then(commits => {
         assert.equal(2, commits.length);
@@ -61,17 +58,14 @@ describe('getCommits', () => {
       });
     });
   });
-
   describe('issue and ticket links', () => {
     const dirname = withFixture('ticket-commits');
     let allCommits = null;
-
     before('fetch al commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
     });
-
     it('includes links to github for #123 style', () => {
       const commit = allCommits.find(c => c.subject === 'Short');
       assert.equal(1, commit.references.length);
@@ -82,7 +76,6 @@ describe('getCommits', () => {
       assert.equal('#', ref.prefix);
       assert.equal('#42', ref.raw);
     });
-
     it('includes links to github for x/y#123 style', () => {
       const commit = allCommits.find(c => c.subject === 'Repo');
       assert.equal(1, commit.references.length);
@@ -93,7 +86,6 @@ describe('getCommits', () => {
       assert.equal('#', ref.prefix);
       assert.equal('riley/thing#13', ref.raw);
     });
-
     it('includes links to github for full public github urls', () => {
       const commit = allCommits.find(c => c.subject === 'Full');
       assert.equal(1, commit.references.length);
@@ -103,7 +95,6 @@ describe('getCommits', () => {
       assert.equal('13', ref.issue);
       assert.equal('https://github.com/open/source/issues/13', ref.raw);
     });
-
     it('includes links to github for full GHE urls', () => {
       const commit = allCommits.find(c => c.subject === 'GHE');
       assert.equal(1, commit.references.length);
@@ -113,7 +104,6 @@ describe('getCommits', () => {
       assert.equal('72', ref.issue);
       assert.equal('https://github.example.com/some/thing/issues/72', ref.raw);
     });
-
     it('includes links to jira', () => {
       const commit = allCommits.find(c => c.subject === 'Jira');
       assert.equal(1, commit.references.length);
@@ -124,27 +114,22 @@ describe('getCommits', () => {
       assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.raw);
     });
   });
-
   describe('with multiple commits', () => {
     const dirname = withFixture('multiple-commits');
     let allCommits = null;
-
     before('fetch al commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
     });
-
     it('returns all three commits, plus one merge commit', () => {
       assert.equal(4, allCommits.length);
     });
-
     it('returns commits in order', () => {
       assert.equal('Do stuff', allCommits[0].subject);
       assert.equal('Adding second', allCommits[1].subject);
       assert.equal('Changed more stuff', allCommits[2].subject);
     });
-
     it('includes parentSha', () => {
       assert.equal('is null for first commit', null, allCommits[0].parentSha);
       assert.equal(
@@ -153,7 +138,6 @@ describe('getCommits', () => {
         allCommits[1].parentSha
       );
     });
-
     it('includes notes for breaking changes', () => {
       const note = allCommits[1].notes[0];
       assert.equal('BREAKING CHANGE', note.title);
@@ -166,14 +150,12 @@ describe('getCommits', () => {
         note.text
       );
     });
-
     it('includes merge commit info', () => {
       const merge = allCommits[3];
       assert.equal(merge.type, 'pr');
       assert.equal(merge.references[0].action, 'Merges');
       assert.equal(merge.references[0].issue, '119');
     });
-
     describe('when starting from v0.0.0', () => {
       it('returns everything from the beginning', () => {
         return getCommits(dirname, 'v0.0.0').then(commits => {
@@ -181,7 +163,6 @@ describe('getCommits', () => {
         });
       });
     });
-
     describe('when starting from the first commit', () => {
       it('only returns the last two', () => {
         return getCommits(dirname, allCommits[0].sha).then(commits => {

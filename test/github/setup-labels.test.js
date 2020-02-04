@@ -35,6 +35,7 @@
 const assert = require('assertive');
 
 const Github = require('../../lib/github/client');
+
 const setupLabels = require('../../lib/github/setup-labels');
 
 const packageJSON = require('../../package.json');
@@ -47,13 +48,11 @@ describe('setupLabels', () => {
     }
 
     const github = Github.forRepository(packageJSON.repository);
-
     it('finds no missing labels for nlm', () => {
       return setupLabels(github).then(addedLabels => {
         assert.deepEqual([], addedLabels);
       });
     });
-
     return null;
   });
 });

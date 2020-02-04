@@ -44,22 +44,18 @@ describe('determineReleaseInfo', () => {
   it('returns "none" for an empty list of commits', () => {
     assert.equal('none', determineReleaseInfo([]));
   });
-
   describe('with invalid commit messages', () => {
     const dirname = withFixture('invalid-commit');
-
     let commits = [];
     before('load commits', () => {
       return getCommits(dirname).then(results => {
         commits = results;
       });
     });
-
     it('rejects them with a helpful message', () => {
       const error = assert.throws(() => {
         determineReleaseInfo(commits);
       });
-
       assert.equal(
         [
           'This repository uses AngularJS Git Commit Message Conventions[1]',
@@ -92,7 +88,6 @@ describe('determineReleaseInfo', () => {
         error.message
       );
     });
-
     describe('with --acceptInvalidCommits', () => {
       it('is cautious and considers it "major"', () => {
         assert.equal('major', determineReleaseInfo(commits, true));
