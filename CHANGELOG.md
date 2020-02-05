@@ -1,3 +1,27 @@
+### 4.0.0
+
+#### Breaking Changes
+
+- drop Node 6 support
+
+*See: [`02d73e2`](https://github.com/groupon/nlm/commit/02d73e24d92feba06afb93ae3db35a23a39139e5)*
+
+- drop Node 8 support
+
+*See: [`eafbbe6`](https://github.com/groupon/nlm/commit/eafbbe655a4019ffe8f3e966d06c47c86f9b0670)*
+
+#### Commits
+
+* refactor: drop Node 6/8 support & upgrade dependencies - **[@aaarichter](https://github.com/aaarichter)** [#57](https://github.com/groupon/nlm/pull/57)
+  - [`005c83d`](https://github.com/groupon/nlm/commit/005c83d56664b73532c9184be2d2b688d48100a5) **chore:** upgrade dependencies
+  - [`edc920b`](https://github.com/groupon/nlm/commit/edc920b81a231d3fdbfceaaf91c69e4ad380731d) **style:** address lint errors & warnings
+  - [`02d73e2`](https://github.com/groupon/nlm/commit/02d73e24d92feba06afb93ae3db35a23a39139e5) **refactor:** drop Node 6 support & upgrade packages
+  - [`eafbbe6`](https://github.com/groupon/nlm/commit/eafbbe655a4019ffe8f3e966d06c47c86f9b0670) **refactor:** drop Node 8 support
+  - [`9791047`](https://github.com/groupon/nlm/commit/979104768fa6cafa665a41ca0f515710db878e16) **style:** apply JS transform on lib & test
+  - [`5543c9b`](https://github.com/groupon/nlm/commit/5543c9b1d81587819160e6152dacddf335983147) **style:** fix lint issues
+  - [`239ae9a`](https://github.com/groupon/nlm/commit/239ae9a52d556f108c360be05283d03547ad52e6) **fix:** address feedback
+
+
 ### 3.6.3
 
 * clean up broken links in README - **[@dbushong](https://github.com/dbushong)** [#56](https://github.com/groupon/nlm/pull/56)
