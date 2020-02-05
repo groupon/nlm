@@ -45,15 +45,12 @@ describe('getPendingChanges', () => {
     repository: 'usr/proj',
   };
   const options = {};
-
   before('create version commit', () => {
     return getPendingChanges(dirname, pkg, options);
   });
-
   it('adds the commits to the options', () => {
     assert.hasType(Array, options.commits);
   });
-
   it('resolves commit references', () => {
     const commit = options.commits.find(c => c.subject === 'Jira');
     assert.equal(1, commit.references.length);
@@ -61,7 +58,6 @@ describe('getPendingChanges', () => {
     assert.equal('REPO-', ref.prefix);
     assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.href);
   });
-
   it('truncates full urls to same repo', () => {
     const commit = options.commits.find(c => c.subject === 'Truncate');
     assert.equal(1, commit.references.length);
@@ -69,7 +65,6 @@ describe('getPendingChanges', () => {
     assert.equal('#', ref.prefix);
     assert.equal('https://github.com/usr/proj/issues/44', ref.href);
   });
-
   it('builds nice references to sibling repos', () => {
     const commit = options.commits.find(c => c.subject === 'Full');
     assert.equal(1, commit.references.length);
@@ -77,7 +72,6 @@ describe('getPendingChanges', () => {
     assert.equal('open/source#', ref.prefix);
     assert.equal('https://github.com/open/source/issues/13', ref.href);
   });
-
   it('expands short-style refs', () => {
     const commit = options.commits.find(c => c.subject === 'Short');
     assert.equal(1, commit.references.length);
@@ -85,7 +79,6 @@ describe('getPendingChanges', () => {
     assert.equal('#', ref.prefix);
     assert.equal('https://github.com/usr/proj/issues/42', ref.href);
   });
-
   it('supports refs to other Github instances', () => {
     const commit = options.commits.find(c => c.subject === 'GHE');
     assert.equal(1, commit.references.length);

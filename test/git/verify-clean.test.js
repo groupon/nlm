@@ -45,23 +45,18 @@ function unexpected() {
 describe('verifyClean', () => {
   describe('with an empty project', () => {
     const dirname = withFixture('empty-project');
-
     it('returns true', () => {
       return verifyClean(dirname).then(assert.expect);
     });
   });
-
   describe('with committed changes', () => {
     const dirname = withFixture('fix-commit');
-
     it('returns true', () => {
       return verifyClean(dirname).then(assert.expect);
     });
   });
-
   describe('with uncommitted or unstaged changes', () => {
     const dirname = withFixture('dirty-checkout');
-
     it('reports the files in question', () => {
       return verifyClean(dirname).then(unexpected, error => {
         assert.include('M  index.js', error.message);

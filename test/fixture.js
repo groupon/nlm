@@ -32,21 +32,19 @@
 
 'use strict';
 
-const execFile = require('child_process').execFile;
+const { execFile } = require('child_process');
+
 const path = require('path');
 
 function withFixture(name) {
   const dirname = path.join(__dirname, '..', 'tmp', name);
   const script = path.join(__dirname, 'fixtures', name);
-
   before('remove fixture directory', done => {
     execFile('rm', ['-rf', dirname], done);
   });
-
   before('create fixture directory', done => {
     execFile('mkdir', ['-p', dirname], done);
   });
-
   before('running fixture setup', done => {
     execFile(
       script,
@@ -66,15 +64,15 @@ function withFixture(name) {
           process.stdout.write(`${stdout}\n`);
           process.stderr.write(`${stderr}\n`);
         }
+
         done(error);
       }
     );
   });
-
   after('remove fixture directory', done => {
     execFile('rm', ['-rf', dirname], done);
   });
-
   return dirname;
 }
+
 module.exports = withFixture;

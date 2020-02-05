@@ -43,7 +43,6 @@ const withFixture = require('../fixture');
 function withFakeRegistry() {
   const httpCalls = [];
   let server;
-
   before(done => {
     server = require('http').createServer((req, res) => {
       httpCalls.push({
@@ -51,16 +50,21 @@ function withFakeRegistry() {
         url: req.url,
         auth: req.headers.authorization,
       });
+
       if (req.method === 'GET' && req.url === '/nlm-test-pkg') {
         res.statusCode = 404;
         return void res.end('{}');
       }
+
       res.statusCode = 200;
+
       if (req.url === '/nlm-test-pkg?write=true') {
         res.end(
           JSON.stringify({
             ok: true,
-            versions: { '1.0.0': {} },
+            versions: {
+              '1.0.0': {},
+            },
           })
         );
       } else {
@@ -69,11 +73,9 @@ function withFakeRegistry() {
     });
     server.listen(3000, done);
   });
-
   after(done => {
     server.close(done);
   });
-
   return httpCalls;
 }
 
@@ -81,7 +83,6 @@ describe('publishToNpm', () => {
   describe('with NPM_USERNAME etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-
     it('sends basic auth headers', function() {
       this.timeout(4000);
       return publishToNpm(dirname, require(`${dirname}/package.json`), {
@@ -89,7 +90,7 @@ describe('publishToNpm', () => {
         distTag: 'latest',
         commit: true,
         npmUsername: 'robin',
-        npmPasswordBase64: new Buffer('passw0rd').toString('base64'),
+        npmPasswordBase64: Buffer.from('passw0rd').toString('base64'),
         npmEmail: 'robin@example.com',
         npmToken: '',
       }).then(() => {
@@ -98,7 +99,7 @@ describe('publishToNpm', () => {
             {
               method: 'PUT',
               url: '/nlm-test-pkg',
-              auth: `Basic ${new Buffer('robin:passw0rd').toString('base64')}`,
+              auth: `Basic ${Buffer.from('robin:passw0rd').toString('base64')}`,
             },
           ],
           httpCalls.filter(c => c.method !== 'GET')
@@ -108,27 +109,26 @@ describe('publishToNpm', () => {
   });
 
   function getTokenOptions(overrides) {
-    return Object.assign(
-      {
-        currentBranch: 'master',
-        distTag: 'latest',
-        commit: true,
-        npmUsername: '',
-        npmPasswordBase64: '',
-        npmEmail: '',
-        npmToken: 'some-access-token',
-      },
-      overrides
-    );
+    return {
+      currentBranch: 'master',
+      distTag: 'latest',
+      commit: true,
+      npmUsername: '',
+      npmPasswordBase64: '',
+      npmEmail: '',
+      npmToken: 'some-access-token',
+      ...overrides,
+    };
   }
 
   describe('with NPM_TOKEN etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-
     it('uses a bearer token', function() {
       this.timeout(4000);
+
       const pkg = require(`${dirname}/package.json`);
+
       return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
         assert.deepEqual(
           [
@@ -143,15 +143,17 @@ describe('publishToNpm', () => {
       });
     });
   });
-
   describe('with nlm.deprecated set', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-
     it('tries to deprecate', function() {
       this.timeout(4000);
+
       const pkg = require(`${dirname}/package.json`);
-      const opts = getTokenOptions({ deprecated: 'reason' });
+
+      const opts = getTokenOptions({
+        deprecated: 'reason',
+      });
       return publishToNpm(dirname, pkg, opts).then(() => {
         const putReq = {
           method: 'PUT',
@@ -165,13 +167,14 @@ describe('publishToNpm', () => {
       });
     });
   });
-
   describe('without --commmit', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-
     it('makes no http calls', () => {
-      const opts = getTokenOptions({ commit: false, deprecated: 'foo' });
+      const opts = getTokenOptions({
+        commit: false,
+        deprecated: 'foo',
+      });
       return publishToNpm(
         dirname,
         require(`${dirname}/package.json`),
@@ -181,16 +184,14 @@ describe('publishToNpm', () => {
       });
     });
   });
-
   describe('if the package is set to private', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-
     it('makes no http calls', () => {
-      const pkg = Object.assign(
-        { private: true },
-        require(`${dirname}/package.json`)
-      );
+      const pkg = {
+        private: true,
+        ...require(`${dirname}/package.json`),
+      };
       return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
         assert.deepEqual([], httpCalls);
       });

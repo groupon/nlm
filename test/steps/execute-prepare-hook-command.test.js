@@ -44,13 +44,11 @@ const withFixture = require('../fixture');
 
 describe('executePrepareHookCommand', () => {
   const dirname = withFixture('empty-project');
-
   describe('when no hooks', () => {
     it('does nothing', () => {
       executePrepareHookCommand(dirname, null, {});
     });
   });
-
   describe('when hooks is empty', () => {
     it('does nothing', () => {
       executePrepareHookCommand(dirname, null, {
@@ -58,22 +56,24 @@ describe('executePrepareHookCommand', () => {
       });
     });
   });
-
   describe('when hooks does not contain *prepare* hook', () => {
     it('does nothing', () => {
       executePrepareHookCommand(dirname, null, {
-        hooks: { dummy: 'blabla' },
+        hooks: {
+          dummy: 'blabla',
+        },
       });
     });
   });
-
   describe('when hooks contains *prepare* hook', () => {
     it('executes the command defined in the value', () => {
       const expectedVersion = '1.0.0';
       const tmpFilename = 'tmp.txt';
       executePrepareHookCommand(dirname, null, {
         nextVersion: expectedVersion,
-        hooks: { prepare: `printf $NLM_NEXT_VERSION >> ${tmpFilename}` },
+        hooks: {
+          prepare: `printf $NLM_NEXT_VERSION >> ${tmpFilename}`,
+        },
       });
       const version = fs.readFileSync(`${dirname}/${tmpFilename}`, 'utf8');
       assert.equal(expectedVersion, version);
