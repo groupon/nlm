@@ -68,6 +68,7 @@ describe('createVersionCommit', () => {
   afterEach(resetVars);
   describe('with no package-lock.json', () => {
     const dirname = withFixture('multiple-commits');
+    let currentDate;
     before('commits with the original author', done => {
       execFile(
         'git',
@@ -83,12 +84,23 @@ describe('createVersionCommit', () => {
       );
     });
     before('create version commit', () => {
+      currentDate = new Date().toISOString().substring(0, 10);
       return createVersionCommit(dirname, pkg, options);
     });
     it('writes the correct HEAD sha', () => {
       const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
       assert.equal(HEAD.trim(), options.versionCommitSha);
     });
+
+    it('writes the correct CHANGELOG', () => {
+      const [version, , commit1, commit2] = fs
+        .readFileSync(`${dirname}/CHANGELOG.md`, 'utf8')
+        .split('\n');
+      assert.equal(`### 1.0.0 - ${currentDate}`, version);
+      assert.equal('* New stuff', commit1);
+      assert.equal('* Interesting features', commit2);
+    });
+
     it('commits with the proper user', done => {
       execFile(
         'git',
