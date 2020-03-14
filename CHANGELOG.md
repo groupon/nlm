@@ -1,3 +1,9 @@
+### 4.1.1 - 2020-03-14
+
+* chore(deps): bump minimist from 1.2.0 to 1.2.2 - **[@dependabot[bot]](https://github.com/apps/dependabot)** [#62](https://github.com/groupon/nlm/pull/62)
+  - [`a41c5fd`](https://github.com/groupon/nlm/commit/a41c5fd81d593015d096fcbefa34dd69121f81c1) **chore:** bump minimist from 1.2.0 to 1.2.2 - see: [1](- [Commits](https://github.com/substack/minimist/compare/1)
+
+
 ### 4.1.0
 
 * feat: add date to CHANGELOG - **[@aotarola](https://github.com/aotarola)** [#61](https://github.com/groupon/nlm/pull/61)
