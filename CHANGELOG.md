@@ -1,3 +1,10 @@
+### 4.1.0
+
+* feat: add date to CHANGELOG - **[@aotarola](https://github.com/aotarola)** [#61](https://github.com/groupon/nlm/pull/61)
+  - [`4d56023`](https://github.com/groupon/nlm/commit/4d56023cc6e7d3cfb33bc9d4d09862c6e2ce0d87) **feat:** add date to CHANGELOG
+  - [`06a18ed`](https://github.com/groupon/nlm/commit/06a18ed3d0eac6349688a5cba6611e6e6adffbdb) **chore:** npm audit fix
+
+
 ### 4.0.0
 
 #### Breaking Changes
