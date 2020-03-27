@@ -126,10 +126,12 @@ describe('generateChangeLog', () => {
     const options = {
       commits,
     };
+
     return generateChangeLog(null, pkg, options).then(changelog => {
       assert.equal('', changelog);
     });
   });
+
   it('links to github issues and jira tickets', () => {
     const pkg = {
       repository: 'usr/proj',
@@ -173,6 +175,7 @@ describe('generateChangeLog', () => {
     };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+
     return generateChangeLog(null, pkg, options).then(changelog => {
       const lines = changelog.split('\n');
       assert.equal(
@@ -188,6 +191,7 @@ describe('generateChangeLog', () => {
       );
     });
   });
+
   it('can create a changelog for two commits', () => {
     const pkg = {
       repository: 'usr/proj',
@@ -209,6 +213,7 @@ describe('generateChangeLog', () => {
     };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+
     return generateChangeLog(null, pkg, options).then(changelog => {
       assert.equal(
         [
@@ -219,6 +224,7 @@ describe('generateChangeLog', () => {
       );
     });
   });
+
   it('puts breaking changes ahead of everything else', () => {
     const pkg = {
       repository: 'usr/proj',
@@ -246,6 +252,7 @@ describe('generateChangeLog', () => {
     };
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+
     return generateChangeLog(null, pkg, options).then(changelog => {
       assert.equal(
         [
@@ -264,6 +271,98 @@ describe('generateChangeLog', () => {
       );
     });
   });
+
+  it('handles variants typings of BREAKING CHANGE', () => {
+    const pkg = {
+      repository: 'usr/proj',
+    };
+    const commits = [
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+        notes: [
+          {
+            title: 'BREAKING CHANGE',
+            text: 'without a colon',
+          },
+        ],
+      },
+      {
+        sha: '2234567890123456789012345678901234567891',
+        type: 'feat',
+        subject: 'Do more things',
+        notes: [
+          {
+            title: 'BREAKING CHANGE:',
+            text: 'with a colon',
+          },
+        ],
+      },
+      {
+        sha: '2234567890123456789012345678901234567892',
+        type: 'feat',
+        subject: 'Do more things',
+        notes: [
+          {
+            title: 'BREAKING CHANGES',
+            text: 'plural',
+          },
+        ],
+      },
+      {
+        sha: '2234567890123456789012345678901234567893',
+        type: 'feat',
+        subject: 'Do more things',
+        notes: [
+          {
+            title: 'BREAKING CHANGES:',
+            text: 'plural with colon',
+          },
+        ],
+      },
+    ];
+    const options = {
+      commits,
+    };
+    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
+    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+    const href2 = `https://github.com/usr/proj/commit/${commits[2].sha}`;
+    const href3 = `https://github.com/usr/proj/commit/${commits[3].sha}`;
+
+    return generateChangeLog(null, pkg, options).then(changelog => {
+      assert.equal(
+        [
+          '#### Breaking Changes',
+          '',
+          'without a colon',
+          '',
+          `*See: [\`2234567\`](${href0})*`,
+          '',
+          'with a colon',
+          '',
+          `*See: [\`2234567\`](${href1})*`,
+          '',
+          'plural',
+          '',
+          `*See: [\`2234567\`](${href2})*`,
+          '',
+          'plural with colon',
+          '',
+          `*See: [\`2234567\`](${href3})*`,
+          '',
+          '#### Commits',
+          '',
+          `* [\`2234567\`](${href0}) **feat:** Do more things`,
+          `* [\`2234567\`](${href1}) **feat:** Do more things`,
+          `* [\`2234567\`](${href2}) **feat:** Do more things`,
+          `* [\`2234567\`](${href3}) **feat:** Do more things`,
+        ].join('\n'),
+        changelog
+      );
+    });
+  });
+
   describe('pull request commits', () => {
     const httpCalls = withFakeGithub();
     const pkg = {
@@ -291,19 +390,23 @@ describe('generateChangeLog', () => {
       commits,
     };
     let changelog = null;
+
     before('generateChangeLog', () => {
       return generateChangeLog(null, pkg, options).then(_changelog => {
         changelog = _changelog;
       });
     });
+
     it('calls out to github to get PR info', () => {
       assert.equal(2, httpCalls.length);
     });
+
     it('groups commits by pull request', () => {
       assert.include('* PR #1 Title', changelog);
       assert.include('  - [`1234567`]', changelog);
     });
   });
+
   describe('with an invalid PR', () => {
     const httpCalls = withFakeGithub();
     const pkg = {
@@ -339,11 +442,13 @@ describe('generateChangeLog', () => {
     };
     let changelog = null;
     let sloppyChangelog = null;
+
     before('generateChangeLog', () => {
       return generateChangeLog(null, pkg, options).then(_changelog => {
         changelog = _changelog;
       });
     });
+
     before('generateSloppyChangeLog', () => {
       return generateChangeLog(null, pkg, {
         commits: sloppyCommits,
@@ -351,18 +456,22 @@ describe('generateChangeLog', () => {
         sloppyChangelog = _changelog;
       });
     });
+
     it('calls out to github to get PR info', () => {
       assert.equal(4, httpCalls.length);
     });
+
     it('ignores the PR', () => {
       assert.notInclude('* PR #2 Title', changelog);
       assert.include('* [`1234567`]', changelog);
     });
+
     it('handles poorly formatted commit messages too', () => {
       assert.include(') Stop doing the wrong thing\n', sloppyChangelog);
       assert.include(') Do more things', sloppyChangelog);
     });
   });
+
   describe('with a missing PR', () => {
     const httpCalls = withFakeGithub();
     const pkg = {
@@ -390,14 +499,17 @@ describe('generateChangeLog', () => {
       commits,
     };
     let changelog = null;
+
     before('generateChangeLog', () => {
       return generateChangeLog(null, pkg, options).then(_changelog => {
         changelog = _changelog;
       });
     });
+
     it('calls out to github to get PR info', () => {
       assert.equal(2, httpCalls.length);
     });
+
     it('ignores the PR', () => {
       assert.include('* [`1234567`]', changelog);
     });
