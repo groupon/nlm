@@ -1,3 +1,11 @@
+### 4.2.0 - 2020-03-27
+
+* feat: allow plural and colon for BREAKING CHANGE commit message tag - **[@aaarichter](https://github.com/aaarichter)** [#63](https://github.com/groupon/nlm/pull/63)
+  - [`4698bf8`](https://github.com/groupon/nlm/commit/4698bf818bbdb0ad24c60fc1810644e90d7ff289) **chore:** upgrade packages
+  - [`9cc13e2`](https://github.com/groupon/nlm/commit/9cc13e242e850db1cb5aabb9e8cfc4b82e49b101) **chore:** add nyc
+  - [`fa49799`](https://github.com/groupon/nlm/commit/fa49799668c60d14574e41f67a96f985e8a180c3) **feat:** allow plural and colon for BREAKING CHANGE commit message tag
+
+
 ### 4.1.1 - 2020-03-14
 
 * chore(deps): bump minimist from 1.2.0 to 1.2.2 - **[@dependabot[bot]](https://github.com/apps/dependabot)** [#62](https://github.com/groupon/nlm/pull/62)
