@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const generateChangeLog = require('../../lib/steps/changelog');
 
@@ -118,7 +118,7 @@ function withFakeGithub() {
 }
 
 describe('generateChangeLog', () => {
-  it('can create an empty changelog', () => {
+  it('can create an empty changelog', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
@@ -127,12 +127,12 @@ describe('generateChangeLog', () => {
       commits,
     };
 
-    return generateChangeLog(null, pkg, options).then(changelog => {
-      assert.equal('', changelog);
-    });
+    const changelog = await generateChangeLog(null, pkg, options);
+
+    assert.strictEqual(changelog, '');
   });
 
-  it('links to github issues and jira tickets', () => {
+  it('links to github issues and jira tickets', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
@@ -176,23 +176,23 @@ describe('generateChangeLog', () => {
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
 
-    return generateChangeLog(null, pkg, options).then(changelog => {
-      const lines = changelog.split('\n');
-      assert.equal(
-        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing - see: ` +
-          `[fo/ba#7](https://gitub.com/fo/ba/issues/7)`,
-        lines[0]
-      );
-      assert.equal(
-        `* [\`2234567\`](${href1}) **feat:** Do more things - see: ` +
-          `[THING-2010](https://example.com/browse/THING-7), ` +
-          `[#44](https://github.com/usr/proj/issues/44)`,
-        lines[1]
-      );
-    });
+    const changelog = await generateChangeLog(null, pkg, options);
+    const lines = changelog.split('\n');
+
+    assert.strictEqual(
+      lines[0],
+      `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing - see: ` +
+        `[fo/ba#7](https://gitub.com/fo/ba/issues/7)`
+    );
+    assert.strictEqual(
+      lines[1],
+      `* [\`2234567\`](${href1}) **feat:** Do more things - see: ` +
+        `[THING-2010](https://example.com/browse/THING-7), ` +
+        `[#44](https://github.com/usr/proj/issues/44)`
+    );
   });
 
-  it('can create a changelog for two commits', () => {
+  it('can create a changelog for two commits', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
@@ -214,18 +214,18 @@ describe('generateChangeLog', () => {
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
 
-    return generateChangeLog(null, pkg, options).then(changelog => {
-      assert.equal(
-        [
-          `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
-          `* [\`2234567\`](${href1}) **feat:** Do more things`,
-        ].join('\n'),
-        changelog
-      );
-    });
+    const changelog = await generateChangeLog(null, pkg, options);
+
+    assert.strictEqual(
+      changelog,
+      [
+        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
+        `* [\`2234567\`](${href1}) **feat:** Do more things`,
+      ].join('\n')
+    );
   });
 
-  it('puts breaking changes ahead of everything else', () => {
+  it('puts breaking changes ahead of everything else', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
@@ -253,26 +253,25 @@ describe('generateChangeLog', () => {
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
 
-    return generateChangeLog(null, pkg, options).then(changelog => {
-      assert.equal(
-        [
-          '#### Breaking Changes',
-          '',
-          'The interface of this library changed in some way.',
-          '',
-          `*See: [\`2234567\`](${href1})*`,
-          '',
-          '#### Commits',
-          '',
-          `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
-          `* [\`2234567\`](${href1}) **feat:** Do more things`,
-        ].join('\n'),
-        changelog
-      );
-    });
+    const changelog = await generateChangeLog(null, pkg, options);
+    assert.strictEqual(
+      changelog,
+      [
+        '#### Breaking Changes',
+        '',
+        'The interface of this library changed in some way.',
+        '',
+        `*See: [\`2234567\`](${href1})*`,
+        '',
+        '#### Commits',
+        '',
+        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
+        `* [\`2234567\`](${href1}) **feat:** Do more things`,
+      ].join('\n')
+    );
   });
 
-  it('handles variants typings of BREAKING CHANGE', () => {
+  it('handles variants typings of BREAKING CHANGE', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
@@ -330,37 +329,36 @@ describe('generateChangeLog', () => {
     const href2 = `https://github.com/usr/proj/commit/${commits[2].sha}`;
     const href3 = `https://github.com/usr/proj/commit/${commits[3].sha}`;
 
-    return generateChangeLog(null, pkg, options).then(changelog => {
-      assert.equal(
-        [
-          '#### Breaking Changes',
-          '',
-          'without a colon',
-          '',
-          `*See: [\`2234567\`](${href0})*`,
-          '',
-          'with a colon',
-          '',
-          `*See: [\`2234567\`](${href1})*`,
-          '',
-          'plural',
-          '',
-          `*See: [\`2234567\`](${href2})*`,
-          '',
-          'plural with colon',
-          '',
-          `*See: [\`2234567\`](${href3})*`,
-          '',
-          '#### Commits',
-          '',
-          `* [\`2234567\`](${href0}) **feat:** Do more things`,
-          `* [\`2234567\`](${href1}) **feat:** Do more things`,
-          `* [\`2234567\`](${href2}) **feat:** Do more things`,
-          `* [\`2234567\`](${href3}) **feat:** Do more things`,
-        ].join('\n'),
-        changelog
-      );
-    });
+    const changelog = await generateChangeLog(null, pkg, options);
+    assert.equal(
+      [
+        '#### Breaking Changes',
+        '',
+        'without a colon',
+        '',
+        `*See: [\`2234567\`](${href0})*`,
+        '',
+        'with a colon',
+        '',
+        `*See: [\`2234567\`](${href1})*`,
+        '',
+        'plural',
+        '',
+        `*See: [\`2234567\`](${href2})*`,
+        '',
+        'plural with colon',
+        '',
+        `*See: [\`2234567\`](${href3})*`,
+        '',
+        '#### Commits',
+        '',
+        `* [\`2234567\`](${href0}) **feat:** Do more things`,
+        `* [\`2234567\`](${href1}) **feat:** Do more things`,
+        `* [\`2234567\`](${href2}) **feat:** Do more things`,
+        `* [\`2234567\`](${href3}) **feat:** Do more things`,
+      ].join('\n'),
+      changelog
+    );
   });
 
   describe('pull request commits', () => {
@@ -389,21 +387,19 @@ describe('generateChangeLog', () => {
     const options = {
       commits,
     };
-    let changelog = null;
+    let changelog;
 
-    before('generateChangeLog', () => {
-      return generateChangeLog(null, pkg, options).then(_changelog => {
-        changelog = _changelog;
-      });
+    before('generateChangeLog', async () => {
+      changelog = await generateChangeLog(null, pkg, options);
     });
 
     it('calls out to github to get PR info', () => {
-      assert.equal(2, httpCalls.length);
+      assert.strictEqual(httpCalls.length, 2);
     });
 
     it('groups commits by pull request', () => {
-      assert.include('* PR #1 Title', changelog);
-      assert.include('  - [`1234567`]', changelog);
+      assert.ok(changelog.includes('* PR #1 Title'));
+      assert.ok(changelog.includes('  - [`1234567`]'));
     });
   });
 
@@ -443,32 +439,28 @@ describe('generateChangeLog', () => {
     let changelog = null;
     let sloppyChangelog = null;
 
-    before('generateChangeLog', () => {
-      return generateChangeLog(null, pkg, options).then(_changelog => {
-        changelog = _changelog;
-      });
+    before('generateChangeLog', async () => {
+      changelog = await generateChangeLog(null, pkg, options);
     });
 
-    before('generateSloppyChangeLog', () => {
-      return generateChangeLog(null, pkg, {
+    before('generateSloppyChangeLog', async () => {
+      sloppyChangelog = await generateChangeLog(null, pkg, {
         commits: sloppyCommits,
-      }).then(_changelog => {
-        sloppyChangelog = _changelog;
       });
     });
 
     it('calls out to github to get PR info', () => {
-      assert.equal(4, httpCalls.length);
+      assert.strictEqual(httpCalls.length, 4);
     });
 
     it('ignores the PR', () => {
-      assert.notInclude('* PR #2 Title', changelog);
-      assert.include('* [`1234567`]', changelog);
+      assert.ok(!changelog.includes('* PR #2 Title'));
+      assert.ok(changelog.includes('* [`1234567`]'));
     });
 
     it('handles poorly formatted commit messages too', () => {
-      assert.include(') Stop doing the wrong thing\n', sloppyChangelog);
-      assert.include(') Do more things', sloppyChangelog);
+      assert.ok(sloppyChangelog.includes(') Stop doing the wrong thing\n'));
+      assert.ok(sloppyChangelog.includes(') Do more things'));
     });
   });
 
@@ -500,18 +492,16 @@ describe('generateChangeLog', () => {
     };
     let changelog = null;
 
-    before('generateChangeLog', () => {
-      return generateChangeLog(null, pkg, options).then(_changelog => {
-        changelog = _changelog;
-      });
+    before('generateChangeLog', async () => {
+      changelog = await generateChangeLog(null, pkg, options);
     });
 
     it('calls out to github to get PR info', () => {
-      assert.equal(2, httpCalls.length);
+      assert.strictEqual(httpCalls.length, 2);
     });
 
     it('ignores the PR', () => {
-      assert.include('* [`1234567`]', changelog);
+      assert.ok(changelog.includes('* [`1234567`]'));
     });
   });
 });
