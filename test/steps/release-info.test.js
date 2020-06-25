@@ -108,7 +108,7 @@ describe('determineReleaseInfo', () => {
       expected: 'minor',
     },
     {
-      desc: 'with "doc", "docs", "style", "test" & "pr" commit type',
+      desc: 'with "docs", "style", "test" & "pr" commit type',
       fixture: 'silent-commits',
       expected: 'none',
     },
