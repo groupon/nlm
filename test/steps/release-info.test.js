@@ -44,14 +44,14 @@ describe('determineReleaseInfo', () => {
   it('returns "none" for an empty list of commits', () => {
     assert.equal('none', determineReleaseInfo([]));
   });
+
   describe('with invalid commit messages', () => {
     const dirname = withFixture('invalid-commit');
     let commits = [];
-    before('load commits', () => {
-      return getCommits(dirname).then(results => {
-        commits = results;
-      });
+    before('load commits', async () => {
+      commits = await getCommits(dirname);
     });
+
     it('rejects them with a helpful message', () => {
       const error = assert.throws(() => {
         determineReleaseInfo(commits);
@@ -88,10 +88,47 @@ describe('determineReleaseInfo', () => {
         error.message
       );
     });
+
     describe('with --acceptInvalidCommits', () => {
       it('is cautious and considers it "major"', () => {
         assert.equal('major', determineReleaseInfo(commits, true));
       });
+    });
+  });
+
+  describe('with "chore", "fix", "refactor" & "perf" commit messages', () => {
+    const dirname = withFixture('patch-commits');
+    let commits = [];
+    before('load commits', async () => {
+      commits = await getCommits(dirname);
+    });
+
+    it('returns "patch" version info', () => {
+      assert.equal('patch', determineReleaseInfo(commits, true));
+    });
+  });
+
+  describe('with "feat" commit messages', () => {
+    const dirname = withFixture('minor-commits');
+    let commits = [];
+    before('load commits', async () => {
+      commits = await getCommits(dirname);
+    });
+
+    it('returns "minor" version info', () => {
+      assert.equal('minor', determineReleaseInfo(commits, true));
+    });
+  });
+
+  describe('with "doc", "docs", "style", "test" & "pr" commit messages', () => {
+    const dirname = withFixture('silent-commits');
+    let commits = [];
+    before('load commits', async () => {
+      commits = await getCommits(dirname);
+    });
+
+    it('returns "none" version info', () => {
+      assert.equal('none', determineReleaseInfo(commits, true));
     });
   });
 });
