@@ -96,39 +96,52 @@ describe('determineReleaseInfo', () => {
     });
   });
 
-  describe('with "chore", "fix", "refactor" & "perf" commit messages', () => {
-    const dirname = withFixture('patch-commits');
-    let commits = [];
-    before('load commits', async () => {
-      commits = await getCommits(dirname);
-    });
+  const testcases = [
+    {
+      desc: 'with "chore", "fix", "refactor" & "perf" commit type',
+      fixture: 'patch-commits',
+      expected: 'patch',
+    },
+    {
+      desc: 'with "feat" commit type',
+      fixture: 'minor-commits',
+      expected: 'minor',
+    },
+    {
+      desc: 'with "doc", "docs", "style", "test" & "pr" commit type',
+      fixture: 'silent-commits',
+      expected: 'none',
+    },
+    {
+      desc: 'with "BREAKING CHANGE" commit footer',
+      fixture: 'breaking-change-commit',
+      expected: 'major',
+    },
+    {
+      desc: 'with github "Revert" commit message or "revert" commit type',
+      fixture: 'revert-commit',
+      expected: 'patch',
+    },
+    {
+      desc: 'with github "Merge" commit message',
+      fixture: 'merge-commit',
+      expected: 'none',
+    },
+  ];
 
-    it('returns "patch" version info', () => {
-      assert.equal('patch', determineReleaseInfo(commits, true));
-    });
-  });
+  describe('test cases', () => {
+    for (const testcase of testcases) {
+      describe(testcase.desc, () => {
+        const dirname = withFixture(testcase.fixture);
+        let commits = [];
+        before('load commits', async () => {
+          commits = await getCommits(dirname);
+        });
 
-  describe('with "feat" commit messages', () => {
-    const dirname = withFixture('minor-commits');
-    let commits = [];
-    before('load commits', async () => {
-      commits = await getCommits(dirname);
-    });
-
-    it('returns "minor" version info', () => {
-      assert.equal('minor', determineReleaseInfo(commits, true));
-    });
-  });
-
-  describe('with "doc", "docs", "style", "test" & "pr" commit messages', () => {
-    const dirname = withFixture('silent-commits');
-    let commits = [];
-    before('load commits', async () => {
-      commits = await getCommits(dirname);
-    });
-
-    it('returns "none" version info', () => {
-      assert.equal('none', determineReleaseInfo(commits, true));
-    });
+        it(`returns "${testcase.expected}" version info`, () => {
+          assert.equal(testcase.expected, determineReleaseInfo(commits));
+        });
+      });
+    }
   });
 });

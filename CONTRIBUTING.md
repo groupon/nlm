@@ -43,6 +43,8 @@ The empty lines between the different parts are required.
 | **perf** | Performance optimizations | patch |
 | **refactor** | Changes to the code structure without fixing bugs or adding features | patch |
 | **chore** | Changes to the project setup and tools, dependency bumps, house-keeping | patch |
+| **revert** | reverts a previous commit | patch |
+
 ||
 | **docs** | Changes to the documentation | none |
 | **style** | Cleanup & lint rule fixes. Note that often it's better to just amend the previous commit if it introduced lint errors | none |

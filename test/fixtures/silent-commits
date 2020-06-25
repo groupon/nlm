@@ -4,10 +4,6 @@ git init
 
 git checkout -b silent-commits
 
-echo "console.log('more');" > doc.js
-git add doc.js
-git commit -m "doc: Adding doc commit"
-
 echo "console.log('more');" > docs.js
 git add docs.js
 git commit -m "docs: Adding docs commit"

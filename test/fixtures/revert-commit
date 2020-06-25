@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo "console.log('do stuff');" > revert-multi-line.js
+git add revert-multi-line.js
+git commit -m 'Revert "throw an error if a callback is passed"
+
+This reverts commit 9bb4d6c.'
+
+echo "console.log('do stuff');" > revert.js
+git add revert.js
+git commit -m 'Revert "Fix: remove peek baseURL"'
+
+echo "console.log('do stuff');" > index.js
+git add index.js
+git commit -m 'revert: this'
