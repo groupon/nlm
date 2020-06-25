@@ -16,6 +16,10 @@ echo "console.log('more');" > test.js
 git add test.js
 git commit -m "test: Adding test commit"
 
+echo "console.log('more');" > ci.js
+git add ci.js
+git commit -m "ci: Adding ci commit"
+
 echo "console.log('more');" > pr.js
 git add pr.js
 git commit -m "pr: Adding pr commit"

@@ -43,12 +43,13 @@ The empty lines between the different parts are required.
 | **perf** | Performance optimizations | patch |
 | **refactor** | Changes to the code structure without fixing bugs or adding features | patch |
 | **chore** | Changes to the project setup and tools, dependency bumps, house-keeping | patch |
+| **build** | Changes that affect the build system (e.g webpack, rollup, ...) | patch |
 | **revert** | reverts a previous commit | patch |
-
 ||
 | **docs** | Changes to the documentation | none |
 | **style** | Cleanup & lint rule fixes. Note that often it's better to just amend the previous commit if it introduced lint errors | none |
 | **test** | Fixing existing tests or adding missing ones. Just like with **style**, if you add tests to a feature you just introduced in the previous commit, consider keeping the tests, and the feature in the same commit instead. | none |
+| **ci** | Changes to your CI configuration & scripts | none |
 * `<subject>`: A [good git commit message subject](http://chris.beams.io/posts/git-commit/#limit-50).
   - Keep it brief. If possible the whole first line should have at most 50 characters.
   - Use an imperative mood. "Create" instead of "creates" or "created".

@@ -90,7 +90,7 @@ git rebase -i --root
 
   const testcases = [
     {
-      desc: 'with "chore", "fix", "refactor" & "perf" commit type',
+      desc: 'with "chore", "fix", "refactor", "build" & "perf" commit type',
       fixture: 'patch-commits',
       expected: 'patch',
     },
@@ -100,7 +100,7 @@ git rebase -i --root
       expected: 'minor',
     },
     {
-      desc: 'with "docs", "style", "test" & "pr" commit type',
+      desc: 'with "docs", "style", "test", "ci" & "pr" commit type',
       fixture: 'silent-commits',
       expected: 'none',
     },

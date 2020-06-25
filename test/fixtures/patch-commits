@@ -15,3 +15,7 @@ git commit -m "chore: Adding refactor commit"
 echo "console.log('more');" > perf.js
 git add perf.js
 git commit -m "chore: Adding perf commit"
+
+echo "console.log('more');" > build.js
+git add build.js
+git commit -m "build: Adding perf commit"
