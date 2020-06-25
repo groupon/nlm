@@ -117,6 +117,41 @@ anything in `node_modules`.
 * `deprecated`: String (may be empty) describing reason this package has been
     deprecated.  To deprecate a package, set it to a descriptive reason.
     To "un-deprecate" a package, set it to an empty string (can then be later deleted).
+* `emoji`:
+  Configure changelog emoji setting logic
+  * `emoji.skip`: deactivates emoji in changelog. Default: `null`
+  * `emoji.set`: Custom emojis map, which will overwrite the default one
+
+Example for 
+```json5
+{
+  "nlm": {
+    "emoji": { 
+      "set": {
+        "refactor": "🔥" // will overwrite the existing setting for "refactor" type
+      }
+    }
+  } 
+}   
+```
+
+The default emojis for the commit types are:
+```json5
+{
+  "feat": "✨",
+  "fix": "🐛",
+  "perf": "⚡",
+  "refactor": "📦️",
+  "chore": "♻️",
+  "build": "👷",
+  "revert": "↩️",
+  "docs": "📝",
+  "style": "🎨",
+  "test": "✅",
+  "ci": "💚",
+  "breaking": "💥" // this emoji will be set before the "Breaking Change" section 
+}
+```
 
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
 
