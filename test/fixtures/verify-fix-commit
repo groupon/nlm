@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo '{
+  "name": "nlm-test-pkg",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.example.com/some-org/nlm-test-pkg"
+  },
+  "publishConfig": {
+    "registry": "http://127.0.0.1:3000"
+  }
+}' >package.json
+git add package.json
+git commit -m 'v1.0.0'
+git tag 'v1.0.0'
+
+
+echo "console.log('do stuff');" > index.js
+git add index.js
+git commit -m 'fix: Do stuff'
