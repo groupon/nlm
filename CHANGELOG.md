@@ -1,3 +1,9 @@
+### 4.2.1 - 2020-07-20
+
+* chore(deps): bump lodash from 4.17.15 to 4.17.19 - **[@dependabot[bot]](https://github.com/apps/dependabot)** [#65](https://github.com/groupon/nlm/pull/65)
+  - [`b73c5a2`](https://github.com/groupon/nlm/commit/b73c5a200057504fcfc05e217193964c724b35b6) **chore:** bump lodash from 4.17.15 to 4.17.19 - see: [4](- [Commits](https://github.com/lodash/lodash/compare/4)
+
+
 ### 4.2.0 - 2020-03-27
 
 * feat: allow plural and colon for BREAKING CHANGE commit message tag - **[@aaarichter](https://github.com/aaarichter)** [#63](https://github.com/groupon/nlm/pull/63)
