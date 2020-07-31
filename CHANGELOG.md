@@ -1,3 +1,31 @@
+### 5.0.0 - 2020-07-31
+
+#### Breaking Changes
+
+`nlm` will no longer create a patch tag for `docs`, `style` and `test` commits. If your PR only contains these type of commits, it will no longer release a new version.
+
+*See: [`11665ca`](https://github.com/groupon/nlm/commit/11665cae29e9b23debf8bcfe4bfc6b7ed57f4df9)*
+
+The undocumented `doc` commit type is no longer supported. Use `docs` instead.
+
+*See: [`0d866fb`](https://github.com/groupon/nlm/commit/0d866fbf81034ab55c6396074a3ce8961f6c2024)*
+
+#### Commits
+
+* feat: release less & various other changes - **[@aaarichter](https://github.com/aaarichter)** [#64](https://github.com/groupon/nlm/pull/64)
+  - [`bcceefb`](https://github.com/groupon/nlm/commit/bcceefbb8ed8b780d26828398d2c2fae9d8ced9f) **chore:** update packages & move `nyc` to devDependencies
+  - [`1f114c0`](https://github.com/groupon/nlm/commit/1f114c026ef7ac12636bfa4d40c9b03739b1afb8) **style:** update travis syntax
+  - [`11665ca`](https://github.com/groupon/nlm/commit/11665cae29e9b23debf8bcfe4bfc6b7ed57f4df9) **feat:** don't release for types `docs`, `style`, `test`
+  - [`e32cffe`](https://github.com/groupon/nlm/commit/e32cffe4942b80db5b8f4784853b67c01aac6744) **feat:** handle Github Revert commits
+  - [`0d866fb`](https://github.com/groupon/nlm/commit/0d866fbf81034ab55c6396074a3ce8961f6c2024) **fix:** remove undocumented `doc` commit type
+  - [`3c86512`](https://github.com/groupon/nlm/commit/3c86512ffc3083e90d21c03da77184d50b148206) **style:** test
+  - [`96bd23a`](https://github.com/groupon/nlm/commit/96bd23a1e17b916bbcbddc21c9155d543a93496e) **feat:** add `ci` & `build` commit types
+  - [`79aef6f`](https://github.com/groupon/nlm/commit/79aef6f86f2de1038f92346969ece9970bce88bf) **style:** use node assert
+  - [`9ce6d8e`](https://github.com/groupon/nlm/commit/9ce6d8e08f25584c4744bbc0d6f5e4bd7249408e) **feat:** set emoji to changelog commits. Fixes #39 - see: [#39](https://github.com/groupon/nlm/issues/39)
+  - [`1aae5bb`](https://github.com/groupon/nlm/commit/1aae5bb391e1f1b96f339d799fba0de5e411c222) **feat:** mention version increment. Fixes #31 - see: [#31](https://github.com/groupon/nlm/issues/31)
+  - [`7ab83cb`](https://github.com/groupon/nlm/commit/7ab83cb5932a869a9421afb9ebe289d967c2cd33) **chore:** update dependencies
+
+
 ### 4.2.1 - 2020-07-20
 
 * chore(deps): bump lodash from 4.17.15 to 4.17.19 - **[@dependabot[bot]](https://github.com/apps/dependabot)** [#65](https://github.com/groupon/nlm/pull/65)
