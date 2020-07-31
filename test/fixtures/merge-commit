@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo "console.log('do stuff');" > merge.js
+git add merge.js
+git commit -m 'Merge pull request #119 from theowner/some/branch'

@@ -83,7 +83,7 @@ describe('publishToNpm', () => {
   describe('with NPM_USERNAME etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('sends basic auth headers', function() {
+    it('sends basic auth headers', function () {
       this.timeout(4000);
       return publishToNpm(dirname, require(`${dirname}/package.json`), {
         currentBranch: 'master',
@@ -124,7 +124,7 @@ describe('publishToNpm', () => {
   describe('with NPM_TOKEN etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('uses a bearer token', function() {
+    it('uses a bearer token', function () {
       this.timeout(4000);
 
       const pkg = require(`${dirname}/package.json`);
@@ -146,7 +146,7 @@ describe('publishToNpm', () => {
   describe('with nlm.deprecated set', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('tries to deprecate', function() {
+    it('tries to deprecate', function () {
       this.timeout(4000);
 
       const pkg = require(`${dirname}/package.json`);

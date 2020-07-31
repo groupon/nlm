@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+git checkout -b minor-commits
+
+echo "console.log('more');" > feat.js
+git add feat.js
+git commit -m "feat: Adding feat commit"

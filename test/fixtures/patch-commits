@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+git checkout -b patch-commits
+
+echo "console.log('more');" > chore.js
+git add chore.js
+git commit -m "chore: Adding chore commit"
+
+echo "console.log('more');" > refactor.js
+git add refactor.js
+git commit -m "chore: Adding refactor commit"
+
+echo "console.log('more');" > perf.js
+git add perf.js
+git commit -m "chore: Adding perf commit"
+
+echo "console.log('more');" > build.js
+git add build.js
+git commit -m "build: Adding perf commit"

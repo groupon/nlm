@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const run = require('../../lib/run');
 
@@ -43,32 +43,52 @@ const CLI_PATH = require.resolve('../../lib/cli');
 describe('nlm verify', () => {
   describe('in non-git directory', () => {
     const dirname = withFixture('non-git');
-    const output = {};
-    before(() => {
-      return run(process.execPath, [CLI_PATH, 'verify'], {
+    let stdout;
+
+    before(async () => {
+      stdout = await run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: { ...process.env, GH_TOKEN: '' },
-      }).then(stdout => {
-        output.stdout = stdout;
       });
     });
+
     it('ignores directories that are not git repos', () => {
-      assert.equal('', output.stdout);
+      assert.strictEqual(stdout, '');
     });
   });
-  describe('in git directory', () => {
+
+  describe('in git directory with no changes', () => {
     const dirname = withFixture('released');
-    const output = {};
-    before(() => {
-      return run(process.execPath, [CLI_PATH, 'verify'], {
+    let stdout;
+
+    before(async () => {
+      stdout = await run(process.execPath, [CLI_PATH, 'verify'], {
         cwd: dirname,
         env: { ...process.env, GH_TOKEN: '' },
-      }).then(stdout => {
-        output.stdout = stdout;
       });
     });
-    it('reports the change type', () => {
-      assert.include('Changes are "none"', output.stdout);
+
+    it('reports "none" change', () => {
+      assert.ok(stdout.includes('Changes are "none"'), stdout);
+    });
+  });
+
+  describe('in git directory with changes', () => {
+    const dirname = withFixture('verify-fix-commit');
+    let stdout;
+
+    before(async () => {
+      stdout = await run(process.execPath, [CLI_PATH, 'verify'], {
+        cwd: dirname,
+        env: { ...process.env, GH_TOKEN: '' },
+      });
+    });
+
+    it('reports the change type and the version increment', async () => {
+      assert.strictEqual(
+        stdout.trim(),
+        '[nlm] Changes are "patch" (1.0.0 -> 1.0.1)'
+      );
     });
   });
 });

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+git checkout -b silent-commits
+
+echo "console.log('more');" > docs.js
+git add docs.js
+git commit -m "docs: Adding docs commit"
+
+echo "console.log('more');" > style.js
+git add style.js
+git commit -m "style: Adding style commit"
+
+echo "console.log('more');" > test.js
+git add test.js
+git commit -m "test: Adding test commit"
+
+echo "console.log('more');" > ci.js
+git add ci.js
+git commit -m "ci: Adding ci commit"
+
+echo "console.log('more');" > pr.js
+git add pr.js
+git commit -m "pr: Adding pr commit"

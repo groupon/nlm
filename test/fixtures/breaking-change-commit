@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo "console.log('do stuff');" > index.js
+git add index.js
+git commit -m "fix: Do stuff
+
+something
+
+BREAKING CHANGE:
+Ups something broke :D
+"
