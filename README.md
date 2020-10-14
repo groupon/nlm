@@ -31,8 +31,8 @@ and tagging issues. Github has instructions for
 
 `nlm` will automatically look for well-known environment variables during CI
 builds like `CI=true`, `BRANCH=branch-name`, etc.
-It should work out-of-the-box for both [Travis](https://travis-ci.org/) and
-[DotCI](https://groupon.github.io/DotCi/).
+It should work out-of-the-box for [Travis](https://travis-ci.org/),
+[DotCI](https://groupon.github.io/DotCi/), and [CircleCI](https://circleci.com/).
 
 For Github and npm interactions to work, it requires the following additional environment variables:
 
@@ -81,6 +81,25 @@ build:
   after:
     - ./node_modules/.bin/nlm publish
   <% } %>
+```
+
+#### CircleCI
+
+You may reference teh official [circleci docs](https://circleci.com/docs/2.0/env-vars/) on setting up environment variables
+using the admin console.
+
+`nlm` will look for `CIRCLE_BRANCH` and `CIRCLE_PULL_REQUEST` environment variables to operate correctly.
+
+To enable publishing, you may add a check in your run steps for a branch and build you want to release on:
+
+```yaml
+- run: |
+    if [ "$CIRCLE_BRANCH" == "master" ] && [ "$CIRCLE_STAGE" == "test-3" ]; then
+          echo "Running nlm release";
+          npx nlm release;
+    else
+          echo "Not running nlm release!";
+    fi
 ```
 
 ## Configuration
