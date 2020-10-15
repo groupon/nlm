@@ -1,3 +1,10 @@
+### 5.1.0 - 2020-10-15
+
+* feat: support circleci PRs and releases - **[@markowsiak](https://github.com/markowsiak)** [#66](https://github.com/groupon/nlm/pull/66)
+  - [`c85ce5c`](https://github.com/groupon/nlm/commit/c85ce5cece664ad53c93f6e258f2f3bc3c2325b6) ✨ **feat:** support circleci PRs and releases
+  - [`3a4e3f4`](https://github.com/groupon/nlm/commit/3a4e3f4b0a6b22d9dc7ab4aca8f0bdae48e6a37d) 🐛 **fix:** a typo in the new docs around circleci setup
+
+
 ### 5.0.0 - 2020-07-31
 
 #### Breaking Changes
