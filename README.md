@@ -85,7 +85,7 @@ build:
 
 #### CircleCI
 
-You may reference teh official [circleci docs](https://circleci.com/docs/2.0/env-vars/) on setting up environment variables
+You may reference the official [circleci docs](https://circleci.com/docs/2.0/env-vars/) on setting up environment variables
 using the admin console.
 
 `nlm` will look for `CIRCLE_BRANCH` and `CIRCLE_PULL_REQUEST` environment variables to operate correctly.
