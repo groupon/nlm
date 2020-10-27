@@ -44,7 +44,6 @@
     "semver": "^7.3.2"
   },
   "devDependencies": {
-    "assertive": "^5.0.2",
     "eslint": "^7.12.1",
     "eslint-config-groupon": "^10.0.1",
     "eslint-plugin-import": "^2.22.1",

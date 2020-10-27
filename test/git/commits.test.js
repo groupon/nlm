@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const getCommits = require('../../lib/git/commits');
 
@@ -41,77 +41,114 @@ const withFixture = require('../fixture');
 describe('getCommits', () => {
   describe('with an empty project', () => {
     const dirname = withFixture('empty-project');
-    it('returns an empty list', () => {
-      return getCommits(dirname).then(commits => {
-        assert.deepEqual([], commits);
-      });
+
+    it('returns an empty list', async () => {
+      const commits = await getCommits(dirname);
+
+      assert.deepStrictEqual(commits, []);
     });
   });
+
   describe('with invalid commits', () => {
     const dirname = withFixture('invalid-commit');
-    it('returns the commit with type=null', () => {
-      return getCommits(dirname).then(commits => {
-        assert.equal(2, commits.length);
-        assert.equal(null, commits[0].type);
-        assert.equal("This ain't no valid commit message", commits[0].header);
-        assert.equal('bogus', commits[1].type);
-      });
+
+    it('returns the commit with type=null', async () => {
+      const commits = await getCommits(dirname);
+
+      assert.strictEqual(commits.length, 2);
+      assert.strictEqual(commits[0].type, null);
+      assert.strictEqual(
+        commits[0].header,
+        "This ain't no valid commit message"
+      );
+      assert.strictEqual(commits[1].type, 'bogus');
     });
   });
+
   describe('issue and ticket links', () => {
     const dirname = withFixture('ticket-commits');
     let allCommits = null;
+
+    function assertIssue(subject, expected) {
+      const commit = allCommits.find(c => c.subject === subject);
+      assert.strictEqual(commit.references.length, expected.refLength);
+
+      const ref = commit.references[0];
+      assert.strictEqual(ref.owner, expected.owner);
+      assert.strictEqual(ref.repository, expected.repository);
+      assert.strictEqual(ref.issue, expected.issue);
+      assert.strictEqual(ref.raw, expected.raw);
+      if ('prefix' in expected) {
+        assert.strictEqual(ref.prefix, expected.prefix);
+      }
+    }
+
     before('fetch al commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
     });
+
     it('includes links to github for #123 style', () => {
-      const commit = allCommits.find(c => c.subject === 'Short');
-      assert.equal(1, commit.references.length);
-      const ref = commit.references[0];
-      assert.equal(null, ref.owner);
-      assert.equal(null, ref.repository);
-      assert.equal('42', ref.issue);
-      assert.equal('#', ref.prefix);
-      assert.equal('#42', ref.raw);
+      const expected = {
+        refLength: 1,
+        owner: null,
+        repository: null,
+        issue: '42',
+        prefix: '#',
+        raw: '#42',
+      };
+
+      assertIssue('Short', expected);
     });
+
     it('includes links to github for x/y#123 style', () => {
-      const commit = allCommits.find(c => c.subject === 'Repo');
-      assert.equal(1, commit.references.length);
-      const ref = commit.references[0];
-      assert.equal('riley', ref.owner);
-      assert.equal('thing', ref.repository);
-      assert.equal('13', ref.issue);
-      assert.equal('#', ref.prefix);
-      assert.equal('riley/thing#13', ref.raw);
+      const expected = {
+        refLength: 1,
+        owner: 'riley',
+        repository: 'thing',
+        issue: '13',
+        prefix: '#',
+        raw: 'riley/thing#13',
+      };
+
+      assertIssue('Repo', expected);
     });
+
     it('includes links to github for full public github urls', () => {
-      const commit = allCommits.find(c => c.subject === 'Full');
-      assert.equal(1, commit.references.length);
-      const ref = commit.references[0];
-      assert.equal(null, ref.owner);
-      assert.equal(null, ref.repository);
-      assert.equal('13', ref.issue);
-      assert.equal('https://github.com/open/source/issues/13', ref.raw);
+      const expected = {
+        refLength: 1,
+        owner: null,
+        repository: null,
+        issue: '13',
+        raw: 'https://github.com/open/source/issues/13',
+      };
+
+      assertIssue('Full', expected);
     });
+
     it('includes links to github for full GHE urls', () => {
-      const commit = allCommits.find(c => c.subject === 'GHE');
-      assert.equal(1, commit.references.length);
-      const ref = commit.references[0];
-      assert.equal(null, ref.owner);
-      assert.equal(null, ref.repository);
-      assert.equal('72', ref.issue);
-      assert.equal('https://github.example.com/some/thing/issues/72', ref.raw);
+      const expected = {
+        refLength: 1,
+        owner: null,
+        repository: null,
+        issue: '72',
+        raw: 'https://github.example.com/some/thing/issues/72',
+      };
+
+      assertIssue('GHE', expected);
     });
+
     it('includes links to jira', () => {
-      const commit = allCommits.find(c => c.subject === 'Jira');
-      assert.equal(1, commit.references.length);
-      const ref = commit.references[0];
-      assert.equal(null, ref.owner);
-      assert.equal(null, ref.repository);
-      assert.equal('2001', ref.issue);
-      assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.raw);
+      const expected = {
+        refLength: 1,
+        owner: null,
+        repository: null,
+        issue: '2001',
+        raw: 'https://jira.atlassian.com/browse/REPO-2001',
+      };
+
+      assertIssue('Jira', expected);
     });
   });
   describe('with multiple commits', () => {
@@ -122,52 +159,65 @@ describe('getCommits', () => {
         allCommits = commits;
       });
     });
+
     it('returns all three commits, plus one merge commit', () => {
-      assert.equal(4, allCommits.length);
+      assert.strictEqual(allCommits.length, 4);
     });
+
     it('returns commits in order', () => {
-      assert.equal('Do stuff', allCommits[0].subject);
-      assert.equal('Adding second', allCommits[1].subject);
-      assert.equal('Changed more stuff', allCommits[2].subject);
+      assert.strictEqual(allCommits[0].subject, 'Do stuff');
+      assert.strictEqual(allCommits[1].subject, 'Adding second');
+      assert.strictEqual(allCommits[2].subject, 'Changed more stuff');
     });
+
     it('includes parentSha', () => {
-      assert.equal('is null for first commit', null, allCommits[0].parentSha);
-      assert.equal(
-        'points to the immediate parent for other commits',
+      assert.strictEqual(
+        allCommits[0].parentSha,
+        null,
+        'is null for first commit'
+      );
+      assert.strictEqual(
+        allCommits[1].parentSha,
         allCommits[0].sha,
-        allCommits[1].parentSha
+        'points to the immediate parent for other commits'
       );
     });
+
     it('includes notes for breaking changes', () => {
       const note = allCommits[1].notes[0];
-      assert.equal('BREAKING CHANGE', note.title);
-      assert.equal(
+
+      assert.strictEqual(note.title, 'BREAKING CHANGE');
+      assert.strictEqual(
+        note.text,
         [
           'Users expecting only one file might run into problems',
           '',
           'It should be as easy as migrating the `1` to a `2`.',
-        ].join('\n'),
-        note.text
+        ].join('\n')
       );
     });
+
     it('includes merge commit info', () => {
       const merge = allCommits[3];
-      assert.equal(merge.type, 'pr');
-      assert.equal(merge.references[0].action, 'Merges');
-      assert.equal(merge.references[0].issue, '119');
+
+      assert.strictEqual('pr', merge.type);
+      assert.strictEqual('Merges', merge.references[0].action);
+      assert.strictEqual('119', merge.references[0].issue);
     });
+
     describe('when starting from v0.0.0', () => {
-      it('returns everything from the beginning', () => {
-        return getCommits(dirname, 'v0.0.0').then(commits => {
-          assert.equal(allCommits.length, commits.length);
-        });
+      it('returns everything from the beginning', async () => {
+        const commits = await getCommits(dirname, 'v0.0.0');
+
+        assert.strictEqual(commits.length, allCommits.length);
       });
     });
+
     describe('when starting from the first commit', () => {
-      it('only returns the last two', () => {
-        return getCommits(dirname, allCommits[0].sha).then(commits => {
-          assert.deepEqual(allCommits.slice(1), commits);
-        });
+      it('only returns the last two', async () => {
+        const commits = await getCommits(dirname, allCommits[0].sha);
+
+        assert.deepStrictEqual(commits, allCommits.slice(1));
       });
     });
   });

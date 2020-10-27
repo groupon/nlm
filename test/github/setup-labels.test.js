@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const Github = require('../../lib/github/client');
 
@@ -41,18 +41,14 @@ const setupLabels = require('../../lib/github/setup-labels');
 const packageJSON = require('../../package.json');
 
 describe('setupLabels', () => {
-  describe('self-test', () => {
-    if (!process.env.GH_TOKEN) {
-      it('skipping, no GH_TOKEN');
-      return null;
-    }
+  it('finds no missing labels for nlm', async function () {
+    if (process.env.GH_TOKEN) {
+      const github = Github.forRepository(packageJSON.repository);
+      const addedLabels = await setupLabels(github);
 
-    const github = Github.forRepository(packageJSON.repository);
-    it('finds no missing labels for nlm', () => {
-      return setupLabels(github).then(addedLabels => {
-        assert.deepEqual([], addedLabels);
-      });
-    });
-    return null;
+      assert.deepStrictEqual(addedLabels, []);
+    } else {
+      this.skip();
+    }
   });
 });
