@@ -38,7 +38,7 @@
     "conventional-commits-parser": "^3.1.0",
     "debug": "^4.2.0",
     "glob": "^7.1.6",
-    "gofer": "^5.0.3",
+    "gofer": "^5.0.4",
     "minimist": "^1.2.5",
     "rc": "^1.2.8",
     "semver": "^7.3.2"

@@ -151,6 +151,7 @@ describe('getCommits', () => {
       assertIssue('Jira', expected);
     });
   });
+
   describe('with multiple commits', () => {
     const dirname = withFixture('multiple-commits');
     let allCommits = null;
