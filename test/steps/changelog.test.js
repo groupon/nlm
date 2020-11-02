@@ -379,6 +379,7 @@ describe('generateChangeLog', () => {
     const pkg = {
       repository: 'http://127.0.0.1:3000/usr/proj',
     };
+
     describe('pull request commits', () => {
       const httpCalls = withFakeGithub();
       const commits = [
