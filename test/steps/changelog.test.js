@@ -244,6 +244,39 @@ describe('generateChangeLog', () => {
     assertEntries(changelog, expectedEntries);
   });
 
+  it('omits commit types from changelog when specificed in nlm changelog options', async () => {
+    const pkg = {
+      repository: 'usr/proj',
+    };
+    const commits = [
+      {
+        sha: '1234567890123456789012345678901234567890',
+        type: 'fix',
+        subject: 'Stop doing the wrong thing',
+      },
+      {
+        sha: '2234567890123456789012345678901234567890',
+        type: 'feat',
+        subject: 'Do more things',
+      },
+    ];
+    const options = {
+      commits,
+      nlmOptions: {
+        changelog: {
+          omit: ['fix'],
+        },
+        emoji: {
+          skip: true,
+        },
+      },
+    };
+
+    const changelog = await generateChangeLog(null, pkg, options);
+
+    assert.ok(!changelog.includes('[`1234567`]'));
+  });
+
   it('puts breaking changes ahead of everything else', async () => {
     const pkg = {
       repository: 'usr/proj',

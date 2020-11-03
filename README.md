@@ -126,9 +126,28 @@ Hook      | Description
 `prepare` | Called when the release is about to be prepared. This is before updating files such as 
 package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number 
 via the environment variable **NLM_NEXT_VERSION**.
+```ts
+interface NlmOptions {
+  acceptInvalidCommits?: boolean;
+  changelog: { 
+    omit?: string[], 
+    verbose?: boolean 
+  };
+  deprecated?: boolean;
+  emoji?: {
+    skip?: boolean
+    set?: {[type: string]: string}
+  };
+  license?: { 
+    files?: string[], 
+    exclude?: string[] 
+  }
+}
+```
 
-* `license.files`: List of files and/or directories to add license headers to.
-* `license.exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude 
+* `license`:
+  * `files`: List of files and/or directories to add license headers to.
+  * `exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude 
 anything in `node_modules`.
 * `acceptInvalidCommits`: Accept commit messages even if they can't be parsed.
   It's highly discouraged to use this option.
@@ -136,10 +155,13 @@ anything in `node_modules`.
 * `deprecated`: String (may be empty) describing reason this package has been
     deprecated.  To deprecate a package, set it to a descriptive reason.
     To "un-deprecate" a package, set it to an empty string (can then be later deleted).
+* `changelog`:
+  * `omit`: Array of types, which will be omitted from the changelog.
+  * `verbose`: Display PR's commits. Default: `false`  
 * `emoji`:
   Configure changelog emoji setting logic
-  * `emoji.skip`: deactivates emoji in changelog. Default: `null`
-  * `emoji.set`: Custom emojis map, which will overwrite the default one
+  * `skip`: deactivates emoji in changelog. Default: `null`
+  * `set`: Custom emojis map, which will overwrite the default one
 
 Example for 
 ```json5
