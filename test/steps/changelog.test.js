@@ -46,7 +46,7 @@ function responseByUrl(url) {
           html_url: 'http://pr-1-user',
         },
         html_url: 'http://pr-1',
-        title: 'PR #1 Title',
+        title: 'feat: PR #1 Title',
       });
       break;
 
@@ -120,10 +120,22 @@ function withFakeGithub() {
   return httpCalls;
 }
 
+function assertEntries(changelog, expected) {
+  const lines = Array.isArray(changelog) ? changelog : changelog.split('\n');
+
+  return expected.map(entry => {
+    const index = lines.findIndex(i => i === entry);
+    assert.ok(index !== -1, expected);
+    return index;
+  });
+}
+
 describe('generateChangeLog', () => {
   const defaultOptions = {
-    emoji: {
-      skip: true,
+    nlmOptions: {
+      emoji: {
+        skip: true,
+      },
     },
   };
 
@@ -188,19 +200,16 @@ describe('generateChangeLog', () => {
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
 
     const changelog = await generateChangeLog(null, pkg, options);
+
+    const expectedEntries = [
+      `* [\`1234567\`](${href0}) fix: Stop doing the wrong thing - see: [fo/ba#7](https://gitub.com/fo/ba/issues/7)`,
+      `* [\`2234567\`](${href1}) feat: Do more things - see: [THING-2010](https://example.com/browse/THING-7), [#44](https://github.com/usr/proj/issues/44)`,
+    ];
+    const indices = assertEntries(changelog, expectedEntries);
     const lines = changelog.split('\n');
 
-    assert.strictEqual(
-      lines[0],
-      `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing - see: ` +
-        `[fo/ba#7](https://gitub.com/fo/ba/issues/7)`
-    );
-    assert.strictEqual(
-      lines[1],
-      `* [\`2234567\`](${href1}) **feat:** Do more things - see: ` +
-        `[THING-2010](https://example.com/browse/THING-7), ` +
-        `[#44](https://github.com/usr/proj/issues/44)`
-    );
+    assert.strictEqual(lines[indices[0] - 2], '#### Bug Fixes');
+    assert.strictEqual(lines[indices[1] - 2], '#### New Features');
   });
 
   it('can create a changelog for two commits', async () => {
@@ -228,13 +237,11 @@ describe('generateChangeLog', () => {
 
     const changelog = await generateChangeLog(null, pkg, options);
 
-    assert.strictEqual(
-      changelog,
-      [
-        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
-        `* [\`2234567\`](${href1}) **feat:** Do more things`,
-      ].join('\n')
-    );
+    const expectedEntries = [
+      `* [\`1234567\`](${href0}) fix: Stop doing the wrong thing`,
+      `* [\`2234567\`](${href1}) feat: Do more things`,
+    ];
+    assertEntries(changelog, expectedEntries);
   });
 
   it('puts breaking changes ahead of everything else', async () => {
@@ -266,121 +273,85 @@ describe('generateChangeLog', () => {
     const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
     const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
 
+    const expected = [
+      '#### Breaking Changes',
+      '',
+      'The interface of this library changed in some way.',
+      '',
+      `*See: [\`2234567\`](${href1})*`,
+      '',
+    ].join('\n');
+
+    const expectedEntries = [
+      `* [\`1234567\`](${href0}) fix: Stop doing the wrong thing`,
+      `* [\`2234567\`](${href1}) feat: Do more things`,
+    ];
+
     const changelog = await generateChangeLog(null, pkg, options);
-    assert.strictEqual(
-      changelog,
-      [
-        '#### Breaking Changes',
-        '',
-        'The interface of this library changed in some way.',
-        '',
-        `*See: [\`2234567\`](${href1})*`,
-        '',
-        '#### Commits',
-        '',
-        `* [\`1234567\`](${href0}) **fix:** Stop doing the wrong thing`,
-        `* [\`2234567\`](${href1}) **feat:** Do more things`,
-      ].join('\n')
-    );
+
+    assert.ok(changelog.startsWith(expected));
+    assertEntries(changelog, expectedEntries);
   });
 
   it('handles variants typings of BREAKING CHANGE', async () => {
     const pkg = {
       repository: 'usr/proj',
     };
-    const commits = [
+    const defaultCommit = {
+      sha: '2234567890123456789012345678901234567890',
+      type: 'feat',
+      subject: 'Do more things',
+    };
+    const testCases = [
       {
-        sha: '2234567890123456789012345678901234567890',
-        type: 'feat',
-        subject: 'Do more things',
-        notes: [
-          {
-            title: 'BREAKING CHANGE',
-            text: 'without a colon',
-          },
-        ],
+        title: 'BREAKING CHANGE',
+        text: 'without a colon',
       },
       {
-        sha: '2234567890123456789012345678901234567891',
-        type: 'feat',
-        subject: 'Do more things',
-        notes: [
-          {
-            title: 'BREAKING CHANGE:',
-            text: 'with a colon',
-          },
-        ],
+        title: 'BREAKING CHANGE:',
+        text: 'with a colon',
       },
       {
-        sha: '2234567890123456789012345678901234567892',
-        type: 'feat',
-        subject: 'Do more things',
-        notes: [
-          {
-            title: 'BREAKING CHANGES',
-            text: 'plural',
-          },
-        ],
+        title: 'BREAKING CHANGES',
+        text: 'plural',
       },
       {
-        sha: '2234567890123456789012345678901234567893',
-        type: 'feat',
-        subject: 'Do more things',
-        notes: [
-          {
-            title: 'BREAKING CHANGES:',
-            text: 'plural with colon',
-          },
-        ],
+        title: 'BREAKING CHANGES:',
+        text: 'plural with colon',
       },
     ];
-    const options = {
-      ...defaultOptions,
-      commits,
-    };
-    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
-    const href2 = `https://github.com/usr/proj/commit/${commits[2].sha}`;
-    const href3 = `https://github.com/usr/proj/commit/${commits[3].sha}`;
 
-    const changelog = await generateChangeLog(null, pkg, options);
-    assert.strictEqual(
-      changelog,
-      [
+    for (const commitNote of testCases) {
+      const commit = { ...defaultCommit, notes: [commitNote] };
+      const href0 = `https://github.com/usr/proj/commit/${commit.sha}`;
+
+      const expected = [
         '#### Breaking Changes',
         '',
-        'without a colon',
+        commit.notes.map(note => note.text).join('\n'),
         '',
         `*See: [\`2234567\`](${href0})*`,
         '',
-        'with a colon',
-        '',
-        `*See: [\`2234567\`](${href1})*`,
-        '',
-        'plural',
-        '',
-        `*See: [\`2234567\`](${href2})*`,
-        '',
-        'plural with colon',
-        '',
-        `*See: [\`2234567\`](${href3})*`,
-        '',
-        '#### Commits',
-        '',
-        `* [\`2234567\`](${href0}) **feat:** Do more things`,
-        `* [\`2234567\`](${href1}) **feat:** Do more things`,
-        `* [\`2234567\`](${href2}) **feat:** Do more things`,
-        `* [\`2234567\`](${href3}) **feat:** Do more things`,
-      ].join('\n')
-    );
+      ].join('\n');
+
+      const changelog = await generateChangeLog(null, pkg, {
+        ...defaultOptions,
+        commits: [commit],
+      });
+
+      assert.ok(changelog.startsWith(expected));
+
+      assertEntries(changelog, [
+        `* [\`2234567\`](${href0}) feat: Do more things`,
+      ]);
+    }
   });
 
   describe('PRs', () => {
-    const pkg = {
-      repository: 'http://127.0.0.1:3000/usr/proj',
-    };
-
     describe('pull request commits', () => {
+      const pkg = {
+        repository: 'http://127.0.0.1:3000/usr/proj',
+      };
       const httpCalls = withFakeGithub();
       const commits = [
         {
@@ -414,13 +385,49 @@ describe('generateChangeLog', () => {
         assert.strictEqual(httpCalls.length, 2);
       });
 
-      it('groups commits by pull request', () => {
-        assert.ok(changelog.includes('* PR #1 Title'));
-        assert.ok(changelog.includes('  - [`1234567`]'));
+      it('omits commits by pull request by default', async () => {
+        changelog = await generateChangeLog(null, pkg, options);
+
+        assert.ok(changelog.includes('[#1](http://pr-1) feat: PR #1 Title'));
+        assert.ok(
+          !changelog.includes('  - [`1234567`] fix: Stop doing the wrong thing')
+        );
+      });
+
+      describe('with changelog.verbose flag', () => {
+        const verboseOpts = {
+          nlmOptions: { changelog: { verbose: true } },
+        };
+        it('groups commits by pull request with changelog.verbose flag', async () => {
+          changelog = await generateChangeLog(null, pkg, {
+            ...options,
+            ...verboseOpts,
+          });
+
+          assert.ok(changelog.includes('[#1](http://pr-1) feat: PR #1 Title'));
+          assert.ok(changelog.includes('  - [`1234567`]'));
+        });
+
+        it("doesn't add emojis to pull commits", async () => {
+          changelog = await generateChangeLog(null, pkg, {
+            ...options,
+            nlmOptions: {
+              changelog: { verbose: true },
+              emoji: {
+                skip: false,
+              },
+            },
+          });
+
+          assert.ok(changelog.includes(') fix: Stop'));
+        });
       });
     });
 
-    describe('with an invalid PR', () => {
+    describe('with a PR w/o associated commits)', () => {
+      const pkg = {
+        repository: 'http://127.0.0.1:3000/usr/proj',
+      };
       const httpCalls = withFakeGithub();
       const commits = [
         {
@@ -440,12 +447,15 @@ describe('generateChangeLog', () => {
           pullId: '2',
         },
       ];
+
+      // sloppyCommits lack "type" property
       const sloppyCommits = commits.map(commit => {
-        if (commit.type === 'pr') return commit;
-        return {
-          sha: commit.sha,
-          header: commit.subject,
-        };
+        return commit.type === 'pr'
+          ? commit
+          : {
+              sha: commit.sha,
+              header: commit.subject,
+            };
       });
       const options = {
         ...defaultOptions,
@@ -469,8 +479,8 @@ describe('generateChangeLog', () => {
         assert.strictEqual(httpCalls.length, 4);
       });
 
-      it('ignores the PR', () => {
-        assert.ok(!changelog.includes('* PR #2 Title'));
+      it('ignores the PR w/o associated commits', () => {
+        assert.ok(!changelog.includes('* [#2] PR #2 Title'));
         assert.ok(changelog.includes('* [`1234567`]'));
       });
 
@@ -478,9 +488,19 @@ describe('generateChangeLog', () => {
         assert.ok(sloppyChangelog.includes(') Stop doing the wrong thing\n'));
         assert.ok(sloppyChangelog.includes(') Do more things'));
       });
+
+      it('categorizes commits w/o angular prefix as "Internal"', () => {
+        assert.ok(
+          sloppyChangelog.startsWith('#### Internal'),
+          'sets "Internal" category'
+        );
+      });
     });
 
-    describe('with a missing PR', () => {
+    describe('with a PR missing in GH', () => {
+      const pkg = {
+        repository: 'http://127.0.0.1:3000/usr/proj',
+      };
       const httpCalls = withFakeGithub();
       const commits = [
         {
@@ -494,6 +514,7 @@ describe('generateChangeLog', () => {
           subject: 'Do more things',
         },
         {
+          // this PR is missing - see missing mocks at the beginning of this file
           sha: '3234567890123456789012345678901234567890',
           type: 'pr',
           subject: 'Merge PR #3',
@@ -515,12 +536,136 @@ describe('generateChangeLog', () => {
       });
 
       it('ignores the PR', () => {
-        assert.ok(changelog.includes('* [`1234567`]'));
+        assert.ok(!changelog.includes('Merge PR #3'));
+      });
+    });
+
+    describe('categorization', () => {
+      withFakeGithub();
+      const pkg = {
+        repository: 'usr/proj',
+      };
+      const defaultCommit = {
+        sha: '1234567890123456789012345678901234567890',
+        subject: 'Stop doing the wrong thing',
+      };
+      const headlineLevel = '####';
+
+      const testCases = [
+        { headline: 'New Features', prefixes: ['feat'] },
+        { headline: 'Code Refactoring', prefixes: ['refactor'] },
+        { headline: 'Bug Fixes', prefixes: ['fix'] },
+        { headline: 'Performance Improvements', prefixes: ['perf'] },
+        { headline: 'Dependencies', prefixes: ['dep'] },
+        { headline: 'Documentation', prefixes: ['docs'] },
+        { headline: 'Polish', prefixes: ['style'] },
+        { headline: 'Reverts', prefixes: ['revert'] },
+        {
+          headline: 'Internal',
+          prefixes: ['ci', 'test', 'build', 'chore'],
+        },
+      ];
+
+      const href0 = `https://github.com/usr/proj/commit/${defaultCommit.sha}`;
+
+      it('sorts commits into according categories', async () => {
+        for (const { headline, prefixes } of testCases) {
+          for (const prefix of prefixes) {
+            const options = {
+              nlmOptions: {
+                emoji: {
+                  skip: true,
+                },
+              },
+              commits: [{ ...defaultCommit, type: prefix }],
+            };
+
+            const expectedEntries = [
+              `* [\`1234567\`](${href0}) ${prefix}: Stop doing the wrong thing`,
+            ];
+
+            const changelog = await generateChangeLog(null, pkg, options);
+            const lines = changelog.split('\n');
+
+            const indices = assertEntries(changelog, expectedEntries);
+            assert.strictEqual(
+              lines[indices[0] - 2],
+              `${headlineLevel} ${headline}`
+            );
+          }
+        }
+      });
+
+      it('adds category emojis to each category', async () => {
+        const emojiMaps = generateChangeLog.emojiMaps.get('babel');
+        for (const { headline, prefixes } of testCases) {
+          for (const prefix of prefixes) {
+            const options = {
+              commits: [{ ...defaultCommit, type: prefix }],
+            };
+
+            const expectedEntries = [
+              `* [\`1234567\`](${href0}) ${prefix}: Stop doing the wrong thing`,
+            ];
+
+            const changelog = await generateChangeLog(null, pkg, options);
+            const lines = changelog.split('\n');
+
+            const indices = assertEntries(changelog, expectedEntries);
+            assert.strictEqual(
+              lines[indices[0] - 2],
+              `${headlineLevel} ${
+                emojiMaps[prefix] || emojiMaps['internal']
+              } ${headline}`
+            );
+          }
+        }
+      });
+
+      it('identifies dependency updates in commit subject and groups them into "Dependencies" category', async () => {
+        const subjectCases = [
+          'update @grpn/create@23.0',
+          'update @grpn/create@23.0.0',
+          'update @grpn/create@23.0.x  update `@grpn/create@23.0.x`',
+          'update @grpn/cr.eate@23.x',
+          'update create@23.x',
+          'update cre.ate@23',
+          'update cre.ate@v23',
+          'update cre.ate v23',
+          'update cre.ate 23',
+          'update `cre.ate 23`',
+        ];
+
+        for (const subject of subjectCases) {
+          const commits = [
+            {
+              sha: '1234567890123456789012345678901234567890',
+              type: 'fix',
+              subject,
+            },
+          ];
+          const options = {
+            ...defaultOptions,
+            commits,
+          };
+          const href = `https://github.com/usr/proj/commit/${commits[0].sha}`;
+          const expectedEntries = [`* [\`1234567\`](${href}) fix: ${subject}`];
+
+          const changelog = await generateChangeLog(
+            null,
+            pkg,
+            options
+          ).then(res => res.split('\n'));
+
+          const index = assertEntries(changelog, expectedEntries);
+          assert.strictEqual(changelog[index - 2], '#### Dependencies');
+        }
       });
     });
   });
 
-  describe('emoji', () => {
+  describe('Emojis', () => {
+    let changelog;
     const pkg = {
       repository: 'http://127.0.0.1:3000/usr/proj',
     };
@@ -529,51 +674,36 @@ describe('generateChangeLog', () => {
       subject: 'something',
     };
     const cases = [
-      { type: 'feat', expected: '✨ **feat:**' },
-      { type: 'fix', expected: '🐛 **fix:**' },
-      { type: 'refactor', expected: '📦️ **refactor:**' },
-      { type: 'docs', expected: '📝 **docs:**' },
-      { type: 'revert', expected: '↩️ **revert:**' },
-      { type: 'style', expected: '🎨 **style:**' },
-      { type: 'build', expected: '👷 **build:**' },
-      { type: 'ci', expected: '💚 **ci:**' },
-      { type: 'test', expected: '✅ **test:**' },
-      { type: 'perf', expected: '⚡ **perf:**' },
-      { type: 'chore', expected: '♻️ **chore:**' },
+      { type: 'feat' },
+      { type: 'fix' },
+      { type: 'refactor' },
+      { type: 'docs' },
+      { type: 'revert' },
+      { type: 'style' },
+      { type: 'build' },
+      { type: 'ci' },
+      { type: 'test' },
+      { type: 'perf' },
+      { type: 'chore' },
     ];
     const commits = cases.map(({ type }) => ({ type, ...defaultCommit }));
     const options = {
       commits,
-    };
-    let changelog;
-
-    it('sets emojis for all commit types', async () => {
-      changelog = await generateChangeLog(null, pkg, options);
-
-      cases.forEach(({ expected }) => {
-        assert.ok(changelog.includes(expected), `should include ${expected}`);
-      });
-    });
-
-    it('allows custom emojis with emoji.set config', async () => {
-      changelog = await generateChangeLog(null, pkg, {
-        ...options,
-        emoji: {
-          set: {
-            feat: '🚀',
-          },
+      nlmOptions: {
+        changelog: {
+          verbose: true,
         },
-      });
-      const expected = '🚀 **feat:**';
-
-      assert.ok(changelog.includes(expected), `should include ${expected}`);
-    });
+      },
+    };
 
     it('disables emojis with emoji.skip config', async () => {
       changelog = await generateChangeLog(null, pkg, {
         ...options,
-        emoji: {
-          skip: true,
+        nlmOptions: {
+          ...options.nlmOptions,
+          emoji: {
+            skip: true,
+          },
         },
       });
       const notExpected = '📦️';
