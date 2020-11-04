@@ -629,42 +629,16 @@ describe('generateChangeLog', () => {
         }
       });
 
-      it('adds category emojis to each category', async () => {
-        const emojiMaps = generateChangeLog.emojiMaps.get('babel');
-        for (const { headline, prefixes } of testCases) {
-          for (const prefix of prefixes) {
-            const options = {
-              commits: [{ ...defaultCommit, type: prefix }],
-            };
-
-            const expectedEntries = [
-              `* [\`1234567\`](${href0}) ${prefix}: Stop doing the wrong thing`,
-            ];
-
-            const changelog = await generateChangeLog(null, pkg, options);
-            const lines = changelog.split('\n');
-
-            const indices = assertEntries(changelog, expectedEntries);
-            assert.strictEqual(
-              lines[indices[0] - 2],
-              `${headlineLevel} ${
-                emojiMaps[prefix] || emojiMaps['internal']
-              } ${headline}`
-            );
-          }
-        }
-      });
-
       it('identifies & highlights dependency updates in commit subject and groups them into "Dependencies" category', async () => {
         function removeBackticks(str) {
           return str.replace(/`/g, '');
         }
 
         const subjectCases = [
-          '@grpn/create@23.0',
-          '@grpn/create@23.0.0',
-          ['@grpn/create@23.0.x', '`create@23.0.x`', '`create@23x`'], // multiple packages in subject
-          '@grpn/cr.eate@23.x',
+          '@scope/create@23.0',
+          '@scope/create@23.0.0',
+          ['@scope/create@23.0.x', '`create@23.0.x`', '`create@23x`'], // multiple packages in subject
+          '@scope/cr.eate@23.x',
           'create@23.x',
           'cre.ate@23',
           'cre.ate@v23',
@@ -713,7 +687,7 @@ describe('generateChangeLog', () => {
       repository: 'http://127.0.0.1:3000/usr/proj',
     };
     const defaultCommit = {
-      sha: '2234567890123456789012345678901234567890',
+      sha: '1234567890123456789012345678901234567890',
       subject: 'something',
     };
     const cases = [
@@ -738,6 +712,52 @@ describe('generateChangeLog', () => {
         },
       },
     };
+
+    it('adds category emojis to each category', async () => {
+      const testCases = [
+        { headline: 'New Features', prefixes: ['feat'] },
+        { headline: 'Code Refactoring', prefixes: ['refactor'] },
+        { headline: 'Bug Fixes', prefixes: ['fix'] },
+        { headline: 'Performance Improvements', prefixes: ['perf'] },
+        { headline: 'Dependencies', prefixes: ['dep'] },
+        { headline: 'Documentation', prefixes: ['docs'] },
+        { headline: 'Polish', prefixes: ['style'] },
+        { headline: 'Reverts', prefixes: ['revert'] },
+        {
+          headline: 'Internal',
+          prefixes: ['ci', 'test', 'build', 'chore'],
+        },
+      ];
+
+      const headlineLevel = '####';
+      const href0 = `https://github.com/usr/proj/commit/${defaultCommit.sha}`;
+
+      const emojiMaps = generateChangeLog.emojiMaps.get('default');
+      for (const { headline, prefixes } of testCases) {
+        for (const prefix of prefixes) {
+          const expectedEntries = [
+            `* [\`1234567\`](${href0}) ${prefix}: something`,
+          ];
+
+          changelog = await generateChangeLog(
+            null,
+            { repository: 'usr/proj' },
+            {
+              commits: [{ ...defaultCommit, type: prefix }],
+            }
+          );
+          const lines = changelog.split('\n');
+
+          const indices = assertEntries(changelog, expectedEntries);
+          assert.strictEqual(
+            lines[indices[0] - 2],
+            `${headlineLevel} ${
+              emojiMaps[prefix] || emojiMaps['internal']
+            } ${headline}`
+          );
+        }
+      }
+    });
 
     it('disables emojis with emoji.skip config', async () => {
       changelog = await generateChangeLog(null, pkg, {
