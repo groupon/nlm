@@ -1,3 +1,10 @@
+### 5.1.1 - 2020-11-04
+
+* chore(deps): update dependencies & set node >= 10.13 - **[@aaarichter](https://github.com/aaarichter)** [#67](https://github.com/groupon/nlm/pull/67)
+  - [`952459a`](https://github.com/groupon/nlm/commit/952459aa54c97d1a48e454ce398fb9e68ce8cf89) ♻️ **chore:** update dependencies & set node >= 10.13
+  - [`aeb32f8`](https://github.com/groupon/nlm/commit/aeb32f8c7da1e6f3f684a85651ab84962d32ae9f) ✅ **test:** rewrite with node assert
+
+
 ### 5.1.0 - 2020-10-15
 
 * feat: support circleci PRs and releases - **[@markowsiak](https://github.com/markowsiak)** [#66](https://github.com/groupon/nlm/pull/66)
