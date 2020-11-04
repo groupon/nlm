@@ -655,18 +655,22 @@ describe('generateChangeLog', () => {
         }
       });
 
-      it('identifies dependency updates in commit subject and groups them into "Dependencies" category', async () => {
+      it('identifies & highlights dependency updates in commit subject and groups them into "Dependencies" category', async () => {
+        function removeBackticks(str) {
+          return str.replace(/`/g, '');
+        }
+
         const subjectCases = [
-          'update @grpn/create@23.0',
-          'update @grpn/create@23.0.0',
-          'update @grpn/create@23.0.x  update `@grpn/create@23.0.x`',
-          'update @grpn/cr.eate@23.x',
-          'update create@23.x',
-          'update cre.ate@23',
-          'update cre.ate@v23',
-          'update cre.ate v23',
-          'update cre.ate 23',
-          'update `cre.ate 23`',
+          '@grpn/create@23.0',
+          '@grpn/create@23.0.0',
+          ['@grpn/create@23.0.x', '`create@23.0.x`', '`create@23x`'], // multiple packages in subject
+          '@grpn/cr.eate@23.x',
+          'create@23.x',
+          'cre.ate@23',
+          'cre.ate@v23',
+          'cre.ate v23',
+          'cre.ate 23',
+          '`cre.ate 23`',
         ];
 
         for (const subject of subjectCases) {
@@ -674,7 +678,7 @@ describe('generateChangeLog', () => {
             {
               sha: '1234567890123456789012345678901234567890',
               type: 'fix',
-              subject,
+              subject: Array.isArray(subject) ? subject.join(' ') : subject,
             },
           ];
           const options = {
@@ -682,7 +686,13 @@ describe('generateChangeLog', () => {
             commits,
           };
           const href = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-          const expectedEntries = [`* [\`1234567\`](${href}) fix: ${subject}`];
+          const expectedEntries = [
+            `* [\`1234567\`](${href}) fix: \`${
+              Array.isArray(subject)
+                ? subject.map(removeBackticks).join('` `')
+                : removeBackticks(subject)
+            }\``,
+          ];
 
           const changelog = await generateChangeLog(
             null,

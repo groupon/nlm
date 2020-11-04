@@ -41,7 +41,8 @@
     "gofer": "^5.0.4",
     "minimist": "^1.2.5",
     "rc": "^1.2.8",
-    "semver": "^7.3.2"
+    "semver": "^7.3.2",
+    "string.prototype.replaceall": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
