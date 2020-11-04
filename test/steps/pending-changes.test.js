@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const getPendingChanges = require('../../lib/steps/pending-changes');
 
@@ -45,45 +45,71 @@ describe('getPendingChanges', () => {
     repository: 'usr/proj',
   };
   const options = {};
+
   before('create version commit', () => {
     return getPendingChanges(dirname, pkg, options);
   });
+
+  function assertChange(subject, expected) {
+    const commit = options.commits.find(c => c.subject === subject);
+    assert.strictEqual(commit.references.length, expected.refLength);
+
+    const ref = commit.references[0];
+    assert.strictEqual(ref.prefix, expected.prefix);
+    assert.strictEqual(ref.href, expected.href);
+  }
+
   it('adds the commits to the options', () => {
-    assert.hasType(Array, options.commits);
+    assert.ok(Array.isArray(options.commits));
   });
+
   it('resolves commit references', () => {
-    const commit = options.commits.find(c => c.subject === 'Jira');
-    assert.equal(1, commit.references.length);
-    const ref = commit.references[0];
-    assert.equal('REPO-', ref.prefix);
-    assert.equal('https://jira.atlassian.com/browse/REPO-2001', ref.href);
+    const expected = {
+      refLength: 1,
+      prefix: 'REPO-',
+      href: 'https://jira.atlassian.com/browse/REPO-2001',
+    };
+
+    assertChange('Jira', expected);
   });
+
   it('truncates full urls to same repo', () => {
-    const commit = options.commits.find(c => c.subject === 'Truncate');
-    assert.equal(1, commit.references.length);
-    const ref = commit.references[0];
-    assert.equal('#', ref.prefix);
-    assert.equal('https://github.com/usr/proj/issues/44', ref.href);
+    const expected = {
+      refLength: 1,
+      prefix: '#',
+      href: 'https://github.com/usr/proj/issues/44',
+    };
+
+    assertChange('Truncate', expected);
   });
+
   it('builds nice references to sibling repos', () => {
-    const commit = options.commits.find(c => c.subject === 'Full');
-    assert.equal(1, commit.references.length);
-    const ref = commit.references[0];
-    assert.equal('open/source#', ref.prefix);
-    assert.equal('https://github.com/open/source/issues/13', ref.href);
+    const expected = {
+      refLength: 1,
+      prefix: 'open/source#',
+      href: 'https://github.com/open/source/issues/13',
+    };
+
+    assertChange('Full', expected);
   });
+
   it('expands short-style refs', () => {
-    const commit = options.commits.find(c => c.subject === 'Short');
-    assert.equal(1, commit.references.length);
-    const ref = commit.references[0];
-    assert.equal('#', ref.prefix);
-    assert.equal('https://github.com/usr/proj/issues/42', ref.href);
+    const expected = {
+      refLength: 1,
+      prefix: '#',
+      href: 'https://github.com/usr/proj/issues/42',
+    };
+
+    assertChange('Short', expected);
   });
+
   it('supports refs to other Github instances', () => {
-    const commit = options.commits.find(c => c.subject === 'GHE');
-    assert.equal(1, commit.references.length);
-    const ref = commit.references[0];
-    assert.equal('github.example.com/some/thing#', ref.prefix);
-    assert.equal('https://github.example.com/some/thing/issues/72', ref.href);
+    const expected = {
+      refLength: 1,
+      prefix: 'github.example.com/some/thing#',
+      href: 'https://github.example.com/some/thing/issues/72',
+    };
+
+    assertChange('GHE', expected);
   });
 });

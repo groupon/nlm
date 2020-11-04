@@ -34,48 +34,56 @@
 
 const fs = require('fs');
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const addLicenseHeaders = require('../../lib/license');
 
 const withFixture = require('../fixture');
 
 describe('addLicenseHeaders', () => {
-  it('does not try to add additional headers to nlm', () => {
-    return addLicenseHeaders(process.cwd(), ['lib', 'test']).then(
-      changedFiles => {
-        assert.deepEqual([], changedFiles);
-      }
-    );
+  it('does not try to add additional headers to nlm', async () => {
+    const changedFiles = await addLicenseHeaders(process.cwd(), [
+      'lib',
+      'test',
+    ]);
+    assert.deepStrictEqual(changedFiles, []);
   });
+
   describe('without a LICENSE file', () => {
     const dirname = withFixture('fix-commit');
-    it('does nothing', () => {
-      return addLicenseHeaders(dirname).then(changedFiles => {
-        assert.deepEqual([], changedFiles);
-      });
+
+    it('does nothing', async () => {
+      const changedFiles = await addLicenseHeaders(dirname);
+
+      assert.deepStrictEqual(changedFiles, []);
     });
   });
+
   describe('with a file w/o license header', () => {
     const dirname = withFixture('fix-commit');
     const filename = `${dirname}/index.js`;
     const licenseText = '\n\nIMPORTANT\n\nLEGAL\nSTUFF HERE!\n\t \n';
     const licenseHeader =
       '/*\n * IMPORTANT\n *\n * LEGAL\n * STUFF HERE!\n */\n';
+
     before('write license file', () => {
       fs.writeFileSync(`${dirname}/LICENSE`, licenseText);
     });
-    before('returns the absolute filename', () => {
-      return addLicenseHeaders(dirname).then(changedFiles => {
-        assert.deepEqual([filename], changedFiles);
-      });
+
+    before('returns the absolute filename', async () => {
+      const changedFiles = await addLicenseHeaders(dirname);
+
+      assert.deepStrictEqual(changedFiles, [filename]);
     });
+
     it('writes out a file with a license header', () => {
       const content = fs.readFileSync(filename, 'utf8');
-      assert.include(licenseHeader, content);
-      assert.expect(
-        'Starts with the header',
-        content.indexOf(licenseHeader) === 0
+
+      assert.ok(content.includes(licenseHeader));
+      assert.strictEqual(
+        content.indexOf(licenseHeader),
+        0,
+        'Starts with the header'
       );
     });
   });

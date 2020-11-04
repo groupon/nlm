@@ -32,36 +32,41 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const verifyClean = require('../../lib/git/verify-clean');
 
 const withFixture = require('../fixture');
 
-function unexpected() {
-  throw new Error('Should have failed');
-}
-
 describe('verifyClean', () => {
   describe('with an empty project', () => {
     const dirname = withFixture('empty-project');
-    it('returns true', () => {
-      return verifyClean(dirname).then(assert.expect);
+
+    it('returns true', async () => {
+      assert.ok(await verifyClean(dirname));
     });
   });
+
   describe('with committed changes', () => {
     const dirname = withFixture('fix-commit');
-    it('returns true', () => {
-      return verifyClean(dirname).then(assert.expect);
+
+    it('returns true', async () => {
+      assert.ok(await verifyClean(dirname));
     });
   });
+
   describe('with uncommitted or unstaged changes', () => {
     const dirname = withFixture('dirty-checkout');
-    it('reports the files in question', () => {
-      return verifyClean(dirname).then(unexpected, error => {
-        assert.include('M  index.js', error.message);
-        assert.include('?? untracked.js', error.message);
-      });
+
+    it('reports the files in question', async () => {
+      await assert.rejects(
+        async () => await verifyClean(dirname),
+        error => {
+          assert.ok(error.message.includes('M  index.js'));
+          assert.ok(error.message.includes('?? untracked.js'));
+          return true;
+        }
+      );
     });
   });
 });

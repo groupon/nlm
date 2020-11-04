@@ -34,7 +34,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const publishToNpm = require('../../lib/steps/publish-to-npm');
 
@@ -83,9 +83,11 @@ describe('publishToNpm', () => {
   describe('with NPM_USERNAME etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('sends basic auth headers', function () {
+
+    it('sends basic auth headers', async function () {
       this.timeout(4000);
-      return publishToNpm(dirname, require(`${dirname}/package.json`), {
+
+      await publishToNpm(dirname, require(`${dirname}/package.json`), {
         currentBranch: 'master',
         distTag: 'latest',
         commit: true,
@@ -93,18 +95,18 @@ describe('publishToNpm', () => {
         npmPasswordBase64: Buffer.from('passw0rd').toString('base64'),
         npmEmail: 'robin@example.com',
         npmToken: '',
-      }).then(() => {
-        assert.deepEqual(
-          [
-            {
-              method: 'PUT',
-              url: '/nlm-test-pkg',
-              auth: `Basic ${Buffer.from('robin:passw0rd').toString('base64')}`,
-            },
-          ],
-          httpCalls.filter(c => c.method !== 'GET')
-        );
       });
+
+      assert.deepStrictEqual(
+        httpCalls.filter(c => c.method !== 'GET'),
+        [
+          {
+            method: 'PUT',
+            url: '/nlm-test-pkg',
+            auth: `Basic ${Buffer.from('robin:passw0rd').toString('base64')}`,
+          },
+        ]
+      );
     });
   });
 
@@ -124,29 +126,32 @@ describe('publishToNpm', () => {
   describe('with NPM_TOKEN etc.', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('uses a bearer token', function () {
+
+    it('uses a bearer token', async function () {
       this.timeout(4000);
 
       const pkg = require(`${dirname}/package.json`);
 
-      return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
-        assert.deepEqual(
-          [
-            {
-              method: 'PUT',
-              url: '/nlm-test-pkg',
-              auth: 'Bearer some-access-token',
-            },
-          ],
-          httpCalls.filter(c => c.method !== 'GET')
-        );
-      });
+      await publishToNpm(dirname, pkg, getTokenOptions());
+
+      assert.deepStrictEqual(
+        httpCalls.filter(c => c.method !== 'GET'),
+        [
+          {
+            method: 'PUT',
+            url: '/nlm-test-pkg',
+            auth: 'Bearer some-access-token',
+          },
+        ]
+      );
     });
   });
+
   describe('with nlm.deprecated set', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('tries to deprecate', function () {
+
+    it('tries to deprecate', async function () {
       this.timeout(4000);
 
       const pkg = require(`${dirname}/package.json`);
@@ -154,47 +159,47 @@ describe('publishToNpm', () => {
       const opts = getTokenOptions({
         deprecated: 'reason',
       });
-      return publishToNpm(dirname, pkg, opts).then(() => {
-        const putReq = {
-          method: 'PUT',
-          url: '/nlm-test-pkg',
-          auth: 'Bearer some-access-token',
-        };
-        assert.deepEqual(
-          [putReq, putReq],
-          httpCalls.filter(c => c.method !== 'GET')
-        );
-      });
+      await publishToNpm(dirname, pkg, opts);
+      const putReq = {
+        method: 'PUT',
+        url: '/nlm-test-pkg',
+        auth: 'Bearer some-access-token',
+      };
+
+      assert.deepStrictEqual(
+        httpCalls.filter(c => c.method !== 'GET'),
+        [putReq, putReq]
+      );
     });
   });
+
   describe('without --commmit', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('makes no http calls', () => {
+
+    it('makes no http calls', async () => {
       const opts = getTokenOptions({
         commit: false,
         deprecated: 'foo',
       });
-      return publishToNpm(
-        dirname,
-        require(`${dirname}/package.json`),
-        opts
-      ).then(() => {
-        assert.deepEqual([], httpCalls);
-      });
+      await publishToNpm(dirname, require(`${dirname}/package.json`), opts);
+
+      assert.deepStrictEqual(httpCalls, []);
     });
   });
+
   describe('if the package is set to private', () => {
     const dirname = withFixture('released');
     const httpCalls = withFakeRegistry();
-    it('makes no http calls', () => {
+
+    it('makes no http calls', async () => {
       const pkg = {
         private: true,
         ...require(`${dirname}/package.json`),
       };
-      return publishToNpm(dirname, pkg, getTokenOptions()).then(() => {
-        assert.deepEqual([], httpCalls);
-      });
+      await publishToNpm(dirname, pkg, getTokenOptions());
+
+      assert.deepStrictEqual(httpCalls, []);
     });
   });
 });

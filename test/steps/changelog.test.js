@@ -36,6 +36,64 @@ const assert = require('assert');
 
 const generateChangeLog = require('../../lib/steps/changelog');
 
+function responseByUrl(url) {
+  const res = {};
+  switch (url) {
+    case '/api/v3/repos/usr/proj/pulls/1':
+      res.chunk = JSON.stringify({
+        user: {
+          login: 'pr-1-user',
+          html_url: 'http://pr-1-user',
+        },
+        html_url: 'http://pr-1',
+        title: 'PR #1 Title',
+      });
+      break;
+
+    case '/api/v3/repos/usr/proj/pulls/1/commits':
+      res.chunk = JSON.stringify([
+        {
+          sha: '1234567890123456789012345678901234567890',
+        },
+        {
+          sha: '2234567890123456789012345678901234567890',
+        },
+      ]);
+      break;
+
+    case '/api/v3/repos/usr/proj/pulls/2':
+      res.chunk = JSON.stringify({
+        user: {
+          login: 'pr-2-user',
+          html_url: 'http://pr-2-user',
+        },
+        html_url: 'http://pr-2',
+        title: 'PR #2 Title',
+      });
+      break;
+
+    case '/api/v3/repos/usr/proj/pulls/2/commits':
+      res.chunk = JSON.stringify([
+        // These commits are *not* part of the release.
+        // This could happen, for example, when a foreign PR happens to
+        // have an id that also exists in the current repo.
+        {
+          sha: 'e234567890123456789012345678901234567890',
+        },
+        {
+          sha: 'f234567890123456789012345678901234567890',
+        },
+      ]);
+      break;
+
+    default:
+      res.statusCode = 404;
+      res.chunk = '{"error":"Not found"}';
+  }
+
+  return res;
+}
+
 function withFakeGithub() {
   const httpCalls = [];
   let server;
@@ -48,66 +106,11 @@ function withFakeGithub() {
       });
       res.setHeader('Content-Type', 'application/json');
 
-      switch (req.url) {
-        case '/api/v3/repos/usr/proj/pulls/1':
-          res.end(
-            JSON.stringify({
-              user: {
-                login: 'pr-1-user',
-                html_url: 'http://pr-1-user',
-              },
-              html_url: 'http://pr-1',
-              title: 'PR #1 Title',
-            })
-          );
-          break;
-
-        case '/api/v3/repos/usr/proj/pulls/1/commits':
-          res.end(
-            JSON.stringify([
-              {
-                sha: '1234567890123456789012345678901234567890',
-              },
-              {
-                sha: '2234567890123456789012345678901234567890',
-              },
-            ])
-          );
-          break;
-
-        case '/api/v3/repos/usr/proj/pulls/2':
-          res.end(
-            JSON.stringify({
-              user: {
-                login: 'pr-2-user',
-                html_url: 'http://pr-2-user',
-              },
-              html_url: 'http://pr-2',
-              title: 'PR #2 Title',
-            })
-          );
-          break;
-
-        case '/api/v3/repos/usr/proj/pulls/2/commits':
-          res.end(
-            JSON.stringify([
-              // These commits are *not* part of the release.
-              // This could happen, for example, when a foreign PR happens to
-              // have an id that also exists in the current repo.
-              {
-                sha: 'e234567890123456789012345678901234567890',
-              },
-              {
-                sha: 'f234567890123456789012345678901234567890',
-              },
-            ])
-          );
-          break;
-
-        default:
-          res.statusCode = 404;
-          res.end('{"error":"Not found"}');
+      const { chunk, statusCode } = responseByUrl(req.url);
+      if (statusCode) {
+        res.statusCode = statusCode;
       }
+      res.end(chunk);
     });
     server.listen(3000, done);
   });

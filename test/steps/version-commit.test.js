@@ -36,7 +36,7 @@ const { execFile } = require('child_process');
 
 const fs = require('fs');
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const createVersionCommit = require('../../lib/steps/version-commit');
 
@@ -70,88 +70,86 @@ describe('createVersionCommit', () => {
     const dirname = withFixture('multiple-commits');
     let currentDate;
     before('commits with the original author', done => {
-      execFile(
-        'git',
-        ['show'],
-        {
-          cwd: dirname,
-        },
-        (err, stdout) => {
-          if (err) return done(err);
-          assert.include('Author: Robin Developer <rdev@example.com>', stdout);
-          return done();
-        }
-      );
+      execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
+        if (err) return done(err);
+
+        assert.ok(
+          stdout.includes('Author: Robin Developer <rdev@example.com>')
+        );
+        return done();
+      });
     });
+
     before('create version commit', () => {
       currentDate = new Date().toISOString().substring(0, 10);
       return createVersionCommit(dirname, pkg, options);
     });
+
     it('writes the correct HEAD sha', () => {
-      const HEAD = fs.readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8');
-      assert.equal(HEAD.trim(), options.versionCommitSha);
+      const HEAD = fs
+        .readFileSync(`${dirname}/.git/refs/heads/master`, 'utf8')
+        .trim();
+
+      assert.strictEqual(options.versionCommitSha, HEAD);
     });
 
     it('writes the correct CHANGELOG', () => {
       const [version, , commit1, commit2] = fs
         .readFileSync(`${dirname}/CHANGELOG.md`, 'utf8')
         .split('\n');
-      assert.equal(`### 1.0.0 - ${currentDate}`, version);
-      assert.equal('* New stuff', commit1);
-      assert.equal('* Interesting features', commit2);
+
+      assert.strictEqual(version, `### 1.0.0 - ${currentDate}`);
+      assert.strictEqual(commit1, '* New stuff');
+      assert.strictEqual(commit2, '* Interesting features');
     });
 
     it('commits with the proper user', done => {
-      execFile(
-        'git',
-        ['show'],
-        {
-          cwd: dirname,
-        },
-        (err, stdout) => {
-          if (err) return done(err);
-          assert.include('Author: nlm <opensource@groupon.com>', stdout);
-          return done();
-        }
-      );
+      execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
+        if (err) return done(err);
+
+        assert.ok(stdout.includes('Author: nlm <opensource@groupon.com>'));
+        return done();
+      });
     });
   });
   describe('using package-lock.json', () => {
     const dirname = withFixture('with-plock');
+
     before('create version commit', () =>
       createVersionCommit(dirname, pkg, options)
     );
+
     it('bumps the package-lock version number', done => {
       execFile(
         'git',
         ['show', 'HEAD:package-lock.json'],
-        {
-          cwd: dirname,
-        },
+        { cwd: dirname },
         (err, json) => {
           if (err) return void done(err);
-          assert.equal('1.0.0', JSON.parse(json).version);
+
+          assert.strictEqual(JSON.parse(json).version, '1.0.0');
           done();
         }
       );
     });
   });
+
   describe('with unused package-lock.json', () => {
     const dirname = withFixture('with-bogus-plock');
     before('create version commit', () =>
       createVersionCommit(dirname, pkg, options)
     );
+
     it("doesn't touch change it", done => {
       execFile(
         'git',
         ['show', 'HEAD:package-lock.json'],
-        {
-          cwd: dirname,
-        },
+        { cwd: dirname },
         err => {
-          assert.truthy(err);
+          assert.ok(err);
           const json = fs.readFileSync(`${dirname}/package-lock.json`, 'utf8');
-          assert.notEqual('1.0.0', JSON.parse(json).version);
+
+          assert.notStrictEqual(JSON.parse(json).version, '1.0.0');
           done();
         }
       );

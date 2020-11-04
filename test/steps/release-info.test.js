@@ -32,7 +32,7 @@
 
 'use strict';
 
-const assert = require('assertive');
+const assert = require('assert');
 
 const getCommits = require('../../lib/git/commits');
 
@@ -42,22 +42,26 @@ const withFixture = require('../fixture');
 
 describe('determineReleaseInfo', () => {
   it('returns "none" for an empty list of commits', () => {
-    assert.equal('none', determineReleaseInfo([]));
+    assert.strictEqual(determineReleaseInfo([]), 'none');
   });
 
   describe('with invalid commit messages', () => {
     const dirname = withFixture('invalid-commit');
     let commits = [];
+
     before('load commits', async () => {
       commits = await getCommits(dirname);
     });
 
     it('rejects them with a helpful message', () => {
-      const error = assert.throws(() => {
-        determineReleaseInfo(commits);
-      });
-      assert.equal(
-        `This repository uses AngularJS Git Commit Message Conventions[1]
+      assert.throws(
+        () => {
+          determineReleaseInfo(commits);
+        },
+        error => {
+          assert.strictEqual(
+            error.message,
+            `This repository uses AngularJS Git Commit Message Conventions[1]
 to automatically determine the semver implications of changes
 and to generate changelogs for releases.
 
@@ -76,14 +80,17 @@ git rebase -i --root
 ~~~
 
 [1] Docs on the conventions: http://gr.pn/1OWll98
-[2] https://git-scm.com/docs/git-rebase`,
-        error.message
+[2] https://git-scm.com/docs/git-rebase`
+          );
+
+          return true;
+        }
       );
     });
 
     describe('with --acceptInvalidCommits', () => {
       it('is cautious and considers it "major"', () => {
-        assert.equal('major', determineReleaseInfo(commits, true));
+        assert.strictEqual(determineReleaseInfo(commits, true), 'major');
       });
     });
   });
@@ -126,12 +133,13 @@ git rebase -i --root
       describe(testcase.desc, () => {
         const dirname = withFixture(testcase.fixture);
         let commits = [];
+
         before('load commits', async () => {
           commits = await getCommits(dirname);
         });
 
         it(`returns "${testcase.expected}" version info`, () => {
-          assert.equal(testcase.expected, determineReleaseInfo(commits));
+          assert.strictEqual(determineReleaseInfo(commits), testcase.expected);
         });
       });
     }
