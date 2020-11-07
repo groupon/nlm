@@ -66,9 +66,11 @@ describe('createVersionCommit', () => {
 
   before(resetVars);
   afterEach(resetVars);
+
   describe('with no package-lock.json', () => {
     const dirname = withFixture('multiple-commits');
     let currentDate;
+
     before('commits with the original author', done => {
       execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
         if (err) return done(err);
@@ -98,7 +100,7 @@ describe('createVersionCommit', () => {
         .readFileSync(`${dirname}/CHANGELOG.md`, 'utf8')
         .split('\n');
 
-      assert.strictEqual(version, `### 1.0.0 - ${currentDate}`);
+      assert.strictEqual(version, `### v1.0.0 (${currentDate})`);
       assert.strictEqual(commit1, '* New stuff');
       assert.strictEqual(commit2, '* Interesting features');
     });
@@ -112,6 +114,7 @@ describe('createVersionCommit', () => {
       });
     });
   });
+
   describe('using package-lock.json', () => {
     const dirname = withFixture('with-plock');
 
@@ -136,6 +139,7 @@ describe('createVersionCommit', () => {
 
   describe('with unused package-lock.json', () => {
     const dirname = withFixture('with-bogus-plock');
+
     before('create version commit', () =>
       createVersionCommit(dirname, pkg, options)
     );
