@@ -589,7 +589,7 @@ describe('generateChangeLog', () => {
         { headline: 'Code Refactoring', prefixes: ['refactor'] },
         { headline: 'Bug Fixes', prefixes: ['fix'] },
         { headline: 'Performance Improvements', prefixes: ['perf'] },
-        { headline: 'Dependencies', prefixes: ['dep'] },
+        { headline: 'Dependencies', prefixes: ['deps'] },
         { headline: 'Documentation', prefixes: ['docs'] },
         { headline: 'Polish', prefixes: ['style'] },
         { headline: 'Reverts', prefixes: ['revert'] },
@@ -629,7 +629,7 @@ describe('generateChangeLog', () => {
         }
       });
 
-      it('identifies & highlights dependency updates in commit subject and groups them into "Dependencies" category', async () => {
+      it('identifies & highlights dependency updates in commit subject and groups them into "Dependencies" category for type "chore"', async () => {
         function removeBackticks(str) {
           return str.replace(/`/g, '');
         }
@@ -648,34 +648,40 @@ describe('generateChangeLog', () => {
         ];
 
         for (const subject of subjectCases) {
-          const commits = [
-            {
-              sha: '1234567890123456789012345678901234567890',
-              type: 'fix',
-              subject: Array.isArray(subject) ? subject.join(' ') : subject,
-            },
-          ];
-          const options = {
-            ...defaultOptions,
-            commits,
-          };
-          const href = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-          const expectedEntries = [
-            `* [\`1234567\`](${href}) fix: \`${
-              Array.isArray(subject)
-                ? subject.map(removeBackticks).join('` `')
-                : removeBackticks(subject)
-            }\``,
-          ];
+          for (const type of ['chore', 'fix']) {
+            const commits = [
+              {
+                sha: '1234567890123456789012345678901234567890',
+                type,
+                subject: Array.isArray(subject) ? subject.join(' ') : subject,
+              },
+            ];
+            const options = {
+              ...defaultOptions,
+              commits,
+            };
+            const href = `https://github.com/usr/proj/commit/${commits[0].sha}`;
 
-          const changelog = await generateChangeLog(
-            null,
-            pkg,
-            options
-          ).then(res => res.split('\n'));
+            const expectedEntries = [
+              `* [\`1234567\`](${href}) ${type}: \`${
+                Array.isArray(subject)
+                  ? subject.map(removeBackticks).join('` `')
+                  : removeBackticks(subject)
+              }\``,
+            ];
 
-          const index = assertEntries(changelog, expectedEntries);
-          assert.strictEqual(changelog[index - 2], '#### Dependencies');
+            const changelog = await generateChangeLog(
+              null,
+              pkg,
+              options
+            ).then(res => res.split('\n'));
+
+            const index = assertEntries(changelog, expectedEntries);
+            assert.strictEqual(
+              changelog[index - 2],
+              `#### ${type === 'chore' ? 'Dependencies' : 'Bug Fixes'}`
+            );
+          }
         }
       });
     });
@@ -719,13 +725,14 @@ describe('generateChangeLog', () => {
         { headline: 'Code Refactoring', prefixes: ['refactor'] },
         { headline: 'Bug Fixes', prefixes: ['fix'] },
         { headline: 'Performance Improvements', prefixes: ['perf'] },
-        { headline: 'Dependencies', prefixes: ['dep'] },
+        { headline: 'Dependencies', prefixes: ['deps'] },
         { headline: 'Documentation', prefixes: ['docs'] },
         { headline: 'Polish', prefixes: ['style'] },
         { headline: 'Reverts', prefixes: ['revert'] },
         {
           headline: 'Internal',
           prefixes: ['ci', 'test', 'build', 'chore'],
+          emoji_id: 'internal',
         },
       ];
 
@@ -733,28 +740,28 @@ describe('generateChangeLog', () => {
       const href0 = `https://github.com/usr/proj/commit/${defaultCommit.sha}`;
 
       const emojiMaps = generateChangeLog.emojiMaps.get('default');
-      for (const { headline, prefixes } of testCases) {
-        for (const prefix of prefixes) {
-          const expectedEntries = [
-            `* [\`1234567\`](${href0}) ${prefix}: something`,
-          ];
+      for (const { headline, prefixes, emoji_id } of testCases) {
+        for (const scope of ['', '(test)']) {
+          for (const prefix of prefixes) {
+            const expectedEntries = [
+              `* [\`1234567\`](${href0}) ${prefix}${scope}: something`,
+            ];
 
-          changelog = await generateChangeLog(
-            null,
-            { repository: 'usr/proj' },
-            {
-              commits: [{ ...defaultCommit, type: prefix }],
-            }
-          );
-          const lines = changelog.split('\n');
+            changelog = await generateChangeLog(
+              null,
+              { repository: 'usr/proj' },
+              {
+                commits: [{ ...defaultCommit, type: prefix + scope }],
+              }
+            );
+            const lines = changelog.split('\n');
 
-          const indices = assertEntries(changelog, expectedEntries);
-          assert.strictEqual(
-            lines[indices[0] - 2],
-            `${headlineLevel} ${
-              emojiMaps[prefix] || emojiMaps['internal']
-            } ${headline}`
-          );
+            const indices = assertEntries(changelog, expectedEntries);
+            assert.strictEqual(
+              lines[indices[0] - 2],
+              `${headlineLevel} ${emojiMaps[emoji_id || prefix]} ${headline}`
+            );
+          }
         }
       }
     });
