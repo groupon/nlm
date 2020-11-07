@@ -1,3 +1,17 @@
+### 5.2.0 - 2020-11-07
+
+* feat: changelog improvements  - **[@aaarichter](https://github.com/aaarichter)** [#68](https://github.com/groupon/nlm/pull/68)
+  - [`69ba93e`](https://github.com/groupon/nlm/commit/69ba93e9b047e3de0dcfeed60eae6eceecae1d25) 📦️ **refactor:** change version headline
+  - [`63bcf4e`](https://github.com/groupon/nlm/commit/63bcf4e892bc20a2c47ecaa7ee9d2b02eb5a492b) ✨ **feat:** categorize changelog
+  - [`ea69985`](https://github.com/groupon/nlm/commit/ea699851e7e4d75e9a64af4212f48aae92c4dfdd) ✨ **feat:** categorize & group PRs & commits
+  - [`0bc5730`](https://github.com/groupon/nlm/commit/0bc5730a454cb30f3bf774de45918e6ce0a43e10) 📝 **docs:** add JSDOC typings
+  - [`2173cf8`](https://github.com/groupon/nlm/commit/2173cf8252defe0d4b8b5793948bec608d658704) ✨ **feat:** add changelog.omit option to omit commit types
+  - [`b3b4dab`](https://github.com/groupon/nlm/commit/b3b4dab1b59e4bef151c1fe75e5a2677f6842ba2) ✨ **feat:** highlight dependency updates in commit subject
+  - [`21b17e3`](https://github.com/groupon/nlm/commit/21b17e32ff510b11ba6b9b397ea9abf75929105a) 📦️ **refactor:** change default emoji map & update documentation
+  - [`d1e7889`](https://github.com/groupon/nlm/commit/d1e7889cc8775cc68da3af7ca2c31b1472b69fe0) ↩️ **revert:** unnecessary changes
+  - [`d188cbd`](https://github.com/groupon/nlm/commit/d188cbdf766a8ae23d316fe32e4bbbde5912a6f1) 🐛 **fix:** remove () from message
+
+
 ### 5.1.1 - 2020-11-04
 
 * chore(deps): update dependencies & set node >= 10.13 - **[@aaarichter](https://github.com/aaarichter)** [#67](https://github.com/groupon/nlm/pull/67)
