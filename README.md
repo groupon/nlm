@@ -190,7 +190,7 @@ The default emojis for the commit types are:
   "style": "💅",
   
   // internal types
-  "deps": "🔼",     // will be set when dependencies are found in PR commit subject
+  "dep": "🔼",     // will be set when dependencies are found in PR commit subject
   "internal": "🏡", // will be set for types: "chore", "build", "test", "ci" or commits without type
 
 }
