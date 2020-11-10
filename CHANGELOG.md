@@ -1,3 +1,11 @@
+### v5.2.1 (2020-11-10)
+
+#### 🏡 Internal
+
+* [#69](https://github.com/groupon/nlm/pull/69) fix(changelog): type(scope) detection ([@aaarichter](https://github.com/aaarichter)) 
+* [`417063a`](https://github.com/groupon/nlm/commit/417063afa0838895faa16a0fc3dc0367c2740d69) ci: add .deepsource.toml
+
+
 ### 5.2.0 - 2020-11-07
 
 * feat: changelog improvements  - **[@aaarichter](https://github.com/aaarichter)** [#68](https://github.com/groupon/nlm/pull/68)
