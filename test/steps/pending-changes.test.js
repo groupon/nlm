@@ -39,77 +39,102 @@ const getPendingChanges = require('../../lib/steps/pending-changes');
 const withFixture = require('../fixture');
 
 describe('getPendingChanges', () => {
-  const dirname = withFixture('ticket-commits');
-  const pkg = {
-    version: '0.0.0',
-    repository: 'usr/proj',
-  };
-  const options = {};
+  describe('commit references', () => {
+    const dirname = withFixture('ticket-commits');
+    const pkg = {
+      version: '0.0.0',
+      repository: 'usr/proj',
+    };
+    const options = {};
 
-  before('create version commit', () => {
-    return getPendingChanges(dirname, pkg, options);
+    before('create version commit', () => {
+      return getPendingChanges(dirname, pkg, options);
+    });
+
+    function assertChange(subject, expected) {
+      const commit = options.commits.find(c => c.subject === subject);
+      assert.strictEqual(commit.references.length, expected.refLength);
+
+      const ref = commit.references[0];
+      assert.strictEqual(ref.prefix, expected.prefix);
+      assert.strictEqual(ref.href, expected.href);
+    }
+
+    it('adds the commits to the options', () => {
+      assert.ok(Array.isArray(options.commits));
+    });
+
+    it('resolves commit references', () => {
+      const expected = {
+        refLength: 1,
+        prefix: 'REPO-',
+        href: 'https://jira.atlassian.com/browse/REPO-2001',
+      };
+
+      assertChange('Jira', expected);
+    });
+
+    it('truncates full urls to same repo', () => {
+      const expected = {
+        refLength: 1,
+        prefix: '#',
+        href: 'https://github.com/usr/proj/issues/44',
+      };
+
+      assertChange('Truncate', expected);
+    });
+
+    it('builds nice references to sibling repos', () => {
+      const expected = {
+        refLength: 1,
+        prefix: 'open/source#',
+        href: 'https://github.com/open/source/issues/13',
+      };
+
+      assertChange('Full', expected);
+    });
+
+    it('expands short-style refs', () => {
+      const expected = {
+        refLength: 1,
+        prefix: '#',
+        href: 'https://github.com/usr/proj/issues/42',
+      };
+
+      assertChange('Short', expected);
+    });
+
+    it('supports refs to other Github instances', () => {
+      const expected = {
+        refLength: 1,
+        prefix: 'github.example.com/some/thing#',
+        href: 'https://github.example.com/some/thing/issues/72',
+      };
+
+      assertChange('GHE', expected);
+    });
   });
 
-  function assertChange(subject, expected) {
-    const commit = options.commits.find(c => c.subject === subject);
-    assert.strictEqual(commit.references.length, expected.refLength);
-
-    const ref = commit.references[0];
-    assert.strictEqual(ref.prefix, expected.prefix);
-    assert.strictEqual(ref.href, expected.href);
-  }
-
-  it('adds the commits to the options', () => {
-    assert.ok(Array.isArray(options.commits));
-  });
-
-  it('resolves commit references', () => {
-    const expected = {
-      refLength: 1,
-      prefix: 'REPO-',
-      href: 'https://jira.atlassian.com/browse/REPO-2001',
+  describe('loose commits', () => {
+    const dirname = withFixture('loose-commits');
+    const pkg = {
+      version: '1.0.0',
+      repository: 'usr/proj',
+    };
+    const options = {
+      releaseType: 'loose',
     };
 
-    assertChange('Jira', expected);
-  });
+    before('create version commit', () => {
+      return getPendingChanges(dirname, pkg, options);
+    });
 
-  it('truncates full urls to same repo', () => {
-    const expected = {
-      refLength: 1,
-      prefix: '#',
-      href: 'https://github.com/usr/proj/issues/44',
-    };
-
-    assertChange('Truncate', expected);
-  });
-
-  it('builds nice references to sibling repos', () => {
-    const expected = {
-      refLength: 1,
-      prefix: 'open/source#',
-      href: 'https://github.com/open/source/issues/13',
-    };
-
-    assertChange('Full', expected);
-  });
-
-  it('expands short-style refs', () => {
-    const expected = {
-      refLength: 1,
-      prefix: '#',
-      href: 'https://github.com/usr/proj/issues/42',
-    };
-
-    assertChange('Short', expected);
-  });
-
-  it('supports refs to other Github instances', () => {
-    const expected = {
-      refLength: 1,
-      prefix: 'github.example.com/some/thing#',
-      href: 'https://github.example.com/some/thing/issues/72',
-    };
-
-    assertChange('GHE', expected);
+    it('supports loose commits', () => {
+      assert.strictEqual(options.commits.length, 1);
+      assert.strictEqual(
+        options.commits[0].header,
+        'feat: Add puppy into the world'
+      );
+    });
   });
 });
