@@ -27,7 +27,7 @@ git commit -m "fix: Add a tweak to fix the world
 
 BREAKING CHANGE: Users expecting the old world might get surprising results
 
-Prepare to reveive unexpecting changes
+Prepare to receive unexpecting changes
 
 Closes #336"
 
