@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -e
+git init
+
+echo '{
+  "name": "nlm-test-pkg",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.example.com/some-org/nlm-test-pkg"
+  },
+  "publishConfig": {
+    "registry": "http://127.0.0.1:3000"
+  }
+}' >package.json
+
+git add package.json
+git commit -m 'v1.0.0'
+git tag 'v1.0.0'
+
+git checkout -b unpublished-branch
+
+touch world-fixer
+git add world-fixer
+
+git commit -m "fix: Add a tweak to fix the world
+
+BREAKING CHANGE: Users expecting the old world might get surprising results
+
+Prepare to reveive unexpecting changes
+
+Closes #336"
+
+git checkout master
+git merge --no-edit --no-ff unpublished-branch
+
+git checkout -b current-branch
+
+echo "console.log('🐕');" > index.js
+git add index.js
+git commit -m 'feat: Add puppy into the world'
+

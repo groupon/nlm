@@ -1,6 +1,6 @@
 # nlm
 
-A tool for automating the release of libraries in the spirit of 
+A tool for automating the release of libraries in the spirit of
 [semantic-release](https://github.com/semantic-release/semantic-release).
 
 #### Highlights
@@ -14,10 +14,10 @@ A tool for automating the release of libraries in the spirit of
 
 ### Prerequisites
 
-1. A Github access token with `repo` scope. This is required for creating version commits, releases, 
-and tagging issues. Github has instructions for 
+1. A Github access token with `repo` scope. This is required for creating version commits, releases,
+and tagging issues. Github has instructions for
 [creating an access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/).
-1. A valid repository field in your `package.json`. E.g. `https://github.mycorp.net/myorg/repo.git` or 
+1. A valid repository field in your `package.json`. E.g. `https://github.mycorp.net/myorg/repo.git` or
 `https://github.com/myorg/repo.git`.
 1. The repository field should point to an existing project on Github.
 
@@ -47,14 +47,14 @@ All tokens and passwords should be set up as encrypted environment variables.
 
 #### Travis
 
-For Travis, you can follow the 
+For Travis, you can follow the
 [official Travis docs](https://docs.travis-ci.com/user/environment-variables/#Encrypted-Variables):
 
 ```bash
 travis encrypt GH_TOKEN=your_github_token --add env
 ```
 
-If you want to publish from CI, you can either use the 
+If you want to publish from CI, you can either use the
 [official Travis feature](https://docs.travis-ci.com/user/deployment/npm/) or `nlm` itself.
 The latter gives you support for managing different `dist-tag`s based on branches.
 
@@ -66,11 +66,11 @@ travis encrypt NPM_TOKEN=your_npm_token --add env
 
 #### DotCI
 
-DotCI lacks native support for encrypted environment variables. But the 
-[EnvInject Plugin](https://plugins.jenkins.io/envinject/) provides  an option called 
+DotCI lacks native support for encrypted environment variables. But the
+[EnvInject Plugin](https://plugins.jenkins.io/envinject/) provides  an option called
 "Inject passwords to the build as environment variables" which can fill the same role.
 
-You should also enable builds of pull requests for pushes against the same repository. Otherwise, the 
+You should also enable builds of pull requests for pushes against the same repository. Otherwise, the
 automated tagging of PRs won't work.
 
 Finally, enable publishing by adding the following to `.ci.yml`:
@@ -114,40 +114,40 @@ Most `nlm` configuration happens via native npm options in `package.json`:
 In most cases these settings are enough to make `nlm` do the right thing.
 For more customization, you can use `.nlmrc` or an `nlm` section in `package.json`:
 
-* `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what 
-will be published and how it's tagged. By default, there's one entry in this map: `{ master: 'latest' }`. 
-Which means that publishing from `master` updates the `latest` tag and publishing from any other branch 
+* `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what
+will be published and how it's tagged. By default, there's one entry in this map: `{ master: 'latest' }`.
+Which means that publishing from `master` updates the `latest` tag and publishing from any other branch
 does nothing.
-* `hooks`: A map of hook names to shell commands. When executing any of the [commands](#commands) 
+* `hooks`: A map of hook names to shell commands. When executing any of the [commands](#commands)
 listed below some of these hooks will get triggered. The available hooks are:
 
 Hook      | Description
 --------- | -----------
-`prepare` | Called when the release is about to be prepared. This is before updating files such as 
-package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number 
+`prepare` | Called when the release is about to be prepared. This is before updating files such as
+package.json, CHANGELOG.md and pushing a commit. It provides a reference to the **next version** number
 via the environment variable **NLM_NEXT_VERSION**.
 ```ts
 interface NlmOptions {
   acceptInvalidCommits?: boolean;
-  changelog: { 
-    omit?: string[], 
-    verbose?: boolean 
+  changelog: {
+    omit?: string[],
+    verbose?: boolean
   };
   deprecated?: boolean;
   emoji?: {
     skip?: boolean
     set?: {[type: string]: string}
   };
-  license?: { 
-    files?: string[], 
-    exclude?: string[] 
+  license?: {
+    files?: string[],
+    exclude?: string[]
   }
 }
 ```
 
 * `license`:
   * `files`: List of files and/or directories to add license headers to.
-  * `exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude 
+  * `exclude`: List of files to exclude that would otherwise be included. `nlm` will always exclude
 anything in `node_modules`.
 * `acceptInvalidCommits`: Accept commit messages even if they can't be parsed.
   It's highly discouraged to use this option.
@@ -157,23 +157,26 @@ anything in `node_modules`.
     To "un-deprecate" a package, set it to an empty string (can then be later deleted).
 * `changelog`:
   * `omit`: Array of types, which will be omitted from the changelog.
-  * `verbose`: Display PR's commits. Default: `false`  
+  * `verbose`: Display PR's commits. Default: `false`
+* `releaseType`: The way nlm calculates the semver tag for the current changes
+  * `strict`: This is the default, it will take into account all the pending changes from the current release plus your local changes
+  * `loose`: it will take into account your local changes against the `master` branch (useful when you do manual version publishing)
 * `emoji`:
   Configure changelog emoji setting logic
   * `skip`: deactivates emoji in changelog. Default: `null`
   * `set`: Custom emojis map, which will overwrite the default one
 
-Example for 
+Example for
 ```json5
 {
   "nlm": {
-    "emoji": { 
+    "emoji": {
       "set": {
         "refactor": "🔥" // will overwrite the existing setting for "refactor" type
       }
     }
-  } 
-}   
+  }
+}
 ```
 
 The default emojis for the commit types are:
@@ -188,7 +191,7 @@ The default emojis for the commit types are:
   "revert": "↩️",
   "docs": "📝",
   "style": "💅",
-  
+
   // internal types
   "dep": "🔼",     // will be set when dependencies are found in PR commit subject
   "internal": "🏡", // will be set for types: "chore", "build", "test", "ci" or commits without type
@@ -220,7 +223,7 @@ Verify that the current state is valid and could be released.
 Will also add license headers where they are missing.
 
 1. Everything `nlm verify` does.
-1. If `hooks#prepare` is present in the `nlm` section of the `package.json`, the shell command defined by 
+1. If `hooks#prepare` is present in the `nlm` section of the `package.json`, the shell command defined by
 the hook will be executed.
 1. If there are unreleased changes:
   1. Create a new CHANGELOG entry and update `package.json#version`.
@@ -239,6 +242,6 @@ and nlm tries to not make any assumptions about how people might interpret those
 
 ### `nlm changelog`
 
-Preview the changelog that would be generated by the commits between the last version tag and the 
+Preview the changelog that would be generated by the commits between the last version tag and the
 current `HEAD`.
 If there are no unreleased commits, the output will be empty.
