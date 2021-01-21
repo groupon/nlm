@@ -388,6 +388,11 @@ describe('generateChangeLog', () => {
       const httpCalls = withFakeGithub();
       const commits = [
         {
+          sha: '4234567890123456789012345678901234567890',
+          type: 'pr',
+          subject: 'internal stuff',
+        },
+        {
           sha: '1234567890123456789012345678901234567890',
           type: 'fix',
           subject: 'Stop doing the wrong thing',
