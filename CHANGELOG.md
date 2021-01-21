@@ -1,3 +1,10 @@
+### v5.2.2 (2021-01-21)
+
+#### 🏡 Internal
+
+* [#73](https://github.com/groupon/nlm/pull/73) ignore commits labeled with `pr` for changelog ([@aotarola](https://github.com/aotarola)) 
+
+
 ### v5.2.1 (2020-11-10)
 
 #### 🏡 Internal
