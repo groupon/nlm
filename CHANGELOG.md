@@ -1,3 +1,10 @@
+### v5.2.3 (2021-01-22)
+
+#### 🔼 Dependencies
+
+* [#74](https://github.com/groupon/nlm/pull/74) chore(deps): bump ini from 1.3.5 to 1.3.8 ([@dependabot[bot]](https://github.com/apps/dependabot)) 
+
+
 ### v5.2.2 (2021-01-21)
 
 #### 🏡 Internal
