@@ -37,8 +37,7 @@
   "c8": {
     "reporter": [
       "text",
-      "json-summary",
-      "cobertura"
+      "json-summary"
     ]
   },
   "dependencies": {
