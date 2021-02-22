@@ -35,6 +35,7 @@
 const { execFile } = require('child_process');
 
 const fs = require('fs');
+const path = require('path');
 
 const assert = require('assert');
 
@@ -111,6 +112,15 @@ describe('createVersionCommit', () => {
 
         assert.ok(stdout.includes('Author: nlm <opensource@groupon.com>'));
         return done();
+      });
+    });
+
+    it('works with no README.md present', () => {
+      fs.unlinkSync(path.join(dirname, 'README.md'));
+
+      assert.doesNotThrow(() => {
+        currentDate = new Date().toISOString().substring(0, 10);
+        return createVersionCommit(dirname, pkg, options);
       });
     });
   });
