@@ -17,7 +17,7 @@
   },
   "scripts": {
     "pretest": "eslint lib test",
-    "test": "nyc mocha",
+    "test": "c8 mocha",
     "posttest": "./bin/nlm.js verify"
   },
   "engines": {
@@ -34,8 +34,15 @@
       ]
     }
   },
+  "c8": {
+    "reporter": [
+      "text",
+      "json-summary",
+      "cobertura"
+    ]
+  },
   "dependencies": {
-    "conventional-commits-parser": "^3.1.0",
+    "conventional-commits-parser": "^3.2.0",
     "debug": "^4.2.0",
     "glob": "^7.1.6",
     "gofer": "^5.0.4",
@@ -45,14 +52,14 @@
     "string.prototype.replaceall": "^1.0.3"
   },
   "devDependencies": {
-    "eslint": "^7.12.1",
+    "c8": "^7.3.5",
+    "eslint": "^7.13.0",
     "eslint-config-groupon": "^10.0.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mocha": "^8.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "mocha": "^8.2.0",
-    "nyc": "^15.1.0",
     "prettier": "^2.1.2"
   },
   "author": {
