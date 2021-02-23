@@ -17,7 +17,7 @@
   },
   "scripts": {
     "pretest": "eslint lib test",
-    "test": "nyc mocha",
+    "test": "c8 mocha",
     "posttest": "./bin/nlm.js verify"
   },
   "engines": {
@@ -34,26 +34,33 @@
       ]
     }
   },
+  "c8": {
+    "reporter": [
+      "text",
+      "json-summary"
+    ]
+  },
   "dependencies": {
-    "conventional-commits-parser": "^3.1.0",
-    "debug": "^4.2.0",
+    "conventional-commits-parser": "^3.2.1",
+    "debug": "^4.3.1",
     "glob": "^7.1.6",
-    "gofer": "^5.0.4",
+    "gofer": "^5.1.0",
     "minimist": "^1.2.5",
     "rc": "^1.2.8",
-    "semver": "^7.3.2",
-    "string.prototype.replaceall": "^1.0.3"
+    "semver": "^7.3.4",
+    "string.prototype.replaceall": "^1.0.4"
   },
   "devDependencies": {
-    "eslint": "^7.12.1",
-    "eslint-config-groupon": "^10.0.1",
+    "c8": "^7.6.0",
+    "eslint": "^7.20.0",
+    "eslint-config-groupon": "^10.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mocha": "^8.0.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "mocha": "^8.2.0",
-    "nyc": "^15.1.0",
-    "prettier": "^2.1.2"
+    "eslint-plugin-prettier": "^3.3.1",
+    "mocha": "^8.3.0",
+    "mkdirp": "^1.0.4",
+    "prettier": "^2.2.1"
   },
   "author": {
     "name": "Groupon",

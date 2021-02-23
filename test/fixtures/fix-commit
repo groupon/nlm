@@ -3,5 +3,7 @@ set -e
 git init
 
 echo "console.log('do stuff');" > index.js
+echo "" > README.md
 git add index.js
+git add README.md
 git commit -m 'fix: Do stuff'
