@@ -138,6 +138,22 @@ interface NlmOptions {
     skip?: boolean
     set?: {[type: string]: string}
   };
+  badges?: {
+    enable?: boolean | true
+    npm : {
+      enable?: boolean | true, 
+      color?: string | 'blue'
+    }
+    meta: {
+      enable?: boolean | true,
+      color?: string | 'F4D03F', 
+      url?: boolean | true
+    }
+    coverage: {
+      enable?: boolean | true, 
+      thresholds?: [number, string][] | [[95, 'success'], [90, 'green'], [75, 'yellow'], [50, 'critical']]
+    }
+  }
   license?: { 
     files?: string[], 
     exclude?: string[] 
@@ -162,18 +178,6 @@ anything in `node_modules`.
   Configure changelog emoji setting logic
   * `skip`: deactivates emoji in changelog. Default: `null`
   * `set`: Custom emojis map, which will overwrite the default one
-* `badges`: sets shield.io badges to the README.md
-  * `enable`: enables setting badges to the README. Default: `true`
-  * `npm`: set package `version` and `engine` information
-    * `enable`: enables setting npm related badges. Default: `true`
-    * `color`: custom color set as HEX value (without `#`) or color literals listed on [shields.io](https://shields.io). Default: `blue`
-  * `coverage`: set coverage information badge given `coverage/coverage-summary.json` exists
-    * `enable`: enables coverage badge. Default: `true`
-    * `thresholds`: List of threshold/color ranges. Default: `[95, 'success'], [90, 'green'], [75, 'yellow'], [50, 'critical']`
-  * `meta`: adds badges for entries in `bugs` section. Can detect JIRA and Slack urls.
-    * `enable`: enables meta badges. Default: `true`
-    * `url`: makes meta badges clickable. Default: `true`
-    * `color`: custom color set as HEX value (without `#`) or color literals listed on [shields.io](https://shields.io). Default: `F4D03F`
 
 ##### Example for emoji 
 ```json5
@@ -208,19 +212,24 @@ The default emojis for the commit types are:
 }
 ```
 
+#### badges 
+Sets shield.io badges to the README.md
 
-##### Example for badges
 ```json5
 {
   "nlm": {
     "badges": {
+      "enable": true,
       "npm": {
-        "enable": false
+        "enable": false,
+        "color": "yellow"
       },
       "coverage": {
+        "enable": true,
         "thresholds": [[75, "blue"], [50, "yellow"]]
       },
       "meta": {
+        "enable": true,
         "url": false,
         "color": "CCC"
       }
@@ -228,6 +237,25 @@ The default emojis for the commit types are:
   } 
 }   
 ```
+* `badges.enable`: enables setting badges to the README. Default: `true`
+
+##### section: `badges.npm`
+set package `version` and `engine` information
+* `badges.npm.enable`: enables setting npm related badges. Default: `true`
+* `badges.npm.color`: custom color set as HEX value (without `#`) or color literals listed on [shields.io](https://shields.io). Default: `blue`
+
+##### section: `badges.coverage`
+set coverage information badge given `coverage/coverage-summary.json` exists
+* `badges.coverageenable`: enables coverage badge. Default: `true`
+* `badges.coveragethresholds`: List of threshold/color ranges. Default: `[95, 'success'], [90, 'green'], [75, 'yellow'], [50, 'critical']`
+
+##### section: `badges.meta`
+adds badges for entries in `bugs` section. Can detect JIRA and Slack urls.
+* `badges.metaenable`: enables meta badges. Default: `true`
+* `badges.metaurl`: makes meta badges clickable. Default: `true`
+* `badges.metacolor`: custom color set as HEX value (without `#`) or color literals listed on [shields.io](https://shields.io). Default: `F4D03F`
+
+
 
 
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
