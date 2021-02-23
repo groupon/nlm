@@ -391,6 +391,19 @@ describe('badges', () => {
         /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
       );
     });
+
+    it('is not added when coverage percentage is undefined', async () => {
+      fs.writeFileSync(
+        path.join(dirname, 'coverage/coverage-summary.json'),
+        JSON.stringify({ total: { lines: {} } })
+      );
+      const readme = await generateBadges(dirname, pkg, {});
+
+      assert.doesNotMatch(
+        readme,
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+      );
+    });
   });
 
   describe('meta info badges', () => {
