@@ -1,3 +1,10 @@
+### v5.3.0 (2021-02-23)
+
+#### 🚀 New Features
+
+* [#75](https://github.com/groupon/nlm/pull/75) feat: add badges to README.md on release ([@aaarichter](https://github.com/aaarichter)) 
+
+
 ### v5.2.3 (2021-01-22)
 
 #### 🔼 Dependencies
