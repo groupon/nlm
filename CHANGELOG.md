@@ -1,3 +1,10 @@
+### v5.3.1 (2021-02-23)
+
+#### 🐛 Bug Fixes
+
+* [#76](https://github.com/groupon/nlm/pull/76) fix:set percentage badge only present & add debug statements ([@aaarichter](https://github.com/aaarichter)) 
+
+
 ### v5.3.0 (2021-02-23)
 
 #### 🚀 New Features
