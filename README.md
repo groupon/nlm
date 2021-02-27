@@ -1,4 +1,4 @@
-![nlm-version](https://img.shields.io/badge/version-5.3.1-blue)
+![nlm-version](https://img.shields.io/badge/version-5.3.2-blue)
 ![nlm-node](https://img.shields.io/badge/node-%3E%3D10.13-blue)
 [![nlm-url](https://img.shields.io/badge/url-https%3A%2F%2Fgithub.com%2Fgroupon%2Fnlm%2Fissues-F4D03F)](https://github.com/groupon/nlm/issues)
 # nlm

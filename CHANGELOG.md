@@ -1,3 +1,10 @@
+### v5.3.2 (2021-02-27)
+
+#### 📦️ Code Refactoring
+
+* [#77](https://github.com/groupon/nlm/pull/77) refactor: add brand logos to badges & detect Github links ([@aaarichter](https://github.com/aaarichter)) 
+
+
 ### v5.3.1 (2021-02-23)
 
 #### 🐛 Bug Fixes
