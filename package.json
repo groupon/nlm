@@ -49,7 +49,7 @@
     "minimist": "^1.2.5",
     "rc": "^1.2.8",
     "semver": "^7.3.4",
-    "string.prototype.replaceall": "^1.0.4"
+    "string.prototype.replaceall": "^1.0.5"
   },
   "devDependencies": {
     "c8": "^7.6.0",

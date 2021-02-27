@@ -86,7 +86,7 @@ describe('badges', () => {
 
     assert.match(
       readme,
-      /\[nlm-foo-fighter]\(https:\/\/img\.shields\.io\/badge\/foo--fighter-foo%40fighter.com-\w+\)/
+      /\[nlm-foo-fighter]\(https:\/\/img\.shields\.io\/badge\/foo--fighter-foo%40fighter.com-\w+\?[\w\-_.&=]+\)/
     );
   });
 
@@ -96,7 +96,7 @@ describe('badges', () => {
       version: '1.0.0',
     };
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\)/;
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?[\w\-_.&=]+\)/;
 
     for (let i = 0; i < 2; i++) {
       await generateBadges(dirname, pkg, {});
@@ -106,6 +106,43 @@ describe('badges', () => {
       assert.match(readme, regexp);
       assert.strictEqual(readme.match(regexp).length, 1);
     }
+  });
+
+  it('adds logo to badges', async () => {
+    const pkg = {
+      repository: 'usr/proj',
+      version: '1.0.0',
+    };
+
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?logo=version&logoColor=white\)/;
+
+    await generateBadges(dirname, pkg, {});
+
+    const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
+
+    assert.match(readme, regexp);
+    assert.strictEqual(readme.match(regexp).length, 1);
+  });
+
+  it('adds logo to badges to existing badges', async () => {
+    const pkg = {
+      repository: 'usr/proj',
+      version: '1.0.0',
+    };
+
+    fs.writeFileSync(
+      path.join(dirname, 'README.md'),
+      `![nlm-version](https://img.shields.io/badge/version-1.0.0-blue)`
+    );
+
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-blue\?logo=version&logoColor=white\)/;
+
+    await generateBadges(dirname, pkg, {});
+
+    const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
+
+    assert.match(readme, regexp);
+    assert.strictEqual(readme.match(regexp).length, 1);
   });
 
   it('updates existing badges on value change', async () => {
@@ -122,7 +159,7 @@ describe('badges', () => {
     await generateBadges(dirname, { ...pkg, engines: { node: '14' } }, {});
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\)/;
+    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\?[\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);
@@ -141,7 +178,7 @@ describe('badges', () => {
     await generateBadges(dirname, pkg, { nextVersion: '1.0.1' });
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+\)/;
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+\?[\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);
@@ -167,21 +204,21 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?[\w\-_.&=]+\)/
       );
 
       assert.match(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/yarn-%3E%3D2\.0-\w+\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/yarn-%3E%3D2\.0-\w+\?[\w\-_.&=]+\)/
       );
 
       assert.match(
         readme,
-        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-%3E%3D8\.3-\w+\)/
+        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-%3E%3D8\.3-\w+\?[\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/npm-%3E%3D6\.0-\w+\)/
+        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/npm-%3E%3D6\.0-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -200,19 +237,19 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\)/
+        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\)/
+        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
       );
     });
 
@@ -231,7 +268,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -243,11 +280,11 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
       );
       assert.doesNotMatch(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -259,7 +296,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
       );
     });
   });
@@ -286,7 +323,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -309,7 +346,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\)/,
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\?[\w\-_.&=]+\)/,
         'matches range 90-100 and set color 000'
       );
     });
@@ -334,7 +371,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -357,7 +394,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\)/,
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\?[\w\-_.&=]+\)/,
         'matches range 90-100 and set color 000'
       );
     });
@@ -377,7 +414,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -388,7 +425,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
       );
     });
 
@@ -401,7 +438,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
       );
     });
   });
@@ -414,6 +451,7 @@ describe('badges', () => {
         repository: 'usr/proj',
         bugs: {
           url: 'https://jira.mydomain.com/browse/PROJECT',
+          git: 'https://github.com/org/repo/issues',
           chat: 'https://mydomain.slack.com/messages/FOOFIGHTERS/',
           email: 'foo-fighters@mydomain.com',
         },
@@ -427,7 +465,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)]?(\([\w:\/\-@.%=]+\))?/
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -438,18 +476,40 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /\[!\[nlm-jira]\(https:\/\/img\.shields\.io\/badge\/jira-PROJECT-\w+\)](\([\w:\/\-@.%=]+\))/
+        /\[!\[nlm-jira]\(https:\/\/img\.shields\.io\/badge\/jira-PROJECT-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
       );
     });
 
-    it('detects slack channel url', async () => {
+    it('detects Github url', async () => {
       const options = {};
 
       const readme = await generateBadges(dirname, pkg, options);
 
       assert.match(
         readme,
-        /\[!\[nlm-slack]\(https:\/\/img\.shields\.io\/badge\/slack-FOOFIGHTERS-\w+\)](\([\w:\/\-@.%=]+\))/
+        /\[!\[nlm-github]\(https:\/\/img\.shields\.io\/badge\/github-org%2Frepo%2Fissues-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
+      );
+    });
+
+    it('detects Slack channel url', async () => {
+      const options = {};
+
+      const readme = await generateBadges(dirname, pkg, options);
+
+      assert.match(
+        readme,
+        /\[!\[nlm-slack]\(https:\/\/img\.shields\.io\/badge\/slack-FOOFIGHTERS-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
+      );
+    });
+
+    it('detects email uri', async () => {
+      const options = {};
+
+      const readme = await generateBadges(dirname, pkg, options);
+
+      assert.match(
+        readme,
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -462,12 +522,12 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /[\[!]\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)](\([\w:\/\-@.%=]+\))/,
+        /[\[!]\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/,
         `doesn\'t include badge w/ url`
       );
       assert.match(
         readme,
-        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/,
+        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/,
         'includes the badge w/o url'
       );
     });
@@ -481,7 +541,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-CCC\)]?(\([\w:\/\-@.%=]+\))?/
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-CCC\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -494,13 +554,13 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)]?(\([\w:\/\-@.%=]+\))?/,
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/,
         'badge w/ url'
       );
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\)/,
+        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/,
         'badge w/o url'
       );
     });
