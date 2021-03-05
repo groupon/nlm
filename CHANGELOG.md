@@ -1,3 +1,10 @@
+### v5.3.3 (2021-03-05)
+
+#### 🐛 Bug Fixes
+
+* [#78](https://github.com/groupon/nlm/pull/78) fix: issue with detecting query params in badge urls ([@aaarichter](https://github.com/aaarichter)) 
+
+
 ### v5.3.2 (2021-02-27)
 
 #### 📦️ Code Refactoring
