@@ -86,7 +86,7 @@ describe('badges', () => {
 
     assert.match(
       readme,
-      /\[nlm-foo-fighter]\(https:\/\/img\.shields\.io\/badge\/foo--fighter-foo%40fighter.com-\w+\?[\w\-_.&=]+\)/
+      /\[nlm-foo-fighter]\(https:\/\/img\.shields\.io\/badge\/foo--fighter-foo%40fighter.com-\w+[?\w\-_.&=]+\)/
     );
   });
 
@@ -96,7 +96,7 @@ describe('badges', () => {
       version: '1.0.0',
     };
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?[\w\-_.&=]+\)/;
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+[?\w\-_.&=]+\)/;
 
     for (let i = 0; i < 2; i++) {
       await generateBadges(dirname, pkg, {});
@@ -159,10 +159,29 @@ describe('badges', () => {
     await generateBadges(dirname, { ...pkg, engines: { node: '14' } }, {});
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\?[\w\-_.&=]+\)/;
+    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+[?\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);
+  });
+
+  it('adds logo to existing badges', async () => {
+    const pkg = {
+      repository: 'usr/proj',
+      engines: { node: '14' },
+    };
+
+    fs.writeFileSync(
+      path.join(dirname, 'README.md'),
+      '![nlm-node](https://img.shields.io/badge/node-14-blue)'
+    );
+
+    await generateBadges(dirname, pkg, {});
+    const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
+
+    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\?logo=node\.js&logoColor=white+\)/;
+
+    assert.match(readme, regexp);
   });
 
   it('updates version info, when "nextVersion" is passed with the options', async () => {
@@ -178,10 +197,31 @@ describe('badges', () => {
     await generateBadges(dirname, pkg, { nextVersion: '1.0.1' });
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+\?[\w\-_.&=]+\)/;
+    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+[?\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);
+  });
+
+  it('appends badges after non-nlm badges', async () => {
+    const pkg = {
+      repository: 'usr/proj',
+      engines: { node: '14' },
+    };
+
+    fs.writeFileSync(
+      path.join(dirname, 'README.md'),
+      '[![Build Status](https://domain.tld/job/create/badge/icon)](https://domain.tld/job/create/)'
+    );
+
+    const expected = `[![Build Status](https://domain.tld/job/create/badge/icon)](https://domain.tld/job/create/)
+![nlm-node](https://img.shields.io/badge/node-14-blue?logo=node.js&logoColor=white)`;
+
+    await generateBadges(dirname, { ...pkg, engines: { node: '14' } }, {});
+
+    const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
+
+    assert.strictEqual(readme, expected);
   });
 
   describe('npm badges', () => {
@@ -204,21 +244,21 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+[?\w\-_.&=]+\)/
       );
 
       assert.match(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/yarn-%3E%3D2\.0-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/yarn-%3E%3D2\.0-\w+[?\w\-_.&=]+\)/
       );
 
       assert.match(
         readme,
-        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-%3E%3D8\.3-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-%3E%3D8\.3-\w+[?\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/npm-%3E%3D6\.0-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/npm-%3E%3D6\.0-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -237,19 +277,19 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red[?\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red[?\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
+        /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red[?\w\-_.&=]+\)/
       );
       assert.match(
         readme,
-        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red\?[\w\-_.&=]+\)/
+        /!\[nlm-npm]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-red[?\w\-_.&=]+\)/
       );
     });
 
@@ -268,7 +308,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -280,11 +320,11 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/
       );
       assert.doesNotMatch(
         readme,
-        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-yarn]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -296,7 +336,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/
       );
     });
   });
@@ -323,7 +363,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -346,7 +386,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\?[\w\-_.&=]+\)/,
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000[?\w\-_.&=]+\)/,
         'matches range 90-100 and set color 000'
       );
     });
@@ -371,7 +411,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -394,7 +434,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000\?[\w\-_.&=]+\)/,
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-000[?\w\-_.&=]+\)/,
         'matches range 90-100 and set color 000'
       );
     });
@@ -414,7 +454,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -425,7 +465,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+[?\w\-_.&=]+\)/
       );
     });
 
@@ -438,7 +478,7 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+\?[\w\-_.&=]+\)/
+        /!\[nlm-coverage]\(https:\/\/img\.shields\.io\/badge\/coverage-94%25-\w+[?\w\-_.&=]+\)/
       );
     });
   });
@@ -465,7 +505,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -476,7 +516,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /\[!\[nlm-jira]\(https:\/\/img\.shields\.io\/badge\/jira-PROJECT-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
+        /\[!\[nlm-jira]\(https:\/\/img\.shields\.io\/badge\/jira-PROJECT-\w+[?\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
       );
     });
 
@@ -487,7 +527,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /\[!\[nlm-github]\(https:\/\/img\.shields\.io\/badge\/github-org%2Frepo%2Fissues-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
+        /\[!\[nlm-github]\(https:\/\/img\.shields\.io\/badge\/github-org%2Frepo%2Fissues-\w+[?\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
       );
     });
 
@@ -498,7 +538,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /\[!\[nlm-slack]\(https:\/\/img\.shields\.io\/badge\/slack-FOOFIGHTERS-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
+        /\[!\[nlm-slack]\(https:\/\/img\.shields\.io\/badge\/slack-FOOFIGHTERS-\w+[?\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/
       );
     });
 
@@ -509,7 +549,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -522,12 +562,12 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /[\[!]\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/,
+        /[\[!]\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)](\([\w:\/\-@.%=]+\))/,
         `doesn\'t include badge w/ url`
       );
       assert.match(
         readme,
-        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/,
+        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/,
         'includes the badge w/o url'
       );
     });
@@ -541,7 +581,7 @@ describe('badges', () => {
 
       assert.match(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-CCC\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-CCC[?\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/
       );
     });
 
@@ -554,13 +594,13 @@ describe('badges', () => {
 
       assert.doesNotMatch(
         readme,
-        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/,
+        /[\[ !]*\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)]?(\([\w:\/\-@.%=]+\))?/,
         'badge w/ url'
       );
 
       assert.doesNotMatch(
         readme,
-        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+\?[\w\-_.&=]+\)/,
+        /!\[nlm-email]\(https:\/\/img\.shields\.io\/badge\/[\w:\/\-@.%=]+-[\w\S]+-\w+[?\w\-_.&=]+\)/,
         'badge w/o url'
       );
     });
