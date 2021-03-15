@@ -117,10 +117,9 @@ Most `nlm` configuration happens via native npm options in `package.json`:
 In most cases these settings are enough to make `nlm` do the right thing.
 For more customization, you can use `.nlmrc` or an `nlm` section in `package.json`:
 
-* `channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what 
-will be published and how it's tagged. By default, there's one entry in this map: `{ master: 'latest' }`. 
-Which means that publishing from `master` updates the `latest` tag and publishing from any other branch 
-does nothing.
+* channels`: A map of branch name to npm `dist-tag`. When publishing, this will determine what will be published and
+how it's tagged. By default, there's two entries in this map: `{ master: 'latest', main: 'latest' }`. Which means that
+publishing from `master` or `main` updates the `latest` tag and publishing from any other branch does nothing.
 * `hooks`: A map of hook names to shell commands. When executing any of the [commands](#commands) 
 listed below some of these hooks will get triggered. The available hooks are:
 
