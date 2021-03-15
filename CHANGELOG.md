@@ -1,3 +1,10 @@
+### v5.4.0 (2021-03-15)
+
+#### 🚀 New Features
+
+* [#79](https://github.com/groupon/nlm/pull/79) feat: support main branch for release ([@islesser](https://github.com/islesser)) 
+
+
 ### v5.3.3 (2021-03-05)
 
 #### 🐛 Bug Fixes
