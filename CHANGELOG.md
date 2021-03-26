@@ -1,3 +1,10 @@
+### v5.4.1 (2021-03-26)
+
+#### 📦️ Code Refactoring
+
+* [#58](https://github.com/groupon/nlm/pull/58) refactor: client syntax to match modern Gofer ([@aaarichter](https://github.com/aaarichter)) 
+
+
 ### v5.4.0 (2021-03-15)
 
 #### 🚀 New Features
