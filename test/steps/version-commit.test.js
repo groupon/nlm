@@ -74,18 +74,21 @@ describe('createVersionCommit', () => {
 
     before('commits with the original author', done => {
       execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
-        if (err) return done(err);
+        if (err) {
+          done(err);
+          return;
+        }
 
         assert.ok(
           stdout.includes('Author: Robin Developer <rdev@example.com>')
         );
-        return done();
+        done();
       });
     });
 
-    before('create version commit', () => {
+    before('create version commit', async () => {
       currentDate = new Date().toISOString().substring(0, 10);
-      return createVersionCommit(dirname, pkg, options);
+      await createVersionCommit(dirname, pkg, options);
     });
 
     it('writes the correct HEAD sha', () => {
@@ -97,30 +100,34 @@ describe('createVersionCommit', () => {
     });
 
     it('writes the correct CHANGELOG', () => {
-      const [version, , commit1, commit2] = fs
-        .readFileSync(`${dirname}/CHANGELOG.md`, 'utf8')
-        .split('\n');
+      const changelog = fs.readFileSync(`${dirname}/CHANGELOG.md`, 'utf8');
+
+      const [version, anchor, commit1, commit2] = changelog.split('\n');
 
       assert.strictEqual(version, `### v1.0.0 (${currentDate})`);
+      assert.strictEqual(anchor, `<a id="v1.0.0"></a>`);
       assert.strictEqual(commit1, '* New stuff');
       assert.strictEqual(commit2, '* Interesting features');
     });
 
     it('commits with the proper user', done => {
       execFile('git', ['show'], { cwd: dirname }, (err, stdout) => {
-        if (err) return done(err);
+        if (err) {
+          done(err);
+          return;
+        }
 
         assert.ok(stdout.includes('Author: nlm <opensource@groupon.com>'));
-        return done();
+        done();
       });
     });
 
     it('works with no README.md present', () => {
       fs.unlinkSync(path.join(dirname, 'README.md'));
 
-      assert.doesNotThrow(() => {
+      assert.doesNotThrow(async () => {
         currentDate = new Date().toISOString().substring(0, 10);
-        return createVersionCommit(dirname, pkg, options);
+        await createVersionCommit(dirname, pkg, options);
       });
     });
   });
