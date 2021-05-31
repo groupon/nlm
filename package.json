@@ -44,24 +44,24 @@
   "dependencies": {
     "conventional-commits-parser": "^3.2.1",
     "debug": "^4.3.1",
-    "glob": "^7.1.6",
-    "gofer": "^5.1.0",
+    "glob": "^7.1.7",
+    "gofer": "^5.1.2",
     "minimist": "^1.2.5",
     "rc": "^1.2.8",
     "semver": "^7.3.5",
     "string.prototype.replaceall": "^1.0.5"
   },
   "devDependencies": {
-    "c8": "^7.6.0",
-    "eslint": "^7.22.0",
-    "eslint-config-groupon": "^10.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-mocha": "^8.1.0",
+    "c8": "^7.7.2",
+    "eslint": "^7.27.0",
+    "eslint-config-groupon": "^10.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-prettier": "^3.4.0",
     "mkdirp": "^1.0.4",
-    "mocha": "^8.3.2",
-    "prettier": "^2.2.1"
+    "mocha": "^8.4.0",
+    "prettier": "^2.3.0"
   },
   "author": {
     "name": "Groupon",
