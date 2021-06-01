@@ -277,111 +277,151 @@ describe('generateChangeLog', () => {
     assert.ok(!changelog.includes('[`1234567`]'));
   });
 
-  it('puts breaking changes ahead of everything else', async () => {
+  describe('Breaking changes', () => {
     const pkg = {
-      repository: 'usr/proj',
+      repository: 'http://127.0.0.1:3000/usr/proj',
     };
-    const commits = [
-      {
-        sha: '1234567890123456789012345678901234567890',
-        type: 'fix',
-        subject: 'Stop doing the wrong thing',
-      },
-      {
+
+    withFakeGithub();
+
+    it('with Merge PR, references PR number in breaking changes & omits individual commits', async () => {
+      const commits = [
+        {
+          sha: '1234567890123456789012345678901234567890',
+          type: 'fix',
+          subject: 'Stop doing the wrong thing',
+        },
+        {
+          sha: '2234567890123456789012345678901234567890',
+          type: 'feat',
+          subject: 'Do more things',
+          notes: [
+            {
+              title: 'BREAKING CHANGE',
+              text: 'The interface of this library changed in some way.',
+            },
+          ],
+        },
+        {
+          sha: '3234567890123456789012345678901234567890',
+          type: 'pr',
+          subject: 'Merge PR #1',
+          pullId: '1',
+          shas: ['2234567890123456789012345678901234567890'],
+        },
+      ];
+
+      const options = {
+        ...defaultOptions,
+        commits,
+      };
+
+      const expected = `#### Breaking Changes
+
+[#1](http://pr-1) feat: PR #1 Title ([@pr-1-user](http://pr-1-user))
+
+The interface of this library changed in some way.`;
+
+      const changelog = await generateChangeLog(null, pkg, options);
+
+      assert.ok(changelog.startsWith(expected));
+    });
+
+    it('without merge PR, lists individual commits in breaking changes', async () => {
+      const commits = [
+        {
+          sha: '1234567890123456789012345678901234567890',
+          type: 'fix',
+          subject: 'Stop doing the wrong thing',
+        },
+        {
+          sha: '2234567890123456789012345678901234567890',
+          type: 'feat',
+          subject: 'Do more things',
+          notes: [
+            {
+              title: 'BREAKING CHANGE',
+              text: 'The interface of this library changed in some way.',
+            },
+          ],
+        },
+      ];
+
+      const options = {
+        ...defaultOptions,
+        commits,
+      };
+
+      const href0 = `${pkg.repository}/commit/${commits[0].sha}`;
+      const href1 = `${pkg.repository}/commit/${commits[1].sha}`;
+
+      const expected = `#### Breaking Changes
+
+The interface of this library changed in some way.`;
+
+      const expectedEntries = [
+        `* [\`1234567\`](${href0}) fix: Stop doing the wrong thing`,
+        `* [\`2234567\`](${href1}) feat: Do more things`,
+      ];
+
+      const changelog = await generateChangeLog(null, pkg, options);
+
+      assert.ok(changelog.startsWith(expected));
+      assertEntries(changelog, expectedEntries);
+    });
+
+    it('handles variants typings of BREAKING CHANGE', async () => {
+      const defaultCommit = {
         sha: '2234567890123456789012345678901234567890',
         type: 'feat',
         subject: 'Do more things',
-        notes: [
-          {
-            title: 'BREAKING CHANGE',
-            text: 'The interface of this library changed in some way.',
-          },
-        ],
-      },
-    ];
-    const options = {
-      ...defaultOptions,
-      commits,
-    };
-    const href0 = `https://github.com/usr/proj/commit/${commits[0].sha}`;
-    const href1 = `https://github.com/usr/proj/commit/${commits[1].sha}`;
+      };
 
-    const expected = [
-      '#### Breaking Changes',
-      '',
-      'The interface of this library changed in some way.',
-      '',
-      `*See: [\`2234567\`](${href1})*`,
-      '',
-    ].join('\n');
+      const testCases = [
+        {
+          title: 'BREAKING CHANGE',
+          text: 'without a colon',
+        },
+        {
+          title: 'BREAKING CHANGE:',
+          text: 'with a colon',
+        },
+        {
+          title: 'BREAKING CHANGES',
+          text: 'plural',
+        },
+        {
+          title: 'BREAKING CHANGES:',
+          text: 'plural with colon',
+        },
+      ];
 
-    const expectedEntries = [
-      `* [\`1234567\`](${href0}) fix: Stop doing the wrong thing`,
-      `* [\`2234567\`](${href1}) feat: Do more things`,
-    ];
+      for (const commitNote of testCases) {
+        const commit = { ...defaultCommit, notes: [commitNote] };
+        const href0 = `${pkg.repository}/commit/${commit.sha}`;
 
-    const changelog = await generateChangeLog(null, pkg, options);
+        const expected = [
+          '#### Breaking Changes',
+          '',
+          commit.notes.map(note => note.text).join('\n'),
+        ].join('\n');
 
-    assert.ok(changelog.startsWith(expected));
-    assertEntries(changelog, expectedEntries);
-  });
+        const changelog = await generateChangeLog(null, pkg, {
+          ...defaultOptions,
+          commits: [commit],
+        });
 
-  it('handles variants typings of BREAKING CHANGE', async () => {
-    const pkg = {
-      repository: 'usr/proj',
-    };
-    const defaultCommit = {
-      sha: '2234567890123456789012345678901234567890',
-      type: 'feat',
-      subject: 'Do more things',
-    };
-    const testCases = [
-      {
-        title: 'BREAKING CHANGE',
-        text: 'without a colon',
-      },
-      {
-        title: 'BREAKING CHANGE:',
-        text: 'with a colon',
-      },
-      {
-        title: 'BREAKING CHANGES',
-        text: 'plural',
-      },
-      {
-        title: 'BREAKING CHANGES:',
-        text: 'plural with colon',
-      },
-    ];
+        assert.ok(changelog.startsWith(expected));
 
-    for (const commitNote of testCases) {
-      const commit = { ...defaultCommit, notes: [commitNote] };
-      const href0 = `https://github.com/usr/proj/commit/${commit.sha}`;
-
-      const expected = [
-        '#### Breaking Changes',
-        '',
-        commit.notes.map(note => note.text).join('\n'),
-        '',
-        `*See: [\`2234567\`](${href0})*`,
-        '',
-      ].join('\n');
-
-      const changelog = await generateChangeLog(null, pkg, {
-        ...defaultOptions,
-        commits: [commit],
-      });
-
-      assert.ok(changelog.startsWith(expected));
-
-      assertEntries(changelog, [
-        `* [\`2234567\`](${href0}) feat: Do more things`,
-      ]);
-    }
+        assertEntries(changelog, [
+          `* [\`2234567\`](${href0}) feat: Do more things`,
+        ]);
+      }
+    });
   });
 
   describe('PRs', () => {
-    describe('pull request commits', () => {
+    describe('commit handling', () => {
       const pkg = {
         repository: 'http://127.0.0.1:3000/usr/proj',
       };
@@ -419,11 +459,11 @@ describe('generateChangeLog', () => {
         changelog = await generateChangeLog(null, pkg, options);
       });
 
-      it('calls out to github to get PR info', () => {
+      it('fetches PR info from GitHub', () => {
         assert.strictEqual(httpCalls.length, 2);
       });
 
-      it('omits commits by pull request by default', async () => {
+      it('omits individual commits', async () => {
         changelog = await generateChangeLog(null, pkg, options);
 
         assert.ok(changelog.includes('[#1](http://pr-1) feat: PR #1 Title'));
@@ -436,7 +476,8 @@ describe('generateChangeLog', () => {
         const verboseOpts = {
           nlmOptions: { changelog: { verbose: true } },
         };
-        it('groups commits by pull request with changelog.verbose flag', async () => {
+
+        it('groups commits by pull request', async () => {
           changelog = await generateChangeLog(null, pkg, {
             ...options,
             ...verboseOpts,
@@ -462,7 +503,7 @@ describe('generateChangeLog', () => {
       });
     });
 
-    describe('with a PR w/o associated commits)', () => {
+    describe('w/o associated commits', () => {
       const pkg = {
         repository: 'http://127.0.0.1:3000/usr/proj',
       };
@@ -513,7 +554,7 @@ describe('generateChangeLog', () => {
         });
       });
 
-      it('calls out to github to get PR info', () => {
+      it('fetches PR info from GitHub', () => {
         assert.strictEqual(httpCalls.length, 4);
       });
 
@@ -535,7 +576,7 @@ describe('generateChangeLog', () => {
       });
     });
 
-    describe('with a PR missing in GH', () => {
+    describe('commit missing in remote', () => {
       const pkg = {
         repository: 'http://127.0.0.1:3000/usr/proj',
       };
@@ -569,7 +610,7 @@ describe('generateChangeLog', () => {
         changelog = await generateChangeLog(null, pkg, options);
       });
 
-      it('calls out to github to get PR info', () => {
+      it('fetches PR info from GitHub', () => {
         assert.strictEqual(httpCalls.length, 2);
       });
 
@@ -675,11 +716,9 @@ describe('generateChangeLog', () => {
               }\``,
             ];
 
-            const changelog = await generateChangeLog(
-              null,
-              pkg,
-              options
-            ).then(res => res.split('\n'));
+            const changelog = await generateChangeLog(null, pkg, options).then(
+              res => res.split('\n')
+            );
 
             const index = assertEntries(changelog, expectedEntries);
             assert.strictEqual(
