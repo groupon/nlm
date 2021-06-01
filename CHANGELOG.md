@@ -1,3 +1,14 @@
+### v5.4.2 (2021-06-01)
+<a id="v5.4.2"></a>
+#### 🐛 Bug Fixes
+
+* [#81](https://github.com/groupon/nlm/pull/81) fix(changelog): breaking changes display ([@aaarichter](https://github.com/aaarichter))
+
+#### 🔼 Dependencies
+
+* [#80](https://github.com/groupon/nlm/pull/80) chore(deps): bump hosted-git-info from 2.8.8 to 2.8.9 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+
 ### v5.4.1 (2021-03-26)
 
 #### 📦️ Code Refactoring
