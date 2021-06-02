@@ -60,7 +60,7 @@ describe('verifyClean', () => {
 
     it('reports the files in question', async () => {
       await assert.rejects(
-        async () => await verifyClean(dirname),
+        () => verifyClean(dirname),
         error => {
           assert.ok(error.message.includes('M  index.js'));
           assert.ok(error.message.includes('?? untracked.js'));
