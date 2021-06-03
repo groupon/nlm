@@ -96,7 +96,8 @@ describe('badges', () => {
       version: '1.0.0',
     };
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+[?\w\-_.&=]+\)/;
+    const regexp =
+      /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+[?\w\-_.&=]+\)/;
 
     for (let i = 0; i < 2; i++) {
       await generateBadges(dirname, pkg, {});
@@ -114,7 +115,8 @@ describe('badges', () => {
       version: '1.0.0',
     };
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?logo=version&logoColor=white\)/;
+    const regexp =
+      /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-\w+\?logo=version&logoColor=white\)/;
 
     await generateBadges(dirname, pkg, {});
 
@@ -135,7 +137,8 @@ describe('badges', () => {
       `![nlm-version](https://img.shields.io/badge/version-1.0.0-blue)`
     );
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-blue\?logo=version&logoColor=white\)/;
+    const regexp =
+      /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.0-blue\?logo=version&logoColor=white\)/;
 
     await generateBadges(dirname, pkg, {});
 
@@ -159,7 +162,8 @@ describe('badges', () => {
     await generateBadges(dirname, { ...pkg, engines: { node: '14' } }, {});
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+[?\w\-_.&=]+\)/;
+    const regexp =
+      /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+[?\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);
@@ -179,7 +183,8 @@ describe('badges', () => {
     await generateBadges(dirname, pkg, {});
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\?logo=node\.js&logoColor=white+\)/;
+    const regexp =
+      /!\[nlm-node]\(https:\/\/img\.shields\.io\/badge\/node-14-\w+\?logo=node\.js&logoColor=white+\)/;
 
     assert.match(readme, regexp);
   });
@@ -197,7 +202,8 @@ describe('badges', () => {
     await generateBadges(dirname, pkg, { nextVersion: '1.0.1' });
     const readme = fs.readFileSync(path.join(dirname, 'README.md'), 'utf-8');
 
-    const regexp = /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+[?\w\-_.&=]+\)/;
+    const regexp =
+      /!\[nlm-version]\(https:\/\/img\.shields\.io\/badge\/version-1\.0\.1-\w+[?\w\-_.&=]+\)/;
 
     assert.match(readme, regexp);
     assert.strictEqual(readme.match(regexp).length, 1);

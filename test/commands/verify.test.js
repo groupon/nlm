@@ -41,6 +41,12 @@ const withFixture = require('../fixture');
 const CLI_PATH = require.resolve('../../lib/cli');
 
 describe('nlm verify', () => {
+  before(function () {
+    if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+      this.skip();
+    }
+  });
+
   describe('in non-git directory', () => {
     const dirname = withFixture('non-git');
     let stdout;
@@ -89,6 +95,39 @@ describe('nlm verify', () => {
         stdout.trim(),
         '[nlm] Changes are "patch" (1.0.0 -> 1.0.1)'
       );
+    });
+  });
+
+  describe('CI PR id env vars', function () {
+    this.timeout(5000);
+    const dirname = withFixture('verify-fix-commit');
+    let stdout;
+
+    it('is able to read various CI env vars to determine the PR id', async () => {
+      const testCases = new Map([
+        [{ DOTCI_PULL_REQUEST: '1' }, '1'],
+        [{ GITHUB_PULL_REQUEST: '2' }, '2'],
+        [{ ghprbPullId: '3' }, '3'],
+        [{ TRAVIS_PULL_REQUEST: '4' }, '4'],
+        [{ GITHUB_ACTIONS: 'true', GITHUB_REF: 'refs/pull/5/merges' }, '5'],
+        [{ CIRCLE_PULL_REQUEST: 'pull/6' }, '6'],
+      ]);
+
+      for (const [envs, expected] of testCases) {
+        stdout = await run(process.execPath, [CLI_PATH, 'verify'], {
+          cwd: dirname,
+          env: {
+            ...process.env,
+            GH_TOKEN: '',
+            ...envs,
+          },
+        });
+
+        assert.ok(
+          stdout.trim().includes(`Skipping PR #${expected}`),
+          `env var test case: "${JSON.stringify(envs)}"`
+        );
+      }
     });
   });
 });
