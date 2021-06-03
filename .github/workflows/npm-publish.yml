@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
-      - run: DEBUG=nlm* npx nlm release
+      - run: npx nlm release
         env:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
