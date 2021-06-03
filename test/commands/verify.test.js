@@ -41,6 +41,12 @@ const withFixture = require('../fixture');
 const CLI_PATH = require.resolve('../../lib/cli');
 
 describe('nlm verify', () => {
+  before(function () {
+    if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+      this.skip();
+    }
+  });
+
   describe('in non-git directory', () => {
     const dirname = withFixture('non-git');
     let stdout;
