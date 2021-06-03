@@ -214,7 +214,7 @@ To have `nlm` release on merge to the default branch or other branches, you need
 - set the trigger to the `push` event
   ```yaml
   push:
-    branches: [ main, v10.x ] # branches to release from
+    branches: [ $default-branch, v10.x ] # default branch placeholder + branches to release from
   ```
 - pass the `GH_TOKEN` and `NPM_TOKEN` to the env
   ```yaml
@@ -239,7 +239,7 @@ name: Publish to NPM
 
 on:
   push:
-    branches: [ main ] # default branch
+    branches: [ $default-branch ] # use default branch placeholder
 
 jobs:
   build:
