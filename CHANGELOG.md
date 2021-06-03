@@ -1,3 +1,15 @@
+### v5.5.0 (2021-06-03)
+<a id="v5.5.0"></a>
+#### 🚀 New Features
+
+* [#84](https://github.com/groupon/nlm/pull/84) feat: support GitHub actions ([@aaarichter](https://github.com/aaarichter))
+
+#### 🏡 Internal
+
+* [#87](https://github.com/groupon/nlm/pull/87) ci(actions): set default branch ([@aaarichter](https://github.com/aaarichter))
+* [`cae5d35`](https://github.com/groupon/nlm/commit/cae5d3509141e1e8490cd955be075ee562d3af01) ci: fix publish to default branch (#86) - see: [#86](https://github.com/groupon/nlm/issues/86)
+
+
 ### v5.4.2 (2021-06-01)
 <a id="v5.4.2"></a>
 #### 🐛 Bug Fixes
