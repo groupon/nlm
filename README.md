@@ -504,7 +504,6 @@ Will also add license headers where they are missing.
 1. Verify that the checkout is clean.
 1. Collect change log items and determine what kind of change it is.
 
-
 ### `nlm release`
 
 *Intended use: `deploy` script, or `posttest` script if not running matrix builds.*
