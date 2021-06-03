@@ -151,64 +151,15 @@ jobs:
 </p>
 </details>
 
-NOTE: `nlm verify` will determine the changes as `none` in the above setup. If you wish to combine the CI runs with 
-tagging your PRs use the template below:
-
-
-<details><summary><strong>Click to open</strong>: workflows/node.js.yml</summary>
-<p>
+**NOTE**: With the setup above, If you are using `nlm verify` in the package `posttest` script, 
+`verify` will state that the changes are `none`.  You can either ignore this, or set `fetch-depth: 0` in 
+the checkout step to fetch the full git history.
 
 ```yaml
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js CI
-
-on:
-  push:
-  pull_requests:
-
-jobs:
-  tag:
-    if: github.event_name == 'pull_request' # run only for pull_request events
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # necessary to get full commit history
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
-        env:
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          
-  build:
-    if: github.event_name == 'push' # run only for push events
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+- uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
 ```
-</p>
-</details>
 
 ###### Workflow: Tagging PRs
 
@@ -245,7 +196,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # necessary to get full commit history
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 14
