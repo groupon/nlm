@@ -6,7 +6,7 @@
 # nlm
 
 A tool for automating the release of libraries in the spirit of 
-[semantic-release](https://github.com/semantic-release/semantic-release).
+[semantic-release](https://github.com/semantic-release/semantic-release). For a list of supported commit types and their affect on the version, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 #### Highlights
 
@@ -67,25 +67,6 @@ If you want to use `nlm` to publish, you'll have to add `NPM_TOKEN`:
 
 ```bash
 travis encrypt NPM_TOKEN=your_npm_token --add env
-```
-
-#### DotCI
-
-DotCI lacks native support for encrypted environment variables. But the 
-[EnvInject Plugin](https://plugins.jenkins.io/envinject/) provides  an option called 
-"Inject passwords to the build as environment variables" which can fill the same role.
-
-You should also enable builds of pull requests for pushes against the same repository. Otherwise, the 
-automated tagging of PRs won't work.
-
-Finally, enable publishing by adding the following to `.ci.yml`:
-
-```yaml
-build:
-  <% if (DOTCI_BRANCH == 'master') { %>
-  after:
-    - ./node_modules/.bin/nlm publish
-  <% } %>
 ```
 
 #### CircleCI
