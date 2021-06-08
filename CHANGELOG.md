@@ -1,3 +1,14 @@
+### v5.5.1 (2021-06-08)
+<a id="v5.5.1"></a>
+#### 🔼 Dependencies
+
+* [#89](https://github.com/groupon/nlm/pull/89) chore(deps): bump trim-newlines from 3.0.0 to 3.0.1 ([@dependabot[bot]](https://github.com/apps/dependabot))
+
+#### 📝 Documentation
+
+* [#88](https://github.com/groupon/nlm/pull/88) docs: Add link to CONTRIBUTING, and remove dotCI mention from README ([@daniel-beard](https://github.com/daniel-beard))
+
+
 ### v5.5.0 (2021-06-03)
 <a id="v5.5.0"></a>
 #### 🚀 New Features
