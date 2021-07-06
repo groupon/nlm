@@ -418,8 +418,6 @@ adds badges for entries in `bugs` section. Can detect JIRA and Slack urls.
 * `badges.metacolor`: custom color set as HEX value (without `#`) or color literals listed on [shields.io](https://shields.io). Default: `F4D03F`
 
 
-
-
 If there's no file named `LICENSE` in the repository, `nlm` won't attempt to add the headers.
 
 ## Commands
