@@ -151,10 +151,12 @@ describe('getCommits', () => {
       assertIssue('Jira', expected);
     });
   });
+
   describe('with multiple commits', () => {
     const dirname = withFixture('multiple-commits');
     let allCommits = null;
-    before('fetch al commits', () => {
+
+    before('fetches all commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
@@ -203,22 +205,6 @@ describe('getCommits', () => {
       assert.strictEqual('pr', merge.type);
       assert.strictEqual('Merges', merge.references[0].action);
       assert.strictEqual('119', merge.references[0].issue);
-    });
-
-    describe('when starting from v0.0.0', () => {
-      it('returns everything from the beginning', async () => {
-        const commits = await getCommits(dirname, 'v0.0.0');
-
-        assert.strictEqual(commits.length, allCommits.length);
-      });
-    });
-
-    describe('when starting from the first commit', () => {
-      it('only returns the last two', async () => {
-        const commits = await getCommits(dirname, allCommits[0].sha);
-
-        assert.deepStrictEqual(commits, allCommits.slice(1));
-      });
     });
   });
 });

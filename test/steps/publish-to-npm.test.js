@@ -53,7 +53,8 @@ function withFakeRegistry() {
 
       if (req.method === 'GET' && req.url === '/nlm-test-pkg') {
         res.statusCode = 404;
-        return void res.end('{}');
+        res.end('{}');
+        return;
       }
 
       res.statusCode = 200;
@@ -73,9 +74,11 @@ function withFakeRegistry() {
     });
     server.listen(3000, done);
   });
-  after(done => {
-    server.close(done);
+
+  after(() => {
+    server.close();
   });
+
   return httpCalls;
 }
 
