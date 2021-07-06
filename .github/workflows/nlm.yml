@@ -19,6 +19,6 @@ jobs:
       with:
         node-version: 14
     - run: npm ci
-    - run: DEBUG=nlm* npm run posttest
+    - run: npm run posttest
       env:
         GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
