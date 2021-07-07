@@ -265,7 +265,6 @@ See [Official GitHub Documentation](https://docs.github.com/en/actions/reference
 on how to set a secret.
 
 
-
 ## Configuration
 
 Most `nlm` configuration happens via native npm options in `package.json`:
