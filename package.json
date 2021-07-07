@@ -25,6 +25,7 @@
   },
   "mocha": {
     "exit": true,
+    "timeout": 3500,
     "recursive": true
   },
   "nlm": {
