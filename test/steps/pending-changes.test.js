@@ -46,8 +46,8 @@ describe('getPendingChanges', () => {
   };
   const options = {};
 
-  before('create version commit', () => {
-    return getPendingChanges(dirname, pkg, options);
+  before('create version commit', async () => {
+    await getPendingChanges(dirname, pkg, options);
   });
 
   function assertChange(subject, expected) {
