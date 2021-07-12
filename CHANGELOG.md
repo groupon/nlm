@@ -1,3 +1,14 @@
+### v5.5.2 (2021-07-12)
+<a id="v5.5.2"></a>
+#### 🐛 Bug Fixes
+
+* [#90](https://github.com/groupon/nlm/pull/90) fix(tagging): only consider local / PR commits ([@aaarichter](https://github.com/aaarichter))
+
+#### 🏡 Internal
+
+* [`baf8816`](https://github.com/groupon/nlm/commit/baf8816207f4ad2ed548ce0212dc93bf4074f91e) chore: dummy commit
+
+
 ### v5.5.1 (2021-06-08)
 <a id="v5.5.1"></a>
 #### 🔼 Dependencies
