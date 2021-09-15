@@ -6,12 +6,6 @@ bash $(dirname $0)/fix-commit
 
 git checkout -b noise
 
-echo "console.log('');" > second.js
-git add second.js
-git commit -m "v0.0.5"
-git tag 'v0.0.5'
-
-
 echo "console.log('more');" > second.js
 git add second.js
 git commit -m "fix: Adding second
@@ -30,7 +24,6 @@ git checkout -b my-feature
 echo "console.log('other stuff');" > index.js
 git add index.js
 git commit -m 'feat: Changed more stuff'
-
 
 git checkout master
 git merge my-feature --no-ff -m 'Merge pull request #119 from theowner/some/branch'

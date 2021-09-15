@@ -151,46 +151,40 @@ describe('getCommits', () => {
       assertIssue('Jira', expected);
     });
   });
-
   describe('with multiple commits', () => {
     const dirname = withFixture('multiple-commits');
     let allCommits = null;
-
-    before('fetches all commits', async () => {
-      allCommits = await getCommits(dirname);
+    before('fetch al commits', () => {
+      return getCommits(dirname).then(commits => {
+        allCommits = commits;
+      });
     });
 
-    it('returns all commits from tag onwards', () => {
-      assert.strictEqual(allCommits.length, 3);
+    it('returns all three commits, plus one merge commit', () => {
+      assert.strictEqual(allCommits.length, 4);
     });
 
     it('returns commits in order', () => {
-      assert.strictEqual(allCommits[0].type, 'fix');
-      assert.strictEqual(allCommits[0].subject, 'Adding second');
-
-      assert.strictEqual(allCommits[1].type, 'feat');
-      assert.strictEqual(allCommits[1].subject, 'Changed more stuff');
+      assert.strictEqual(allCommits[0].subject, 'Do stuff');
+      assert.strictEqual(allCommits[1].subject, 'Adding second');
+      assert.strictEqual(allCommits[2].subject, 'Changed more stuff');
     });
 
-    it('omits tag & commit before tag', () => {
-      assert.ok(
-        allCommits.every(
-          ({ subject }) => !['Do stuff', 'v0.0.5'].includes(subject)
-        )
+    it('includes parentSha', () => {
+      assert.strictEqual(
+        allCommits[0].parentSha,
+        null,
+        'is null for first commit'
       );
-    });
-
-    it('includes sha & parentSha', () => {
-      assert.ok(
-        allCommits.every(
-          commit =>
-            commit.hasOwnProperty('parentSha') && commit.hasOwnProperty('sha')
-        )
+      assert.strictEqual(
+        allCommits[1].parentSha,
+        allCommits[0].sha,
+        'points to the immediate parent for other commits'
       );
     });
 
     it('includes notes for breaking changes', () => {
-      const note = allCommits[0].notes[0];
+      const note = allCommits[1].notes[0];
 
       assert.strictEqual(note.title, 'BREAKING CHANGE');
       assert.strictEqual(
@@ -204,11 +198,27 @@ describe('getCommits', () => {
     });
 
     it('includes merge commit info', () => {
-      const merge = allCommits.find(commit => commit.type === 'pr');
+      const merge = allCommits[3];
 
       assert.strictEqual('pr', merge.type);
       assert.strictEqual('Merges', merge.references[0].action);
       assert.strictEqual('119', merge.references[0].issue);
+    });
+
+    describe('when starting from v0.0.0', () => {
+      it('returns everything from the beginning', async () => {
+        const commits = await getCommits(dirname, 'v0.0.0');
+
+        assert.strictEqual(commits.length, allCommits.length);
+      });
+    });
+
+    describe('when starting from the first commit', () => {
+      it('only returns the last two', async () => {
+        const commits = await getCommits(dirname, allCommits[0].sha);
+
+        assert.deepStrictEqual(commits, allCommits.slice(1));
+      });
     });
   });
 });
