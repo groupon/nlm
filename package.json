@@ -18,7 +18,7 @@
   "scripts": {
     "pretest": "eslint lib test",
     "test": "c8 mocha",
-    "posttest": "DEBUG=nlm* ./bin/nlm.js verify"
+    "posttest": "./bin/nlm.js verify"
   },
   "engines": {
     "node": ">=10.13"
