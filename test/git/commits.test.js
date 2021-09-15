@@ -83,7 +83,7 @@ describe('getCommits', () => {
       }
     }
 
-    before('fetch al commits', () => {
+    before('fetch all commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
@@ -154,7 +154,7 @@ describe('getCommits', () => {
   describe('with multiple commits', () => {
     const dirname = withFixture('multiple-commits');
     let allCommits = null;
-    before('fetch al commits', () => {
+    before('fetch all commits', () => {
       return getCommits(dirname).then(commits => {
         allCommits = commits;
       });
