@@ -5,14 +5,7 @@ bash $(dirname $0)"/multiple-commits"
 echo '{
   "name": "nlm-test-pkg",
   "version": "0.0.1",
-  "lockfileVersion": 2,
-  "packages": {
-    "": {
-      "name": "nlm-test-pkg",
-      "version": "0.0.1",
-      "dependencies": {}
-    }
-  }
+  "lockfileVersion": 1
 }' >package-lock.json
 git add package-lock.json
 git commit --amend --no-edit

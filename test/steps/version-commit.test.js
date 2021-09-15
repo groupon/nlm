@@ -33,18 +33,18 @@
 'use strict';
 
 const { execFile } = require('child_process');
-
+const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
-
 const assert = require('assert');
 
 const createVersionCommit = require('../../lib/steps/version-commit');
-
 const withFixture = require('../fixture');
 
+const execFileAsync = promisify(execFile);
+
 const DEF_PKG = {
-  name: 'some-package',
+  name: 'nlm-test-pkg',
   version: '0.0.0',
 };
 const DEF_OPTS = {
@@ -139,6 +139,26 @@ describe('createVersionCommit', () => {
       createVersionCommit(dirname, pkg, options)
     );
 
+    it('bumps the package-lock version number', async () => {
+      const { stdout: json } = await execFileAsync(
+        'git',
+        ['show', 'HEAD:package-lock.json'],
+        { cwd: dirname }
+      );
+
+      const pl = JSON.parse(json);
+      assert.strictEqual(pl.version, '1.0.0');
+      assert.strictEqual(pl.packages[''].version, '1.0.0');
+    });
+  });
+
+  describe('using v1 (npm <v7) package-lock.json', () => {
+    const dirname = withFixture('with-plock1');
+
+    before('create version commit', () =>
+      createVersionCommit(dirname, pkg, options)
+    );
+
     it('bumps the package-lock version number', done => {
       execFile(
         'git',
@@ -161,7 +181,7 @@ describe('createVersionCommit', () => {
       createVersionCommit(dirname, pkg, options)
     );
 
-    it("doesn't touch change it", done => {
+    it("doesn't change it", done => {
       execFile(
         'git',
         ['show', 'HEAD:package-lock.json'],
