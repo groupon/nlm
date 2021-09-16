@@ -1,3 +1,11 @@
+### v5.6.0 (2021-09-16)
+<a id="v5.6.0"></a>
+#### 🏡 Internal
+
+* [#92](https://github.com/groupon/nlm/pull/92) package-lock.json v2 version bumping ([@dbushong](https://github.com/dbushong))
+* [#93](https://github.com/groupon/nlm/pull/93) Undo commit listing changes from #90 ([@dbushong](https://github.com/dbushong))
+
+
 ### v5.5.2 (2021-07-12)
 <a id="v5.5.2"></a>
 #### 🐛 Bug Fixes
