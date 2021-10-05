@@ -1,3 +1,10 @@
+### v5.6.1 (2021-10-05)
+<a id="v5.6.1"></a>
+#### 🏡 Internal
+
+* [#94](https://github.com/groupon/nlm/pull/94) bump default github timeouts ([@dbushong](https://github.com/dbushong))
+
+
 ### v5.6.0 (2021-09-16)
 <a id="v5.6.0"></a>
 #### 🏡 Internal
