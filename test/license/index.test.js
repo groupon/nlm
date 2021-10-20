@@ -62,9 +62,9 @@ describe('addLicenseHeaders', () => {
   describe('with a file w/o license header', () => {
     const dirname = withFixture('fix-commit');
     const filename = `${dirname}/index.js`;
-    const licenseText = '\n\nIMPORTANT\n\nLEGAL\nSTUFF HERE!\n\t \n';
-    const licenseHeader =
-      '/*\n * IMPORTANT\n *\n * LEGAL\n * STUFF HERE!\n */\n';
+    const licenseText = '(c) 1999\n\nIMPORTANT\n\nLEGAL\nSTUFF HERE!\n\t \n';
+    const curYear = new Date().getFullYear();
+    const licenseHeader = `/*\n * (c) ${curYear}\n *\n * IMPORTANT\n *\n * LEGAL\n * STUFF HERE!\n */\n`;
 
     before('write license file', () => {
       fs.writeFileSync(`${dirname}/LICENSE`, licenseText);
@@ -76,7 +76,7 @@ describe('addLicenseHeaders', () => {
       assert.deepStrictEqual(changedFiles, [filename]);
     });
 
-    it('writes out a file with a license header', () => {
+    it('writes out a file with a license header w/ current year', () => {
       const content = fs.readFileSync(filename, 'utf8');
 
       assert.ok(content.includes(licenseHeader));
