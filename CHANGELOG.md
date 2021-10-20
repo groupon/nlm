@@ -1,3 +1,10 @@
+### v5.7.0 (2021-10-20)
+<a id="v5.7.0"></a>
+#### 🏡 Internal
+
+* [#95](https://github.com/groupon/nlm/pull/95) Use the current year in (new) license headers ([@dbushong](https://github.com/dbushong))
+
+
 ### v5.6.1 (2021-10-05)
 <a id="v5.6.1"></a>
 #### 🏡 Internal
