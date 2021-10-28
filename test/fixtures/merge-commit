@@ -2,6 +2,6 @@
 set -e
 git init
 
-echo "console.log('do stuff');" > merge.js
-git add merge.js
+echo "import { mittens } from 'kittens';" > merge.ts
+git add merge.ts
 git commit -m 'Merge pull request #119 from theowner/some/branch'
