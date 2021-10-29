@@ -87,4 +87,25 @@ describe('addLicenseHeaders', () => {
       );
     });
   });
+
+  describe('with a ts file w/o a license header', () => {
+    const dirname = withFixture('merge-commit');
+    const filename = `${dirname}/merge.ts`;
+
+    it('adds the header', async () => {
+      fs.writeFileSync(`${dirname}/LICENSE`, 'SIMPLE');
+
+      const changedFiles = await addLicenseHeaders(dirname);
+      assert.deepStrictEqual(changedFiles, [filename]);
+      assert.strictEqual(
+        fs.readFileSync(filename, 'utf8'),
+        `\
+/*
+ * SIMPLE
+ */
+import { mittens } from 'kittens';
+`
+      );
+    });
+  });
 });
