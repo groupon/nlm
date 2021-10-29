@@ -103,7 +103,6 @@ describe('addLicenseHeaders', () => {
 /*
  * SIMPLE
  */
-
 import { mittens } from 'kittens';
 `
       );
