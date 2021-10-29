@@ -1,3 +1,10 @@
+### v5.8.0 (2021-10-29)
+<a id="v5.8.0"></a>
+#### 🏡 Internal
+
+* [#96](https://github.com/groupon/nlm/pull/96) Support .ts .mjs .tsx .jsx extensions for license headers ([@dbushong](https://github.com/dbushong))
+
+
 ### v5.7.0 (2021-10-20)
 <a id="v5.7.0"></a>
 #### 🏡 Internal

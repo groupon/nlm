@@ -1,6 +1,6 @@
 ![GitHub](https://github.com/groupon/nlm/actions/workflows/node.js.yml/badge.svg?branch=main)
 ![nlm-coverage](https://img.shields.io/badge/coverage-57.64%25-yellow?logo=coverage&logoColor=white)
-![nlm-version](https://img.shields.io/badge/version-5.7.0-blue?logo=version&logoColor=white)
+![nlm-version](https://img.shields.io/badge/version-5.8.0-blue?logo=version&logoColor=white)
 ![nlm-node](https://img.shields.io/badge/node-%3E%3D10.13-blue?logo=node.js&logoColor=white)
 [![nlm-github](https://img.shields.io/badge/github-groupon%2Fnlm%2Fissues-F4D03F?logo=github&logoColor=white)](https://github.com/groupon/nlm/issues)
 # nlm
